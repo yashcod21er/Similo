@@ -28,10 +28,12 @@ backend/
 │   ├── db/                  MongoDB connection, indexes, transactions
 │   ├── middleware/          Runs before the routes: sign-in, permission and origin checks, logging, errors
 │   ├── modules/             One folder per feature
-│   │   ├── auth/            Sign up, sign in, sign out, change password, join by invitation
+│   │   ├── auth/            Sign up, sign in, sign out, change password, join by invitation;
+│   │   │                    JWT access tokens (access-token.ts) and the sign-in cookies
 │   │   ├── organizations/   Organisation, members, invitations; roles.ts says which role can do what
 │   │   ├── users/           User accounts
-│   │   ├── sessions/        Sign-in sessions behind the cookie
+│   │   ├── sessions/        Refresh tokens (stored hashed) that renew the 15-minute access token
+│   │   ├── brands/          Brands, official domains, trademarks, logos, monitoring settings
 │   │   ├── audit/           Audit log
 │   │   ├── demo-requests/   "Request a demo" form submissions
 │   │   └── health/          Health checks used by the status page
@@ -51,13 +53,16 @@ request → middleware        logging, origin check, sign-in, permission
         → x.model.ts        the shape of the MongoDB collection
 ```
 
-Most modules follow this pattern, so a new feature (for example `brands/` in Phase 4) is a new
-folder in `src/modules/` with the same files.
+Most modules follow this pattern, so a new feature is a new folder in `src/modules/` with the
+same files (`brands/` from Phase 4 is a recent example; it also has `domain-name.ts` for domain
+clean-up and `logo-sniff.ts`, which checks uploaded logos by their first bytes).
 
 ## Rules worth knowing
 
 - Every query on organisation data takes `organizationId` as its first argument, and services
   take it only from the signed-in session, never from the request body or URL.
 - New permissions go in `src/modules/organizations/roles.ts`.
+- File uploads (only brand logos so far) are parsed with `multer` in memory with strict limits,
+  and their type is decided by the file's bytes, never by its name.
 - The design is explained in [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md). Coding rules are
   in [docs/CONVENTIONS.md](../docs/CONVENTIONS.md).

@@ -5,8 +5,8 @@ their protected brands. Similo then monitors domains, apps and trademark publica
 for look-alikes, explains why each one was flagged, and supports analysts through
 investigation, evidence collection and legal drafting. A person always makes the final decision.
 
-> **Status:** Phases 1 (foundation), 2 (accounts, organisations and roles) and 3 (public website)
-> are complete, on MongoDB Atlas. Phase 4 (brand management) is next.
+> **Status:** Phases 1 (foundation), 2 (accounts, organisations and roles), 3 (public website)
+> and 4 (brand management) are complete, on MongoDB Atlas. Phase 5 (first domain monitoring) is next.
 > See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#roadmap) and [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md).
 
 ## Repository layout
@@ -80,19 +80,19 @@ to MongoDB; until `MONGODB_URI` is set it shows an honest "could not save" messa
 
 ## Scripts (run from the repository root)
 
-| Command                                            | What it does                                                                                        |
-| -------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `npm run dev`                                      | Run the frontend, backend and AI service together (`dev:frontend`, `dev:backend`, `dev:ai` run one) |
-| `npm test`                                         | Frontend and backend tests (Vitest)                                                                 |
-| `npm run test:ai`                                  | AI service tests (pytest)                                                                           |
-| `npm run typecheck`                                | TypeScript type check for all workspaces                                                            |
-| `npm run lint` / `npm run lint:ai`                 | ESLint / Ruff                                                                                       |
-| `npm run format`                                   | Format with Prettier                                                                                |
-| `npm run build`                                    | Production build of the backend and frontend                                                        |
-| `npm run check`                                    | Type check + lint + all tests (run this before committing)                                          |
-| `npm run seed:demo`                                | Create a sample organisation with one user per role (prints a new password each run)                |
-| `npm run seed:demo -- --remove`                    | Delete that sample organisation and its users                                                       |
-| `npm run auth:reset-password -- --email <address>` | Set a new random password for an account (development only)                                         |
+| Command                                            | What it does                                                                                              |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `npm run dev`                                      | Run the frontend, backend and AI service together (`dev:frontend`, `dev:backend`, `dev:ai` run one)       |
+| `npm test`                                         | Frontend and backend tests (Vitest)                                                                       |
+| `npm run test:ai`                                  | AI service tests (pytest)                                                                                 |
+| `npm run typecheck`                                | TypeScript type check for all workspaces                                                                  |
+| `npm run lint` / `npm run lint:ai`                 | ESLint / Ruff                                                                                             |
+| `npm run format`                                   | Format with Prettier                                                                                      |
+| `npm run build`                                    | Production build of the backend and frontend                                                              |
+| `npm run check`                                    | Type check + lint + all tests (run this before committing)                                                |
+| `npm run seed:demo`                                | Create a sample organisation with one user per role and one sample brand (prints a new password each run) |
+| `npm run seed:demo -- --remove`                    | Delete that sample organisation, its users and its brands                                                 |
+| `npm run auth:reset-password -- --email <address>` | Set a new random password for an account (development only)                                               |
 
 ## Accounts, organisations and roles (Phase 2)
 
@@ -100,7 +100,8 @@ to MongoDB; until `MONGODB_URI` is set it shows an honest "could not save" messa
 2. In the dashboard (`/app`), **Members → Invite people** creates a one-time invitation link
    (valid for 7 days). Similo doesn't send email yet, so copy the link and send it yourself.
 3. To try every role quickly, run `npm run seed:demo`. It creates **Demo Co (sample data)** with
-   one user per role on the reserved `demo.similo.test` domain and prints their password.
+   one user per role on the reserved `demo.similo.test` domain, plus one sample brand, and prints
+   their password.
 
 | Role                  | Can do                                                        |
 | --------------------- | ------------------------------------------------------------- |
@@ -110,15 +111,49 @@ to MongoDB; until `MONGODB_URI` is set it shows an honest "could not save" messa
 | Legal Reviewer        | Read the audit log; review legal drafts (Phases 7–8)          |
 | Viewer                | See everything, change nothing                                |
 
-How it is protected: passwords are hashed with Argon2id; sessions are random tokens in an
-HTTP-only, SameSite cookie, stored hashed in MongoDB and revocable instantly; sign-in is
-rate-limited and pauses for 15 minutes after 5 wrong passwords; every query is scoped to the
-signed-in organisation; data-changing requests from other websites are rejected; important
-actions are written to an append-only audit log. Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#phase-2--accounts-organisations-and-roles).
+How it is protected: passwords must be at least 10 characters and are hashed with Argon2id.
+Signing in sets two HTTP-only, SameSite cookies that page scripts can't read: a short-lived
+access token (a signed JWT, valid for 15 minutes) and a random refresh token, of which MongoDB
+stores only a hash, that quietly renews the access token for up to 30 days. Your role and
+membership are checked again on every request, so a role change or removal from the
+organisation applies at once. One honest trade-off: signing out (or changing your password)
+deletes refresh tokens immediately, but an access token someone had already copied would keep
+working for at most 15 more minutes. Sign-in is rate-limited and pauses for 15 minutes after
+5 wrong passwords; every query is scoped to the signed-in organisation; data-changing requests
+from other websites are rejected; important actions are written to an append-only audit log.
+Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#6-multi-tenancy-and-authorisation-built-in-phase-2).
 
 Not yet: email verification and password reset by email (an email service comes later; until
 then `npm run auth:reset-password` covers development), two-factor sign-in, single sign-on, and
 belonging to more than one organisation.
+
+## Brand management (Phase 4)
+
+A **brand** is something your organisation wants protected, such as a company or product name.
+In the dashboard, **Brands** lets you record for each brand:
+
+- its name, a short description and **keywords** (other spellings and names people use);
+- its **official domains** (typed any way, e.g. `https://www.Example.com/shop`; Similo stores
+  `example.com`, and international names such as `bücher.de` in their standard `xn--` form);
+- its **trademarks**, entered by hand: the mark, the office (USPTO, EUIPO, WIPO, IP India,
+  UKIPO or other), the registration or application number, the Nice classes and the status;
+- up to 5 **logos** (PNG, JPEG or WebP, at most 1 MB each; the file's contents are checked,
+  not just its name, and SVG files are not accepted because they can contain scripts);
+- **monitoring settings**: which channels to watch, how sensitive alerts should be, and whether
+  to email alerts.
+
+Monitoring itself starts in Phase 5. Today these settings are saved but nothing scans yet, and
+the dashboard says so.
+
+| Role                                          | Brands                         |
+| --------------------------------------------- | ------------------------------ |
+| Owner, Admin                                  | Add, change and delete brands  |
+| Investigation Analyst, Legal Reviewer, Viewer | See all brands; change nothing |
+
+Limits: 50 brands per organisation; per brand 50 keywords, 50 domains, 100 trademarks and 5 logos.
+Every change appears in the audit log. `npm run seed:demo` adds one made-up brand,
+**Northwind Coffee (sample data)**, using reserved `.example` domains. API details:
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#phase-4--brand-management).
 
 ## Connecting MongoDB Atlas
 

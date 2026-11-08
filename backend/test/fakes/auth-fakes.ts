@@ -4,6 +4,14 @@ import type {
   AuditRepository,
 } from '../../src/modules/audit/audit.repository.js';
 import type { AuthRepositories } from '../../src/modules/auth/auth.system.js';
+import {
+  brandNameKey,
+  DEFAULT_MONITORING,
+  type BrandLogoRepository,
+  type BrandRecord,
+  type BrandRepository,
+  type NewBrandLogo,
+} from '../../src/modules/brands/brand.repository.js';
 import type {
   InviteRecord,
   InviteRepository,
@@ -285,4 +293,116 @@ export function createFakeAuthRepositories(now: () => Date = () => new Date()) {
       audit: auditStore,
     },
   };
+}
+
+/**
+ * In-memory brand and logo repositories with the same contracts as MongoDB:
+ * names unique per organisation ignoring case, updates only at the expected
+ * revision, and every lookup scoped by organisation.
+ */
+export function createFakeBrandRepositories(now: () => Date = () => new Date()) {
+  const brandStore = new Map<string, BrandRecord>();
+  const logoStore = new Map<string, NewBrandLogo>();
+
+  const nameTaken = (organizationId: string, name: string, exceptId?: string) =>
+    [...brandStore.values()].some(
+      (row) =>
+        row.organizationId === organizationId &&
+        brandNameKey(row.name) === brandNameKey(name) &&
+        row.id !== exceptId,
+    );
+
+  const scoped = (organizationId: string, id: string) => {
+    const brand = brandStore.get(id);
+    return brand && brand.organizationId === organizationId ? brand : undefined;
+  };
+
+  const brands: BrandRepository = {
+    async create(data) {
+      if (nameTaken(data.organizationId, data.name)) throw duplicateKeyError();
+      const at = now();
+      const brand: BrandRecord = {
+        id: newId(),
+        ...data,
+        status: 'active',
+        domains: [],
+        trademarks: [],
+        logos: [],
+        monitoring: { ...DEFAULT_MONITORING },
+        revision: 0,
+        createdAt: at,
+        updatedAt: at,
+      };
+      brandStore.set(brand.id, brand);
+      return copy(brand);
+    },
+    async listByOrganization(organizationId) {
+      return [...brandStore.values()]
+        .filter((row) => row.organizationId === organizationId)
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || b.id.localeCompare(a.id))
+        .map(copy);
+    },
+    async findById(organizationId, id) {
+      const brand = scoped(organizationId, id);
+      return brand ? copy(brand) : null;
+    },
+    async findByName(organizationId, name) {
+      const brand = [...brandStore.values()].find(
+        (row) =>
+          row.organizationId === organizationId && brandNameKey(row.name) === brandNameKey(name),
+      );
+      return brand ? copy(brand) : null;
+    },
+    async countByOrganization(organizationId) {
+      return [...brandStore.values()].filter((row) => row.organizationId === organizationId).length;
+    },
+    async update(organizationId, id, expectedRevision, changes) {
+      const brand = scoped(organizationId, id);
+      if (!brand || brand.revision !== expectedRevision) return null;
+      if (changes.name !== undefined && nameTaken(organizationId, changes.name, id)) {
+        throw duplicateKeyError();
+      }
+      Object.assign(brand, copy(changes), { revision: brand.revision + 1, updatedAt: now() });
+      return copy(brand);
+    },
+    async delete(organizationId, id) {
+      if (!scoped(organizationId, id)) return false;
+      brandStore.delete(id);
+      return true;
+    },
+  };
+
+  const findLogo = (organizationId: string, brandId: string, logoId: string) => {
+    const logo = logoStore.get(logoId);
+    return logo && logo.organizationId === organizationId && logo.brandId === brandId
+      ? logo
+      : undefined;
+  };
+
+  const logos: BrandLogoRepository = {
+    async create(data) {
+      logoStore.set(data.id, { ...data, data: Buffer.from(data.data) });
+    },
+    async find(organizationId, brandId, logoId) {
+      const logo = findLogo(organizationId, brandId, logoId);
+      return logo ? { contentType: logo.contentType, data: Buffer.from(logo.data) } : null;
+    },
+    async delete(organizationId, brandId, logoId) {
+      if (!findLogo(organizationId, brandId, logoId)) return false;
+      logoStore.delete(logoId);
+      return true;
+    },
+    async deleteByBrand(organizationId, brandId) {
+      let removed = 0;
+      for (const [id, logo] of logoStore) {
+        if (logo.organizationId === organizationId && logo.brandId === brandId) {
+          logoStore.delete(id);
+          removed += 1;
+        }
+      }
+      return removed;
+    },
+  };
+
+  return { brands, logos, stores: { brands: brandStore, brandLogos: logoStore } };
 }

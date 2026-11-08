@@ -3,6 +3,8 @@ import { requireDatabase } from './middleware/require-database.js';
 import { createAuditRouter } from './modules/audit/audit.routes.js';
 import { createAuthRouter } from './modules/auth/auth.routes.js';
 import type { AuthSystem } from './modules/auth/auth.system.js';
+import { createBrandRouter } from './modules/brands/brand.routes.js';
+import type { BrandService } from './modules/brands/brand.service.js';
 import {
   createDemoRequestRouter,
   type DemoRequestRouterOptions,
@@ -17,6 +19,7 @@ export interface ApiRouterDependencies {
   demoRequestService: DemoRequestService;
   demoRequestOptions?: DemoRequestRouterOptions;
   auth: AuthSystem;
+  brandService: BrandService;
   /** True when MongoDB is connected; identity routes answer 503 otherwise. */
   isDatabaseReady: () => boolean;
 }
@@ -36,6 +39,7 @@ export function createApiRouter({
   demoRequestService,
   demoRequestOptions,
   auth,
+  brandService,
   isDatabaseReady,
 }: ApiRouterDependencies): Router {
   const router = Router();
@@ -69,6 +73,7 @@ export function createApiRouter({
     noStore,
     createAuditRouter(auth.auditService),
   );
+  router.use('/brands', needsDatabase, auth.requireAuth, noStore, createBrandRouter(brandService));
 
   return router;
 }

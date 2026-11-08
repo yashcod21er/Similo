@@ -120,6 +120,18 @@ export const router = createBrowserRouter([
           import('@/features/app-shell/OverviewPage').then((m) => ({ Component: m.OverviewPage })),
       },
       {
+        path: 'brands',
+        lazy: () =>
+          import('@/features/brands/BrandsPage').then((m) => ({ Component: m.BrandsPage })),
+      },
+      {
+        path: 'brands/:brandId',
+        lazy: () =>
+          import('@/features/brands/BrandDetailPage').then((m) => ({
+            Component: m.BrandDetailPage,
+          })),
+      },
+      {
         path: 'members',
         lazy: () =>
           import('@/features/organization/MembersPage').then((m) => ({ Component: m.MembersPage })),

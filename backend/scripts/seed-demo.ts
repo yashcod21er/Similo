@@ -1,11 +1,13 @@
 /**
  * Creates (or refreshes) a clearly labelled SAMPLE organisation with one user
- * per role, so roles and permissions can be tried quickly. Development only.
+ * per role, so roles and permissions can be tried quickly, plus one sample
+ * brand to look at. Development only.
  *
  *   npm run seed:demo             create / refresh, and print a new password
- *   npm run seed:demo -- --remove delete the sample organisation and its users
+ *   npm run seed:demo -- --remove delete the sample organisation, its users and brands
  *
- * Emails use the reserved `.test` domain, so they can never belong to a real person.
+ * Emails use the reserved `.test` domain and the brand's domains the reserved
+ * `.example` domain, so they can never belong to a real person or company.
  */
 import { loadDotEnvFile, parseEnv } from '../src/config/env.js';
 import { ensureIndexes } from '../src/db/indexes.js';
@@ -14,6 +16,8 @@ import { createLogger } from '../src/lib/logger.js';
 import { hashPassword } from '../src/lib/passwords.js';
 import { generateToken } from '../src/lib/tokens.js';
 import { AuditEventModel } from '../src/modules/audit/audit.model.js';
+import { BrandLogoModel, BrandModel } from '../src/modules/brands/brand.model.js';
+import { brandNameKey, DEFAULT_MONITORING } from '../src/modules/brands/brand.repository.js';
 import {
   InviteModel,
   MembershipModel,
@@ -32,6 +36,25 @@ const DEMO_USERS: { role: Role; name: string; email: string }[] = [
   { role: 'viewer', name: 'Victor Viewer', email: 'viewer@demo.similo.test' },
 ];
 
+/** A made-up brand, labelled as sample data everywhere it appears. No logo. */
+const SAMPLE_BRAND = {
+  name: 'Northwind Coffee (sample data)',
+  description:
+    'A made-up brand created by npm run seed:demo so you can explore brand settings. Not a real company.',
+  keywords: ['northwind', 'northwind coffee', 'northwind roasters'],
+  domains: ['northwind-coffee.example', 'northwindcoffee.example'],
+  trademark: {
+    // A 24-hex-character id, like the ones the API creates.
+    id: '5a3e1e5a3e1e5a3e1e5a3e1e',
+    mark: 'NORTHWIND COFFEE (sample)',
+    office: 'OTHER',
+    number: 'SAMPLE-0001',
+    classes: [30, 43],
+    status: 'registered',
+    date: null,
+  },
+};
+
 async function removeDemo(): Promise<void> {
   const users = await UserModel.find({ email: { $in: DEMO_USERS.map((u) => u.email) } }, '_id');
   const userIds = users.map((user) => user._id);
@@ -39,6 +62,8 @@ async function removeDemo(): Promise<void> {
   const organizationIds = organizations.map((organization) => organization._id);
 
   await Promise.all([
+    BrandLogoModel.deleteMany({ organizationId: { $in: organizationIds } }),
+    BrandModel.deleteMany({ organizationId: { $in: organizationIds } }),
     MembershipModel.deleteMany({ organizationId: { $in: organizationIds } }),
     InviteModel.deleteMany({ organizationId: { $in: organizationIds } }),
     AuditEventModel.deleteMany({ organizationId: { $in: organizationIds } }),
@@ -46,7 +71,7 @@ async function removeDemo(): Promise<void> {
   ]);
   await OrganizationModel.deleteMany({ _id: { $in: organizationIds } });
   await UserModel.deleteMany({ _id: { $in: userIds } });
-  console.log(`Removed the sample organisation and ${userIds.length} sample users.`);
+  console.log(`Removed the sample organisation, its brands and ${userIds.length} sample users.`);
 }
 
 async function seedDemo(): Promise<void> {
@@ -62,7 +87,7 @@ async function seedDemo(): Promise<void> {
         $set: { name: demo.name, passwordHash, failedSignIns: 0, lockedUntil: null },
         $setOnInsert: { email: demo.email },
       },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: 'after' },
     );
     users.push({ ...demo, id: user._id });
   }
@@ -80,10 +105,35 @@ async function seedDemo(): Promise<void> {
       { upsert: true },
     );
   }
+  // One sample brand, created once; later runs leave changes made to it alone.
+  const now = new Date();
+  await BrandModel.updateOne(
+    { organizationId: organization._id, nameLower: brandNameKey(SAMPLE_BRAND.name) },
+    {
+      $setOnInsert: {
+        name: SAMPLE_BRAND.name,
+        description: SAMPLE_BRAND.description,
+        status: 'active',
+        keywords: SAMPLE_BRAND.keywords,
+        domains: SAMPLE_BRAND.domains.map((domain) => ({ domain, addedAt: now })),
+        trademarks: [SAMPLE_BRAND.trademark],
+        logos: [],
+        monitoring: DEFAULT_MONITORING,
+        revision: 0,
+        createdBy: owner.id,
+        createdAt: now,
+        updatedAt: now,
+      },
+    },
+    { upsert: true, timestamps: false },
+  );
+
   // Old sessions used the previous password: sign them out.
   await SessionModel.deleteMany({ userId: { $in: users.map((user) => user.id) } });
 
-  console.log(`\nSample organisation "${ORGANISATION_NAME}" is ready.\n`);
+  console.log(
+    `\nSample organisation "${ORGANISATION_NAME}" is ready, with the sample brand "${SAMPLE_BRAND.name}".\n`,
+  );
   console.table(users.map((user) => ({ role: ROLE_LABELS[user.role], email: user.email })));
   console.log(`Password for all five (shown once, new every run): ${password}`);
   console.log('Sign in at http://localhost:5173/sign-in\n');

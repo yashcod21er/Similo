@@ -13,7 +13,18 @@ export type AuditAction =
   | 'member.invite_revoked'
   | 'member.joined'
   | 'member.role_changed'
-  | 'member.removed';
+  | 'member.removed'
+  | 'brand.created'
+  | 'brand.updated'
+  | 'brand.deleted'
+  | 'brand.domain_added'
+  | 'brand.domain_removed'
+  | 'brand.trademark_added'
+  | 'brand.trademark_updated'
+  | 'brand.trademark_removed'
+  | 'brand.logo_uploaded'
+  | 'brand.logo_removed'
+  | 'brand.monitoring_updated';
 
 export interface AuditActor {
   userId: string;
@@ -22,7 +33,7 @@ export interface AuditActor {
 }
 
 export interface AuditTarget {
-  type: 'user' | 'invite' | 'organization';
+  type: 'user' | 'invite' | 'organization' | 'brand';
   id: string;
   label: string;
 }

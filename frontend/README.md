@@ -19,7 +19,7 @@ npm test --workspace @similo/frontend   # its tests (Vitest + Testing Library)
 ```
 frontend/
 ├── index.html               The one HTML page; React fills it in
-├── public/                  Served as-is: favicon, app icon, logo files (brand/)
+├── public/                  Served as-is: favicon, app icon, logo files (brand/), photos (images/)
 └── src/
     ├── main.tsx             Starting point: mounts the app
     ├── app/                 Router (which URL shows which page) and the data-fetching client
@@ -30,6 +30,7 @@ frontend/
     ├── features/            Product features: each folder holds its screens, API calls and tests
     │   ├── auth/            Sign in, sign up, accept an invitation, "must be signed in" guard
     │   ├── app-shell/       Dashboard layout (sidebar, header) and the overview page
+    │   ├── brands/          Brands: domains, logos, trademarks, monitoring settings
     │   ├── organization/    Members, invitations, audit log, settings
     │   ├── demo-request/    The "Request a demo" form
     │   └── system-status/   The /status page

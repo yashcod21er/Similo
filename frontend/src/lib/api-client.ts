@@ -75,17 +75,29 @@ export async function apiRequest<T>(path: string, init: RequestInit = {}): Promi
   });
 }
 
-/** POST/PATCH/DELETE with a JSON body, through the same envelope handling as `apiRequest`. */
+/** POST/PATCH/PUT/DELETE with a JSON body, through the same envelope handling as `apiRequest`. */
 export function sendJson<T>(
   path: string,
   body?: unknown,
-  method: 'POST' | 'PATCH' | 'DELETE' = 'POST',
+  method: 'POST' | 'PATCH' | 'PUT' | 'DELETE' = 'POST',
 ): Promise<T> {
   return apiRequest<T>(path, {
     method,
     headers: { 'Content-Type': 'application/json' },
     ...(body !== undefined && { body: JSON.stringify(body) }),
   });
+}
+
+/**
+ * Upload files (`multipart/form-data`) through the same envelope handling as `apiRequest`.
+ * No `Content-Type` header is set on purpose: the browser adds it, including the boundary.
+ */
+export function sendForm<T>(
+  path: string,
+  form: FormData,
+  method: 'POST' | 'PUT' = 'POST',
+): Promise<T> {
+  return apiRequest<T>(path, { method, body: form });
 }
 
 /** Field-level problems from a 400 VALIDATION_ERROR, as `{ path, message }` pairs. */

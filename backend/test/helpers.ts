@@ -2,6 +2,7 @@ import { pino } from 'pino';
 import { createApp, type AppDependencies } from '../src/app.js';
 import type { AuthRateLimits } from '../src/modules/auth/auth.routes.js';
 import { createAuthSystem } from '../src/modules/auth/auth.system.js';
+import { createBrandService } from '../src/modules/brands/brand.service.js';
 import type {
   DemoRequestRepository,
   NewDemoRequest,
@@ -9,7 +10,12 @@ import type {
 import { createDemoRequestService } from '../src/modules/demo-requests/demo-request.service.js';
 import type { DependencyCheck, DependencyCheckResult } from '../src/modules/health/health.types.js';
 import { createHealthService } from '../src/modules/health/health.service.js';
-import { createClock, createFakeAuthRepositories, fakeTransaction } from './fakes/auth-fakes.js';
+import {
+  createClock,
+  createFakeAuthRepositories,
+  createFakeBrandRepositories,
+  fakeTransaction,
+} from './fakes/auth-fakes.js';
 
 export const silentLogger = pino({ level: 'silent' });
 
@@ -55,7 +61,7 @@ export const RELAXED_RATE_LIMITS: AuthRateLimits = {
   invites: { windowMs: 60_000, limit: 1_000 },
 };
 
-/** A complete auth system on in-memory storage with a controllable clock. */
+/** A complete auth system and brand service on in-memory storage with a controllable clock. */
 export function createTestAuth({
   rateLimits = RELAXED_RATE_LIMITS,
 }: { rateLimits?: AuthRateLimits } = {}) {
@@ -71,16 +77,25 @@ export function createTestAuth({
     now: clock.now,
     rateLimits,
   });
-  return { auth, stores, clock };
+  const brandFakes = createFakeBrandRepositories(clock.now);
+  const brandService = createBrandService({
+    brands: brandFakes.brands,
+    logos: brandFakes.logos,
+    audit: auth.auditService,
+    runInTransaction: fakeTransaction,
+    now: clock.now,
+  });
+  return { auth, brandService, stores: { ...stores, ...brandFakes.stores }, clock };
 }
 
 /** The app plus direct access to its fake storage and clock, for auth tests. */
 export function buildAuthTestApp(
   options: { rateLimits?: AuthRateLimits; databaseReady?: boolean } = {},
 ) {
-  const { auth, stores, clock } = createTestAuth(options);
+  const { auth, brandService, stores, clock } = createTestAuth(options);
   const app = buildTestApp(healthyChecks, {
     auth,
+    brandService,
     isDatabaseReady: () => options.databaseReady ?? true,
   });
   return { app, auth, stores, clock };
@@ -91,6 +106,7 @@ export function buildTestApp(
   overrides: Partial<AppDependencies> = {},
 ) {
   const { repository } = createFakeDemoRequestRepository();
+  const testAuth = createTestAuth();
   return createApp({
     env: { CORS_ORIGINS: ['http://localhost:5173'], TRUST_PROXY: 0 },
     logger: silentLogger,
@@ -100,7 +116,8 @@ export function buildTestApp(
       isDatabaseReady: () => true,
       logger: silentLogger,
     }),
-    auth: createTestAuth().auth,
+    auth: testAuth.auth,
+    brandService: testAuth.brandService,
     isDatabaseReady: () => true,
     ...overrides,
   });

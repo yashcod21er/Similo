@@ -81,4 +81,82 @@ describe('tenant isolation', () => {
     expect(stores.organizations.get(a.me.organization.id)?.name).toBe('Alpha Renamed');
     expect(stores.organizations.get(b.me.organization.id)?.name).toBe('Beta Ltd');
   });
+
+  it("can't see, change or delete another organisation's brands, domains, trademarks or logos", async () => {
+    const { a, b, stores } = await twoOrganisations();
+    const PNG = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+      'base64',
+    );
+
+    // Beta registers a brand with a domain, a trademark and a logo.
+    const created = await b.agent.post('/api/v1/brands').send({ name: 'Beta Secret Brand' });
+    expect(created.status).toBe(201);
+    const brandId = created.body.data.id as string;
+    const base = `/api/v1/brands/${brandId}`;
+    await b.agent.post(`${base}/domains`).send({ domain: 'beta-secret.example' }).expect(201);
+    const tm = await b.agent.post(`${base}/trademarks`).send({
+      mark: 'BETA SECRET',
+      office: 'EUIPO',
+      number: '42',
+      classes: [9],
+      status: 'registered',
+    });
+    const logo = await b.agent.post(`${base}/logos`).attach('logo', PNG, 'beta.png');
+    const logoUrl = `${base}/logos/${logo.body.data.logos[0].id}`;
+    const trademarkUrl = `${base}/trademarks/${tm.body.data.trademarks[0].id}`;
+    const before = JSON.stringify(stores.brands.get(brandId));
+
+    // Alpha's list never includes it...
+    const list = await a.agent.get('/api/v1/brands');
+    expect(list.status).toBe(200);
+    expect(list.body.data).toEqual([]);
+
+    // ...and every brand route answers 404 for Beta's real ids, exactly like an unknown id.
+    const attempts = await Promise.all([
+      a.agent.get(base),
+      a.agent.patch(base).send({ name: 'Taken over' }),
+      a.agent.delete(base),
+      a.agent.post(`${base}/domains`).send({ domain: 'alpha.example' }),
+      a.agent.delete(`${base}/domains/beta-secret.example`),
+      a.agent.post(`${base}/trademarks`).send({
+        mark: 'ALPHA',
+        office: 'OTHER',
+        number: '1',
+        classes: [1],
+        status: 'filed',
+      }),
+      a.agent.patch(trademarkUrl).send({ mark: 'ALPHA' }),
+      a.agent.delete(trademarkUrl),
+      a.agent.put(`${base}/monitoring`).send({
+        domains: false,
+        apps: false,
+        trademarks: false,
+        sensitivity: 'low',
+        emailAlerts: false,
+      }),
+      a.agent.post(`${base}/logos`).attach('logo', PNG, 'alpha.png'),
+      a.agent.get(logoUrl),
+      a.agent.delete(logoUrl),
+    ]);
+    for (const res of attempts) {
+      expect(res.status).toBe(404);
+      expect(JSON.stringify(res.body)).not.toContain('Beta Secret');
+    }
+
+    // Beta's brand and logo are untouched.
+    expect(JSON.stringify(stores.brands.get(brandId))).toBe(before);
+    expect(stores.brandLogos.size).toBe(1);
+    expect((await b.agent.get(logoUrl)).status).toBe(200);
+  });
+
+  it('ignores any organisation ID sent when creating a brand', async () => {
+    const { a, b, stores } = await twoOrganisations();
+    const res = await a.agent
+      .post('/api/v1/brands')
+      .send({ name: 'Alpha Brand', organizationId: b.me.organization.id });
+    expect(res.status).toBe(201);
+    expect(stores.brands.get(res.body.data.id)?.organizationId).toBe(a.me.organization.id);
+    expect((await b.agent.get('/api/v1/brands')).body.data).toEqual([]);
+  });
 });

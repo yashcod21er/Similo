@@ -21,7 +21,13 @@ import { SessionModel } from '../src/modules/sessions/session.model.js';
 import { mongoSessionRepository } from '../src/modules/sessions/session.repository.js';
 import { UserModel } from '../src/modules/users/user.model.js';
 import { mongoUserRepository } from '../src/modules/users/user.repository.js';
-import { buildTestApp, healthyChecks, RELAXED_RATE_LIMITS, silentLogger, TEST_JWT_SECRET } from './helpers.js';
+import {
+  buildTestApp,
+  healthyChecks,
+  RELAXED_RATE_LIMITS,
+  silentLogger,
+  TEST_JWT_SECRET,
+} from './helpers.js';
 
 /**
  * Auth against real MongoDB Atlas, in a throwaway database that is deleted
@@ -81,7 +87,7 @@ describe.skipIf(!uri)('auth on MongoDB Atlas (integration)', () => {
       logger: silentLogger,
       appUrl: 'http://localhost:5173',
       cookieSecure: false,
-    jwtSecret: TEST_JWT_SECRET,
+      jwtSecret: TEST_JWT_SECRET,
       rateLimits: RELAXED_RATE_LIMITS,
     });
     const app = buildTestApp(healthyChecks, { auth });

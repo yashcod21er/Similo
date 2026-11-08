@@ -14,6 +14,11 @@ import { createLogger, type Logger } from './lib/logger.js';
 import { generateToken } from './lib/tokens.js';
 import { mongoAuditRepository } from './modules/audit/audit.repository.js';
 import { createAuthSystem } from './modules/auth/auth.system.js';
+import {
+  mongoBrandLogoRepository,
+  mongoBrandRepository,
+} from './modules/brands/brand.repository.js';
+import { createBrandService } from './modules/brands/brand.service.js';
 import { mongoDemoRequestRepository } from './modules/demo-requests/demo-request.repository.js';
 import { createDemoRequestService } from './modules/demo-requests/demo-request.service.js';
 import { createAiServiceCheck, createDatabaseCheck } from './modules/health/health.checks.js';
@@ -91,12 +96,21 @@ async function main(): Promise<void> {
     jwtSecret: env.JWT_SECRET ?? developmentJwtSecret(logger),
   });
 
+  const brandService = createBrandService({
+    brands: mongoBrandRepository,
+    logos: mongoBrandLogoRepository,
+    audit: auth.auditService,
+    runInTransaction: runInMongoTransaction,
+    now: () => new Date(),
+  });
+
   const app = createApp({
     env,
     logger,
     healthService,
     demoRequestService,
     auth,
+    brandService,
     isDatabaseReady: isDatabaseConnected,
   });
 

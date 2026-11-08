@@ -2,6 +2,7 @@ import { ArrowRight, Check, Lock } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { useCan, useSession } from '@/features/auth/api';
+import { useBrands } from '@/features/brands/api';
 import { useOrganization } from '@/features/organization/api';
 import { PERMISSION_LABELS } from '@/features/organization/roles';
 import { cn } from '@/lib/cn';
@@ -22,17 +23,21 @@ function StatCard({ label, value, sub }: { label: string; value: string; sub: Re
 export function OverviewPage() {
   const { data: me } = useSession();
   const organization = useOrganization();
+  const brands = useBrands();
   const can = useCan();
   if (!me) return null;
 
   const firstName = me.user.name.split(/\s+/)[0] ?? me.user.name;
   const memberCount = organization.data?.memberCount;
+  const brandCount = brands.data?.length;
   const steps: {
     title: string;
     detail: string;
     done?: boolean;
     soon?: string;
     action?: { to: string; label: string };
+    /** Shown instead of `action` once the step is done. */
+    doneAction?: { to: string; label: string };
   }[] = [
     { title: 'Create your workspace', detail: `${me.organization.name} is ready.`, done: true },
     {
@@ -45,8 +50,18 @@ export function OverviewPage() {
     },
     {
       title: 'Add the brands you want to protect',
-      detail: 'Names, logos, website addresses and trademarks for Similo to watch.',
-      soon: 'Coming next',
+      detail:
+        brandCount === undefined || brandCount === 0
+          ? can('brands:manage')
+            ? 'Names, logos, website addresses and trademarks for Similo to keep on file.'
+            : 'Ask an Owner or Admin to add your brands.'
+          : `${brandCount === 1 ? '1 brand is' : `${brandCount} brands are`} on file.`,
+      done: (brandCount ?? 0) > 0,
+      ...(brandCount === 0 &&
+        can('brands:manage') && {
+          action: { to: '/app/brands?add=1', label: 'Add your first brand' },
+        }),
+      doneAction: { to: '/app/brands', label: 'Manage your brands' },
     },
     {
       title: 'Watch for lookalike websites',
@@ -62,7 +77,7 @@ export function OverviewPage() {
         description={`You're signed in to ${me.organization.name} as ${me.roleLabel}.`}
       />
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Organisation"
           value={me.organization.name}
@@ -77,6 +92,15 @@ export function OverviewPage() {
             </Link>
           }
         />
+        <StatCard
+          label="Brands"
+          value={brandCount === undefined ? '…' : String(brandCount)}
+          sub={
+            <Link to="/app/brands" className="font-medium text-ink hover:text-crimson-dark">
+              See your brands →
+            </Link>
+          }
+        />
         <StatCard label="Your role" value={me.roleLabel} sub="Decides what you can do here" />
       </div>
 
@@ -88,39 +112,44 @@ export function OverviewPage() {
           Getting started
         </h2>
         <ol className="mt-6 space-y-5">
-          {steps.map((step, index) => (
-            <li key={step.title} className="flex gap-4">
-              <span
-                aria-hidden
-                className={cn(
-                  'flex size-8 shrink-0 items-center justify-center rounded-full text-[13px] font-semibold',
-                  step.done ? 'bg-emerald-600 text-white' : 'bg-paper text-muted ring-1 ring-line',
-                )}
-              >
-                {step.done ? <Check className="size-4" /> : index + 1}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="flex flex-wrap items-center gap-2 font-medium">
-                  {step.title}
-                  {step.done && <span className="sr-only">(done)</span>}
-                  {step.soon && (
-                    <span className="rounded-full bg-paper px-2 py-0.5 text-[12px] font-medium text-muted ring-1 ring-line">
-                      {step.soon}
-                    </span>
+          {steps.map((step, index) => {
+            const link = step.done ? step.doneAction : step.action;
+            return (
+              <li key={step.title} className="flex gap-4">
+                <span
+                  aria-hidden
+                  className={cn(
+                    'flex size-8 shrink-0 items-center justify-center rounded-full text-[13px] font-semibold',
+                    step.done
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-paper text-muted ring-1 ring-line',
                   )}
-                </p>
-                <p className="mt-1 text-[14.5px] text-muted">{step.detail}</p>
-                {step.action && !step.done && (
-                  <Link
-                    to={step.action.to}
-                    className="mt-2 inline-flex items-center gap-1.5 text-[14.5px] font-medium text-crimson-dark hover:underline"
-                  >
-                    {step.action.label} <ArrowRight aria-hidden className="size-4" />
-                  </Link>
-                )}
-              </div>
-            </li>
-          ))}
+                >
+                  {step.done ? <Check className="size-4" /> : index + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="flex flex-wrap items-center gap-2 font-medium">
+                    {step.title}
+                    {step.done && <span className="sr-only">(done)</span>}
+                    {step.soon && (
+                      <span className="rounded-full bg-paper px-2 py-0.5 text-[12px] font-medium text-muted ring-1 ring-line">
+                        {step.soon}
+                      </span>
+                    )}
+                  </p>
+                  <p className="mt-1 text-[14.5px] text-muted">{step.detail}</p>
+                  {link && (
+                    <Link
+                      to={link.to}
+                      className="mt-2 inline-flex items-center gap-1.5 text-[14.5px] font-medium text-crimson-dark hover:underline"
+                    >
+                      {link.label} <ArrowRight aria-hidden className="size-4" />
+                    </Link>
+                  )}
+                </div>
+              </li>
+            );
+          })}
         </ol>
       </section>
 

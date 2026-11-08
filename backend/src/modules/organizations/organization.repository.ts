@@ -172,7 +172,7 @@ export const mongoInviteRepository: InviteRepository = {
     const doc = await InviteModel.findOneAndUpdate(
       { organizationId: data.organizationId, email: data.email },
       { $set: data },
-      { upsert: true, new: true, setDefaultsOnInsert: true },
+      { upsert: true, returnDocument: 'after', setDefaultsOnInsert: true },
     ).lean<InviteDocument>();
     if (!doc) throw new Error('Invite upsert returned no document');
     return toInvite(doc);

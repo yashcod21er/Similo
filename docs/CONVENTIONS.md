@@ -46,6 +46,14 @@ src/
 - Protected routes: mount behind `requireAuth`, then `requirePermission('<permission>')` per route.
   New permissions go in `modules/organizations/roles.ts` (the single source of truth).
 - Security-relevant actions call `auditService.record(...)`; there is no update or delete for audit events.
+- File uploads: `multer` memory storage with explicit `limits` (size, file count), placed after
+  `requirePermission` so refused users are never buffered. Decide the type from the file's first
+  bytes (see `brands/logo-sniff.ts`), never from its name or the browser's content type; never
+  accept SVG or HTML. Serve stored files with the sniffed `Content-Type`, `nosniff` and
+  `Content-Security-Policy: default-src 'none'`. Every multer error becomes a plain 400.
+- A document holding lists that several people may edit (like a brand) is updated through a
+  `revision` check: read, validate limits and duplicates, then write only if the revision is
+  unchanged (409 "changed at the same moment" otherwise).
 
 ## Frontend structure (`frontend/`)
 
