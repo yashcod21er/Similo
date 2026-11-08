@@ -264,22 +264,30 @@ export function createBrandService(deps: Dependencies): BrandService {
     },
 
     async create(auth, input) {
-      const count = await brands.countByOrganization(auth.organizationId);
-      if (count >= BRAND_LIMITS.brandsPerOrganization) {
-        throw conflict(
-          `Your organisation can have up to ${BRAND_LIMITS.brandsPerOrganization} brands.`,
-        );
-      }
       await assertNameFree(auth, input.name);
 
       let brand: BrandRecord;
       try {
-        brand = await brands.create({
-          organizationId: auth.organizationId,
-          name: input.name,
-          description: input.description ?? '',
-          keywords: input.keywords ?? [],
-          createdBy: auth.user.id,
+        // Lock, count and insert in one transaction, so two creates at the same
+        // moment can't both pass the limit (see BrandLockModel).
+        brand = await runInTransaction(async (tx) => {
+          await brands.lockForNewBrand(auth.organizationId, tx);
+          const count = await brands.countByOrganization(auth.organizationId, tx);
+          if (count >= BRAND_LIMITS.brandsPerOrganization) {
+            throw conflict(
+              `Your organisation can have up to ${BRAND_LIMITS.brandsPerOrganization} brands.`,
+            );
+          }
+          return brands.create(
+            {
+              organizationId: auth.organizationId,
+              name: input.name,
+              description: input.description ?? '',
+              keywords: input.keywords ?? [],
+              createdBy: auth.user.id,
+            },
+            tx,
+          );
         });
       } catch (err) {
         // Two people creating the same name at the same moment: the unique index decides.

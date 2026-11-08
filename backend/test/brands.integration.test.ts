@@ -190,4 +190,62 @@ describe.skipIf(!uri)('brands on MongoDB Atlas (integration)', () => {
     expect(await BrandModel.countDocuments({ _id: brandId })).toBe(0);
     expect(await BrandLogoModel.countDocuments({ brandId })).toBe(0);
   }, 60_000);
+
+  it('never goes over 50 brands, even when several are created at the same moment', async () => {
+    const organizationId = new mongoose.Types.ObjectId().toHexString();
+    const userId = new mongoose.Types.ObjectId().toHexString();
+    const service = createBrandService({
+      brands: mongoBrandRepository,
+      logos: mongoBrandLogoRepository,
+      audit: createAuthSystem({
+        repositories: {
+          users: mongoUserRepository,
+          organizations: mongoOrganizationRepository,
+          memberships: mongoMembershipRepository,
+          invites: mongoInviteRepository,
+          sessions: mongoSessionRepository,
+          audit: mongoAuditRepository,
+        },
+        runInTransaction: runInMongoTransaction,
+        logger: silentLogger,
+        appUrl: 'http://localhost:5173',
+        cookieSecure: false,
+        jwtSecret: TEST_JWT_SECRET,
+      }).auditService,
+      runInTransaction: runInMongoTransaction,
+      now: () => new Date(),
+    });
+    const auth = {
+      sessionId: new mongoose.Types.ObjectId().toHexString(),
+      user: { id: userId, name: 'Limit Tester', email: 'limit@e2e.similo.test' },
+      organizationId,
+      role: 'owner' as const,
+      ip: '127.0.0.1',
+      userAgent: 'vitest',
+    };
+
+    // 47 brands exist; 6 more are requested at once. Exactly 3 may succeed.
+    await BrandModel.insertMany(
+      Array.from({ length: 47 }, (_, i) => ({
+        organizationId,
+        name: `Existing ${i}`,
+        nameLower: `existing ${i}`,
+        createdBy: userId,
+      })),
+    );
+    const results = await Promise.allSettled(
+      Array.from({ length: 6 }, (_, i) => service.create(auth, { name: `Racing ${i}` })),
+    );
+
+    const created = results.filter((result) => result.status === 'fulfilled');
+    const refused = results.filter((result) => result.status === 'rejected');
+    expect(created).toHaveLength(3);
+    for (const result of refused) {
+      expect((result as PromiseRejectedResult).reason).toMatchObject({
+        statusCode: 409,
+        message: 'Your organisation can have up to 50 brands.',
+      });
+    }
+    expect(await BrandModel.countDocuments({ organizationId })).toBe(50);
+  }, 120_000);
 });

@@ -71,23 +71,25 @@ No numbers, no uppercase.
 
 ## Components
 
-| Component                                                  | File                                  | Use for                                                                      |
-| ---------------------------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------- |
-| `Button`, `ButtonLink`                                     | `components/ui/Button.tsx`            | Flat `rounded-lg`. `primary` (crimson) once per screen; `outline` secondary  |
-| `Container`, `Eyebrow`, `SectionHeading`                   | `components/ui/layout.tsx`            | Page width, small label, section intro (`index` props are accepted, ignored) |
-| `Stage`                                                    | `components/ui/layout.tsx`            | A dark panel for a product visual. Rare; counts as the page's dark band      |
-| `ExampleTag`                                               | `components/ui/layout.tsx`            | Required on any visual with sample data ("Illustrative example")             |
-| `Photo`                                                    | `components/ui/Photo.tsx`             | The `<img>`: local WebP, `srcSet` 800/1600, lazy unless `priority`           |
-| `PhotoFrame`                                               | `components/marketing/PhotoFrame.tsx` | A photo in the standard frame (`rounded-2xl`, 1 px ring), optional caption   |
-| `SplitHero`                                                | `components/marketing/sections.tsx`   | Inner-page hero: text left, `PhotoFrame` or one visual right                 |
-| `Section` (`tone` light / white / dark), `CtaBand`         | `components/marketing/sections.tsx`   | Bands of a page; `CtaBand` is the closing dark band                          |
-| `ProcessSteps`, `FeatureCard`                              | `components/marketing/sections.tsx`   | Numbered steps with hairlines; a plain card                                  |
-| `SpotlightCard`                                            | `components/ui/SpotlightCard.tsx`     | The standard card (the name is historical; there is no spotlight any more)   |
-| `AlertCard`                                                | `components/visuals/AlertCard.tsx`    | One finding in plain words, with its risk level. Labelled as an example      |
-| `ProductWindow` + primitives                               | `components/visuals/primitives.tsx`   | Dark product mock-ups used on the Solutions pages                            |
-| `Accordion`                                                | `components/ui/Accordion.tsx`         | FAQs                                                                         |
-| `Reveal`, `RevealGroup`/`RevealItem`                       | `components/ui/Reveal.tsx`            | The only entrance animation: a small fade                                    |
-| `SiteHeader`, `SiteFooter`, `CommandMenu`, `navigation.ts` | `components/site/`                    | Navigation, search (Ctrl+K), live status. Links live in `navigation.ts`      |
+| Component                                                                        | File                                  | Use for                                                                                 |
+| -------------------------------------------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------- |
+| `Button`, `ButtonLink`                                                           | `components/ui/Button.tsx`            | Flat `rounded-lg`. `primary` (crimson) once per screen; `outline` secondary             |
+| `Container`, `Eyebrow`, `SectionHeading`                                         | `components/ui/layout.tsx`            | Page width, small label, section intro (`index` props are accepted, ignored)            |
+| `Stage`                                                                          | `components/ui/layout.tsx`            | A dark panel for a product visual. Rare; counts as the page's dark band                 |
+| `ExampleTag`                                                                     | `components/ui/layout.tsx`            | Required on any visual with sample data ("Illustrative example")                        |
+| `Photo`                                                                          | `components/ui/Photo.tsx`             | The `<img>`: local WebP, `srcSet` 800/1600, lazy unless `priority`                      |
+| `PhotoFrame`                                                                     | `components/marketing/PhotoFrame.tsx` | A photo in the standard frame (`rounded-2xl`, 1 px ring), optional caption              |
+| `SplitHero`                                                                      | `components/marketing/sections.tsx`   | Inner-page hero: text left, `PhotoFrame` or one visual right                            |
+| `Section` (`tone` light / white / dark), `CtaBand`                               | `components/marketing/sections.tsx`   | Bands of a page; `CtaBand` is the closing dark band                                     |
+| `ProcessSteps`, `FeatureCard`                                                    | `components/marketing/sections.tsx`   | Numbered steps with hairlines; a plain card                                             |
+| `SpotlightCard`                                                                  | `components/ui/SpotlightCard.tsx`     | The standard card (the name is historical; there is no spotlight any more)              |
+| `AlertCard`                                                                      | `components/visuals/AlertCard.tsx`    | One finding in plain words, with its risk level. Labelled as an example                 |
+| `ProductWindow` + primitives                                                     | `components/visuals/primitives.tsx`   | Dark product mock-ups used on the Solutions pages                                       |
+| `Accordion`                                                                      | `components/ui/Accordion.tsx`         | FAQs                                                                                    |
+| `Reveal`, `RevealGroup`/`RevealItem`                                             | `components/ui/Reveal.tsx`            | The only entrance animation: a small fade                                               |
+| `SiteHeader`, `SiteFooter`, `CommandMenu`, `navigation.ts`                       | `components/site/`                    | Navigation, search (Ctrl+K), live status. Links live in `navigation.ts`                 |
+| `CardGrid`, `SplitSection`, `RuledList`, `Timeline`, `FaqBlock`, `ProductFigure` | `pages/solutions/page-kit.tsx`        | Building blocks shared by the Solutions, Resources, About and Contact pages             |
+| `PAGE_PHOTOS`, `HERO_SIZES`                                                      | `pages/solutions/photos.ts`           | Paths, sizes and `alt` text of the inner-page photos (credits: `docs/IMAGE-CREDITS.md`) |
 
 **"Under the hood" pattern.** After a plain explanation, one quiet line:
 `<p className="mt-3 text-[13px] text-muted">Under the hood: edit distance, homoglyph tables</p>`

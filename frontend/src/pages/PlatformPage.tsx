@@ -227,6 +227,25 @@ export function PlatformPage() {
 
       <Section>
         <SectionHeading
+          eyebrow="The real product"
+          title="Start by telling Similo what to protect."
+          description="Add each brand with its other spellings, official websites, logos and registered trademarks. This is what Similo compares everything against, so it never flags your own sites."
+        />
+        <Reveal className="mt-10">
+          <PhotoFrame
+            src="/images/product/dashboard-brand-overview"
+            alt="The Similo dashboard showing a sample brand, Northwind Coffee, with its name, description and keywords, and tabs for domains, logos, trademarks and monitoring"
+            width={1600}
+            height={1000}
+            ratio="aspect-[16/10]"
+            sizes="(min-width: 1280px) 1200px, 100vw"
+            caption="A real screenshot of the Similo dashboard. The organisation and brand are sample data."
+          />
+        </Reveal>
+      </Section>
+
+      <Section tone="white">
+        <SectionHeading
           eyebrow="What’s inside"
           title="Four modules, one workflow."
           description="Each module looks at a different place where copycats appear. They all feed the same alert list and the same investigation workspace."
@@ -258,7 +277,7 @@ export function PlatformPage() {
         </Reveal>
       </Section>
 
-      <Section tone="white">
+      <Section>
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
             <PhotoFrame
@@ -290,7 +309,7 @@ export function PlatformPage() {
         </div>
       </Section>
 
-      <Section>
+      <Section tone="white">
         <FaqBlock
           title="Questions people ask first."
           description="Still curious? The AI page goes into the technical detail."

@@ -37,6 +37,28 @@ function describeBrandUpdate(brand: string, meta: Record<string, unknown>): stri
   return `Changed the ${list} of ${brand}`;
 }
 
+const TRADEMARK_FIELD_LABELS: Record<string, string> = {
+  mark: 'name',
+  office: 'office',
+  number: 'number',
+  status: 'status',
+  date: 'date',
+  classes: 'classes',
+};
+
+/** "Changed the status and classes of the trademark “ACME” on “Acme”". */
+function describeTrademarkUpdate(mark: string, brand: string, fields: unknown): string {
+  const labels = Array.isArray(fields)
+    ? fields.map((field) => TRADEMARK_FIELD_LABELS[String(field)]).filter(Boolean)
+    : [];
+  if (labels.length === 0) return `Changed ${mark} on ${brand}`;
+  const list =
+    labels.length === 1
+      ? labels[0]
+      : `${labels.slice(0, -1).join(', ')} and ${labels[labels.length - 1]}`;
+  return `Changed the ${list} of ${mark} on ${brand}`;
+}
+
 /** One plain sentence per audit entry. */
 export function describeAuditEvent(event: AuditEvent): string {
   const target = event.target?.label ?? 'someone';
@@ -84,7 +106,7 @@ export function describeAuditEvent(event: AuditEvent): string {
     case 'brand.trademark_added':
       return `Added ${mark} to ${brand}`;
     case 'brand.trademark_updated':
-      return `Changed ${mark} on ${brand}`;
+      return describeTrademarkUpdate(mark, brand, meta.fields);
     case 'brand.trademark_removed':
       return `Removed ${mark} from ${brand}`;
     case 'brand.logo_uploaded':

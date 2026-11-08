@@ -25,7 +25,8 @@ frontend/
     ├── app/                 Router (which URL shows which page) and the data-fetching client
     ├── pages/               Public website pages
     │   ├── home/            Home page sections: hero, brand checker, how it works, FAQ
-    │   ├── solutions/       Domain, app, trademark and investigation pages
+    │   ├── solutions/       Domain, app, trademark and investigation pages; page-kit.tsx (shared
+    │   │                    blocks for inner pages) and photos.ts (inner-page photos)
     │   └── resources/       Article list and article page
     ├── features/            Product features: each folder holds its screens, API calls and tests
     │   ├── auth/            Sign in, sign up, accept an invitation, "must be signed in" guard

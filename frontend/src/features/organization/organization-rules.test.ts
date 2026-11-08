@@ -84,6 +84,12 @@ describe('describeAuditEvent', () => {
     expect(brand('brand.trademark_updated', { mark: 'ACME' })).toBe(
       'Changed the trademark “ACME” on “Acme”',
     );
+    expect(brand('brand.trademark_updated', { mark: 'ACME', fields: ['status'] })).toBe(
+      'Changed the status of the trademark “ACME” on “Acme”',
+    );
+    expect(
+      brand('brand.trademark_updated', { mark: 'ACME', fields: ['office', 'number', 'classes'] }),
+    ).toBe('Changed the office, number and classes of the trademark “ACME” on “Acme”');
     expect(brand('brand.trademark_removed', { mark: 'ACME' })).toBe(
       'Removed the trademark “ACME” from “Acme”',
     );

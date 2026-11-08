@@ -356,6 +356,9 @@ export function createFakeBrandRepositories(now: () => Date = () => new Date()) 
     async countByOrganization(organizationId) {
       return [...brandStore.values()].filter((row) => row.organizationId === organizationId).length;
     },
+    async lockForNewBrand() {
+      // In memory, creates run one at a time already.
+    },
     async update(organizationId, id, expectedRevision, changes) {
       const brand = scoped(organizationId, id);
       if (!brand || brand.revision !== expectedRevision) return null;

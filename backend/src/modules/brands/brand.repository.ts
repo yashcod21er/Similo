@@ -1,5 +1,6 @@
 import { toId, type Tx } from '../../db/transaction.js';
 import {
+  BrandLockModel,
   BrandLogoModel,
   BrandModel,
   type BrandDocument,
@@ -102,12 +103,18 @@ export function brandNameKey(name: string): string {
 
 export interface BrandRepository {
   /** Throws a duplicate-key error (code 11000) when the name is taken in this organisation. */
-  create(data: NewBrand): Promise<BrandRecord>;
+  create(data: NewBrand, tx?: Tx): Promise<BrandRecord>;
   /** Newest first. */
   listByOrganization(organizationId: string): Promise<BrandRecord[]>;
   findById(organizationId: string, id: string, tx?: Tx): Promise<BrandRecord | null>;
   findByName(organizationId: string, name: string): Promise<BrandRecord | null>;
-  countByOrganization(organizationId: string): Promise<number>;
+  countByOrganization(organizationId: string, tx?: Tx): Promise<number>;
+  /**
+   * Serialises brand creation per organisation: call first inside the create
+   * transaction, so concurrent creates conflict and retry instead of both
+   * passing the limit check.
+   */
+  lockForNewBrand(organizationId: string, tx?: Tx): Promise<void>;
   /**
    * Applies `changes` only if the brand is still at `expectedRevision`, and
    * bumps the revision. Returns null when the brand is gone or changed since
@@ -166,8 +173,11 @@ function toBrand(doc: BrandDocument): BrandRecord {
 }
 
 export const mongoBrandRepository: BrandRepository = {
-  async create(data) {
-    const doc = await BrandModel.create({ ...data, nameLower: brandNameKey(data.name) });
+  async create(data, tx) {
+    const [doc] = await BrandModel.create([{ ...data, nameLower: brandNameKey(data.name) }], {
+      session: tx ?? null,
+    });
+    if (!doc) throw new Error('Brand was not created');
     return toBrand(doc.toObject() as BrandDocument);
   },
   async listByOrganization(organizationId) {
@@ -189,8 +199,15 @@ export const mongoBrandRepository: BrandRepository = {
     }).lean<BrandDocument>();
     return doc ? toBrand(doc) : null;
   },
-  async countByOrganization(organizationId) {
-    return BrandModel.countDocuments({ organizationId });
+  async countByOrganization(organizationId, tx) {
+    return BrandModel.countDocuments({ organizationId }, tx ? { session: tx } : {});
+  },
+  async lockForNewBrand(organizationId, tx) {
+    await BrandLockModel.updateOne(
+      { _id: organizationId },
+      { $inc: { sequence: 1 } },
+      { upsert: true, ...(tx ? { session: tx } : {}) },
+    );
   },
   async update(organizationId, id, expectedRevision, changes, tx) {
     const set: Record<string, unknown> = { ...changes };

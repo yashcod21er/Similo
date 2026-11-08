@@ -16,7 +16,7 @@ the same two halves as the mark beside it, put back together at exactly the same
 | Logo in the interface (header, footer)    | `<Logo />` on light, `<Logo tone="dark" />` on midnight                  |
 | App-icon tile                             | `<LogoMark className="size-8" />` (self-contained on light and dark)     |
 | Bare symbol in the current text colour    | `<LogoSymbol />`, or `<LogoSymbol accent />` for a crimson copy          |
-| Wordmark that fills its container's width | `<LogoWordmark />` (for large decorative uses)               |
+| Wordmark that fills its container's width | `<LogoWordmark />` (for large decorative uses)                           |
 | Browser tab                               | `frontend/public/favicon.svg`, redrawn on a 16 px grid                   |
 | iOS home screen                           | `frontend/public/apple-touch-icon.png`, 180 × 180, full bleed            |
 | Files for documents and slides            | `frontend/public/brand/` (`similo-logo.svg`, `similo-logo-white.svg`, …) |

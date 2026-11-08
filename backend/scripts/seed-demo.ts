@@ -16,7 +16,7 @@ import { createLogger } from '../src/lib/logger.js';
 import { hashPassword } from '../src/lib/passwords.js';
 import { generateToken } from '../src/lib/tokens.js';
 import { AuditEventModel } from '../src/modules/audit/audit.model.js';
-import { BrandLogoModel, BrandModel } from '../src/modules/brands/brand.model.js';
+import { BrandLockModel, BrandLogoModel, BrandModel } from '../src/modules/brands/brand.model.js';
 import { brandNameKey, DEFAULT_MONITORING } from '../src/modules/brands/brand.repository.js';
 import {
   InviteModel,
@@ -64,6 +64,7 @@ async function removeDemo(): Promise<void> {
   await Promise.all([
     BrandLogoModel.deleteMany({ organizationId: { $in: organizationIds } }),
     BrandModel.deleteMany({ organizationId: { $in: organizationIds } }),
+    BrandLockModel.deleteMany({ _id: { $in: organizationIds } }),
     MembershipModel.deleteMany({ organizationId: { $in: organizationIds } }),
     InviteModel.deleteMany({ organizationId: { $in: organizationIds } }),
     AuditEventModel.deleteMany({ organizationId: { $in: organizationIds } }),

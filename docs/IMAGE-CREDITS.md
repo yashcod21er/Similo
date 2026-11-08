@@ -53,3 +53,13 @@ was checked and none is Unsplash+. Cropped to 4:3 or 3:2 only.
 | `cover-apps`                        | Karsten Winegeart                   | [Unsplash](https://unsplash.com/photos/_8M0hPj3W5g) | Resources: "Spotting rogue mobile apps"         |
 | `cover-evidence`                    | Vitaly Gariev                       | [Unsplash](https://unsplash.com/photos/1FzEg5g7vt0) | Resources: "Preserving digital evidence"        |
 | `cover-methodology`                 | Vitaly Gariev                       | [Unsplash](https://unsplash.com/photos/Z69_if4F1L4) | Resources: "Why explainable risk scores matter" |
+
+## Product screenshots
+
+Files are in `frontend/public/images/product/`. These are real screenshots of the Similo dashboard,
+taken by us with the clearly labelled demo organisation (`npm run seed:demo`). Every name in them is
+sample data.
+
+| File (`-800.webp` and `-1600.webp`) | What it shows                                     | Used on                      |
+| ----------------------------------- | ------------------------------------------------- | ---------------------------- |
+| `dashboard-brand-overview`          | Brand page of the sample brand "Northwind Coffee" | Platform, "The real product" |

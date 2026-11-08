@@ -154,3 +154,18 @@ const brandLogoSchema = new Schema(
 brandLogoSchema.index({ organizationId: 1, brandId: 1 });
 
 export const BrandLogoModel = model('BrandLogo', brandLogoSchema, 'brand_logos');
+
+/* ------------------------------------------------------------ Brand lock */
+
+/**
+ * One tiny document per organisation (_id = organisation id). Creating a brand
+ * writes to it inside the same transaction that counts and inserts brands, so
+ * two creates at the same moment conflict here; MongoDB retries the second one,
+ * which then sees the up-to-date count. This keeps the brand limit exact.
+ */
+const brandLockSchema = new Schema({
+  _id: { type: Schema.Types.ObjectId, required: true },
+  sequence: { type: Number, default: 0 },
+});
+
+export const BrandLockModel = model('BrandLock', brandLockSchema, 'brand_locks');
