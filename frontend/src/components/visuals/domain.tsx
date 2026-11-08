@@ -63,10 +63,6 @@ const REASONS = [
 export function DomainAlertVisual() {
   return (
     <div className="relative mx-auto w-full max-w-lg">
-      <div
-        aria-hidden
-        className="absolute -inset-10 -z-10 rounded-full bg-crimson/20 blur-[90px]"
-      />
       <ProductWindow title="New alert · website">
         <div className="p-5 sm:p-6">
           <p className="text-[12.5px] text-white/55">What people see in their address bar</p>
@@ -165,12 +161,6 @@ function MockLoginPage({ url, suspicious }: { url: string; suspicious?: boolean 
           </div>
         </div>
       </div>
-      {suspicious && (
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-transparent via-crimson/10 to-transparent motion-safe:animate-scan"
-        />
-      )}
     </div>
   );
 }

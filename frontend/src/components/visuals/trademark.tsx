@@ -292,7 +292,7 @@ const WINDOWS = [
  */
 export function OppositionWindows({ className }: { className?: string }) {
   return (
-    <div className={cn('rounded-3xl bg-white p-6 shadow-lifted ring-1 ring-line', className)}>
+    <div className={cn('rounded-2xl bg-white p-6 ring-1 ring-line', className)}>
       <p className="flex items-center gap-2 text-[13px] font-medium text-muted">
         <Layers3 aria-hidden className="size-4 text-crimson-dark" />
         How long you have to object after publication

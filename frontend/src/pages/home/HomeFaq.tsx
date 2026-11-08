@@ -14,7 +14,7 @@ const FAQ: AccordionItem[] = [
   {
     question: 'Is the risk score a legal decision?',
     answer:
-      'No. The score shows how closely something matches your brand and why. It helps your team decide what to look at first, but it is not a legal finding of infringement — your lawyers make that call.',
+      'No. The score shows how closely something matches your brand and why. It helps your team decide what to look at first, but it is not a legal finding of infringement. Your lawyers make that call.',
   },
   {
     question: 'What do I need to get started?',
@@ -29,7 +29,7 @@ const FAQ: AccordionItem[] = [
   {
     question: 'Is the brand checker on this page real?',
     answer:
-      'It runs real calculations in your browser, building the kinds of imitations copycats use. It does not check whether those names are actually registered — the full platform does that. Nothing you type is sent to us.',
+      'It runs real calculations in your browser, building the kinds of imitations copycats use. It does not check whether those names are actually registered. The full platform does that. Nothing you type is sent to us.',
   },
   {
     question: 'Can I see it working with my own brand?',
@@ -38,18 +38,18 @@ const FAQ: AccordionItem[] = [
   },
 ];
 
-/** 05 — Questions: the things a non-expert actually asks, answered plainly. */
+/** Questions a non-expert actually asks, answered plainly. */
 export function HomeFaq() {
   return (
-    <Section>
-      <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+    <Section tone="white">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
         <Reveal className="lg:sticky lg:top-28 lg:self-start">
-          <Eyebrow index="05">Questions</Eyebrow>
-          <h2 className="text-headline mt-5 font-semibold text-balance">
-            Good <em className="text-crimson">questions</em>, straight answers.
+          <Eyebrow>Questions</Eyebrow>
+          <h2 className="text-headline mt-3 font-semibold text-balance">
+            Questions people ask first.
           </h2>
-          <p className="text-lead mt-5 text-muted">Something else on your mind? Talk to us.</p>
-          <ButtonLink to="/contact" variant="dark" className="mt-8">
+          <p className="text-lead mt-4 text-muted">Something else on your mind? Talk to us.</p>
+          <ButtonLink to="/contact" variant="outline" className="mt-7">
             Ask the team <ArrowRight aria-hidden className="size-4" />
           </ButtonLink>
         </Reveal>

@@ -11,12 +11,12 @@ export function Container({ children, className }: { children: ReactNode; classN
 type Tone = 'light' | 'dark';
 
 /**
- * Small label above a heading. With an `index` it reads like a chapter
- * marker: "01 — The problem". Without one it is a quiet mono label.
+ * Small label above a heading: 13 px, medium weight, crimson. `index` is
+ * accepted so older markup keeps compiling, but v3 no longer shows chapter
+ * numbers.
  */
 export function Eyebrow({
   children,
-  index,
   tone = 'light',
   className,
 }: {
@@ -25,32 +25,20 @@ export function Eyebrow({
   tone?: Tone;
   className?: string;
 }) {
-  const dark = tone === 'dark';
   return (
     <p
       className={cn(
-        'inline-flex items-center gap-3 font-mono text-[12px] font-medium tracking-[0.08em] uppercase',
-        dark ? 'text-white/60' : 'text-muted',
+        'text-[13px] font-medium',
+        tone === 'dark' ? 'text-coral' : 'text-crimson-dark',
         className,
       )}
     >
-      {index ? (
-        <>
-          <span className={dark ? 'text-coral' : 'text-crimson-dark'}>{index}</span>
-          <span aria-hidden className={cn('h-px w-6', dark ? 'bg-white/25' : 'bg-line-strong')} />
-        </>
-      ) : (
-        <span
-          aria-hidden
-          className={cn('size-1.5 rounded-full', dark ? 'bg-coral' : 'bg-crimson')}
-        />
-      )}
       {children}
     </p>
   );
 }
 
-/** Rounded label chip, e.g. above a hero headline. */
+/** Small rounded label chip. */
 export function Pill({
   children,
   tone = 'light',
@@ -66,7 +54,7 @@ export function Pill({
         'inline-flex items-center gap-2 rounded-full px-3 py-1 text-[13px] font-medium',
         tone === 'dark'
           ? 'bg-white/[0.06] text-white/80 ring-1 ring-white/15'
-          : 'bg-white text-ink/80 shadow-soft ring-1 ring-line',
+          : 'bg-paper text-ink/80 ring-1 ring-line',
         className,
       )}
     >
@@ -77,7 +65,7 @@ export function Pill({
 
 interface SectionHeadingProps {
   eyebrow?: string;
-  /** Chapter number shown before the eyebrow, e.g. "01". */
+  /** Not shown any more (v3 has no chapter numbers); kept so older markup compiles. */
   index?: string;
   title: ReactNode;
   description?: ReactNode;
@@ -89,12 +77,12 @@ interface SectionHeadingProps {
 }
 
 /**
- * Standard section intro. `split` puts the title left and description right
- * on large screens. Use one <em> in the title for the serif accent word.
+ * Standard section intro. Left-aligned by default; use `center` only for a
+ * short intro. `split` puts the title left and description right on large
+ * screens.
  */
 export function SectionHeading({
   eyebrow,
-  index,
   title,
   description,
   tone = 'light',
@@ -108,29 +96,25 @@ export function SectionHeading({
   );
   const descriptionClass = cn(
     'text-lead text-pretty',
-    tone === 'dark' ? 'text-white/65' : 'text-muted',
+    tone === 'dark' ? 'text-white/70' : 'text-muted',
   );
-  const eyebrowEl = eyebrow && (
-    <Eyebrow tone={tone} index={index}>
-      {eyebrow}
-    </Eyebrow>
-  );
+  const eyebrowEl = eyebrow && <Eyebrow tone={tone}>{eyebrow}</Eyebrow>;
 
   if (align === 'split') {
     return (
       <Reveal
         className={cn(
-          'grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_1fr] lg:items-end lg:gap-20',
+          'grid grid-cols-1 gap-5 lg:grid-cols-[1.15fr_1fr] lg:items-end lg:gap-16',
           className,
         )}
       >
         <div>
           {eyebrowEl}
-          <h2 id={id} className={cn(titleClass, eyebrow && 'mt-5')}>
+          <h2 id={id} className={cn(titleClass, eyebrow && 'mt-3')}>
             {title}
           </h2>
         </div>
-        {description && <p className={cn(descriptionClass, 'lg:pb-1.5')}>{description}</p>}
+        {description && <p className={cn(descriptionClass, 'lg:pb-1')}>{description}</p>}
       </Reveal>
     );
   }
@@ -138,35 +122,33 @@ export function SectionHeading({
   return (
     <Reveal
       className={cn(
-        'max-w-3xl',
+        'max-w-2xl',
         align === 'center' && 'mx-auto flex flex-col items-center text-center',
         className,
       )}
     >
       {eyebrowEl}
-      <h2 id={id} className={cn(titleClass, eyebrow && 'mt-5')}>
+      <h2 id={id} className={cn(titleClass, eyebrow && 'mt-3')}>
         {title}
       </h2>
-      {description && <p className={cn(descriptionClass, 'mt-5')}>{description}</p>}
+      {description && <p className={cn(descriptionClass, 'mt-4')}>{description}</p>}
     </Reveal>
   );
 }
 
 /**
- * Framed dark "stage" that holds product visuals on light pages: a thin outer
- * bezel, then the navy surface. Keeps every product preview consistent.
+ * Dark panel that holds a product visual on a light page. Flat: a navy
+ * surface with a hairline ring, no bezel and no shadow.
  */
 export function Stage({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div
       className={cn(
-        'rounded-[28px] bg-white/60 p-1.5 shadow-stage ring-1 ring-line sm:rounded-[36px] sm:p-2',
+        'overflow-hidden rounded-2xl bg-midnight text-white ring-1 ring-ink/10',
         className,
       )}
     >
-      <div className="relative isolate h-full overflow-hidden rounded-[22px] bg-midnight text-white sm:rounded-[28px]">
-        {children}
-      </div>
+      <div className="relative isolate h-full">{children}</div>
     </div>
   );
 }
@@ -176,8 +158,8 @@ export function ExampleTag({ className, tone = 'dark' }: { className?: string; t
   return (
     <span
       className={cn(
-        'inline-flex shrink-0 items-center rounded-full px-2 py-0.5 font-mono text-[10px] tracking-wider whitespace-nowrap uppercase',
-        tone === 'dark' ? 'bg-white/10 text-white/60' : 'bg-card text-muted',
+        'inline-flex shrink-0 items-center rounded-md px-2 py-0.5 text-[11.5px] font-medium whitespace-nowrap',
+        tone === 'dark' ? 'bg-white/10 text-white/70' : 'bg-card text-muted',
         className,
       )}
     >

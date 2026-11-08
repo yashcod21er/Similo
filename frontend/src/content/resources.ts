@@ -21,8 +21,15 @@ export interface ResourceSection {
   bullets?: string[];
 }
 
+/** A 3:2 photo (1600 x 1067) in frontend/public/images/pages; `src` has no size suffix. */
+export interface ResourceCover {
+  src: string;
+  alt: string;
+}
+
 export interface Resource {
   slug: string;
+  cover: ResourceCover;
   title: string;
   summary: string;
   category: ResourceCategory;
@@ -43,6 +50,10 @@ export const RESOURCE_CATEGORIES: ResourceCategory[] = [
 export const RESOURCES: Resource[] = [
   {
     slug: 'lookalike-domains-explained',
+    cover: {
+      src: '/images/pages/cover-lookalike',
+      alt: 'A woman working on a laptop at a desk in a bright office.',
+    },
     title: 'Lookalike domains, explained: typosquatting, homoglyphs and combosquatting',
     summary:
       'The main ways attackers imitate your domain, how each one tricks people, and what signals separate a harmless registration from one being prepared for abuse.',
@@ -93,6 +104,7 @@ export const RESOURCES: Resource[] = [
   },
   {
     slug: 'rdap-for-brand-protection',
+    cover: { src: '/images/pages/cover-registration', alt: 'Hands typing on a laptop keyboard.' },
     title: 'What RDAP tells you about a suspicious domain — and what it does not',
     summary:
       'RDAP has replaced WHOIS as the standard way to look up domain registration data. Here is what the fields mean for an investigation, and its important limits.',
@@ -130,6 +142,10 @@ export const RESOURCES: Resource[] = [
   },
   {
     slug: 'trademark-watch-basics',
+    cover: {
+      src: '/images/pages/cover-trademark',
+      alt: 'An open lined notebook with a pen and pencils on a wooden desk.',
+    },
     title: 'Trademark watch basics: journals, Nice classes and opposition windows',
     summary:
       'How newly filed trademarks are published, why the Nice classification matters, and why the opposition deadline is the date that drives everything.',
@@ -167,6 +183,10 @@ export const RESOURCES: Resource[] = [
   },
   {
     slug: 'rogue-mobile-apps',
+    cover: {
+      src: '/images/pages/cover-apps',
+      alt: 'A person holding a smartphone at a café table, with an iced coffee beside it.',
+    },
     title: 'Spotting rogue mobile apps that impersonate your brand',
     summary:
       'A practical playbook for finding lookalike apps, telling them apart from legitimate partners, and preparing a marketplace complaint.',
@@ -209,6 +229,10 @@ export const RESOURCES: Resource[] = [
   },
   {
     slug: 'evidence-chain-of-custody',
+    cover: {
+      src: '/images/pages/cover-evidence',
+      alt: 'Two colleagues reviewing charts on a laptop and on paper at a desk.',
+    },
     title: 'Preserving digital evidence: hashes, timestamps and chain of custody',
     summary:
       'Web content changes or disappears quickly. These practices make sure what you captured can be shown to be complete and unaltered later.',
@@ -249,6 +273,10 @@ export const RESOURCES: Resource[] = [
   },
   {
     slug: 'explainable-risk-scores',
+    cover: {
+      src: '/images/pages/cover-methodology',
+      alt: 'A man working on a laptop at a desk in a colourful office.',
+    },
     title: 'Why explainable risk scores matter more than accuracy claims',
     summary:
       'A single "98% accurate" number tells an analyst nothing about a specific finding. Reason codes and separate signals do.',

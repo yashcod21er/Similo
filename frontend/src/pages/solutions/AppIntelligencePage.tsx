@@ -1,18 +1,16 @@
-import { CircleAlert, CreditCard, KeyRound, ThumbsDown } from 'lucide-react';
-import { CtaBand, ProcessSteps, Section, SplitHero } from '@/components/marketing/sections';
-import { SectionHeading } from '@/components/ui/layout';
-import { Reveal, RevealGroup, RevealItem } from '@/components/ui/Reveal';
-import { AlertCard } from '@/components/visuals/AlertCard';
+import { FileText, ImageIcon, ShieldCheck, Type, UserRoundCheck, UsersRound } from 'lucide-react';
+import { PhotoFrame } from '@/components/marketing/PhotoFrame';
 import {
-  AppAlertVisual,
-  AppSourcesPanel,
-  BorrowedDetails,
-  IconCompare,
-  NameCompare,
-  PartnerAllowList,
-  PublisherCheck,
-} from '@/components/visuals/app';
-import { FaqSection, KindCard, Story, Tile, UnderTheHood } from './domain-app-parts';
+  CtaBand,
+  FeatureCard,
+  ProcessSteps,
+  Section,
+  SplitHero,
+} from '@/components/marketing/sections';
+import { SectionHeading } from '@/components/ui/layout';
+import { FindingExample } from './domain-app-parts';
+import { CardGrid, FaqBlock, RuledList, SplitSection, Timeline } from './page-kit';
+import { HERO_SIZES, PAGE_PHOTOS } from './photos';
 
 const STORY = [
   { when: 'Search', text: 'A customer searches the app store for your name.' },
@@ -26,35 +24,47 @@ const STORY = [
   },
   {
     when: 'Our job',
-    text: 'Similo aims to spot the listing early — and show your team why it isn’t yours.',
+    text: 'Similo aims to spot the listing early, and show your team why it isn’t yours.',
     ours: true,
   },
 ];
 
-const HARMS = [
+const COMPARE = [
   {
-    icon: KeyRound,
-    title: 'Stolen sign-ins',
-    text: 'Fake sign-in screens collect the usernames and passwords people use with you.',
-    example: 'a copy of your login screen',
+    icon: ImageIcon,
+    title: 'A logo that looks like yours',
+    text: 'We compare the pictures themselves, so a small change of colour or shape still shows up.',
+    under: 'perceptual hashing, image embeddings',
   },
   {
-    icon: CreditCard,
-    title: 'Payment fraud',
-    text: 'Copycats ask for card details or “fees” in your name.',
-    example: '“Verify your card”',
+    icon: Type,
+    title: 'A name that sounds like yours',
+    text: 'Your name with a word added, a letter changed or a similar meaning.',
+    under: 'fuzzy matching, semantic text similarity',
   },
   {
-    icon: CircleAlert,
-    title: 'Unwanted software',
-    text: 'Some copies are mainly there to show ads or collect data from the phone.',
-    example: 'wants contacts + location',
+    icon: UserRoundCheck,
+    title: 'The wrong publisher',
+    text: 'The listing looks like you, but the company behind it isn’t on your list.',
+    under: 'publisher identity check',
   },
   {
-    icon: ThumbsDown,
-    title: 'Damaged reputation',
-    text: 'Angry reviews and complaints are aimed at the brand people thought they trusted.',
-    example: '★☆☆☆☆ “Took my money”',
+    icon: FileText,
+    title: 'Borrowed details',
+    text: 'Descriptions, screenshots and categories that mirror your real app.',
+    under: 'listing metadata, screenshot similarity',
+  },
+  {
+    icon: UsersRound,
+    title: 'Your partners stay off the list',
+    text: 'Tell us your official apps and partners once. They are recognised and never alerted.',
+    under: 'allow-list',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Evidence kept for the complaint',
+    text: 'The listing page, icon, screenshots and publisher details are saved with the time they were captured.',
+    under: 'timestamps, SHA-256 hashes',
   },
 ];
 
@@ -63,24 +73,39 @@ const STEPS = [
     title: 'Search',
     description:
       'We search approved app store sources for your brand, product names and common misspellings.',
-    detail: 'Approved sources only',
+    detail: 'Under the hood: approved sources only',
   },
   {
     title: 'Compare',
     description:
       'The name, logo, publisher and description are each checked against yours, separately.',
-    detail: 'Text + image similarity',
+    detail: 'Under the hood: text and image similarity',
   },
   {
     title: 'Review',
-    description: 'Your team confirms a copycat — or marks a partner’s app as allowed, once.',
-    detail: 'Partner allow-list',
+    description: 'Your team confirms a copycat, or marks a partner’s app as allowed, once.',
+    detail: 'Under the hood: partner allow-list',
   },
   {
     title: 'Respond',
     description:
       'We keep the evidence and draft a complaint to the store. A person approves and sends it.',
-    detail: 'Human approval · audit log',
+    detail: 'Under the hood: human approval, audit log',
+  },
+];
+
+const SOURCES = [
+  {
+    title: 'Apple App Store',
+    text: 'Apple publishes an official search that returns app names, publishers and icons.',
+  },
+  {
+    title: 'Google Play',
+    text: 'There is no public search for other people’s apps (Google’s official tools only cover your own), so finding copycats there needs a licensed data provider.',
+  },
+  {
+    title: 'Other app stores',
+    text: 'Added one at a time, where each store’s rules allow, with their limits written down.',
   },
 ];
 
@@ -98,7 +123,7 @@ const FAQ = [
   {
     question: 'Can Similo remove an app from the store?',
     answer:
-      'No — only the app store can remove a listing. Similo gathers the evidence and drafts the complaint so your team can review it and send it quickly.',
+      'No. Only the app store can remove a listing. Similo gathers the evidence and drafts the complaint so your team can review it and send it quickly.',
   },
   {
     question: 'How does it know a logo has been copied?',
@@ -117,44 +142,30 @@ export function AppIntelligencePage() {
     <>
       <SplitHero
         eyebrow="App Intelligence"
-        title={
-          <>
-            Find the apps <em>pretending</em> to be yours.
-          </>
-        }
-        description="Similo looks through app store listings for apps that copy your name, logo or company details — and tells your official partners apart from impersonators."
+        title="Find the apps pretending to be yours."
+        description="Similo looks through app store listings for apps that copy your name, logo or company details, and tells your official partners apart from impersonators."
         secondaryCta={{ label: 'Read the playbook', to: '/resources/rogue-mobile-apps' }}
-        highlights={[
-          { label: 'Compares', value: 'Name, logo, publisher' },
-          { label: 'Partners', value: 'Recognised, not flagged' },
-          { label: 'You get', value: 'Plain-language alerts' },
-        ]}
-        visual={<AppAlertVisual />}
+        visual={<PhotoFrame {...PAGE_PHOTOS.app} priority sizes={HERO_SIZES} />}
       />
 
-      {/* 01 — The problem */}
       <Section>
-        <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
-          <div>
-            <SectionHeading
-              index="01"
-              eyebrow="The problem"
-              title={
-                <>
-                  A fake app only has to look right <em>once</em>.
-                </>
-              }
-              description="People search the store for your name and tap the first thing that looks familiar. They rarely check who actually published it."
-            />
-            <Story steps={STORY} />
-          </div>
-          <Reveal className="relative">
-            <div
-              aria-hidden
-              className="absolute inset-x-6 top-10 bottom-0 -z-10 rounded-full bg-coral/30 blur-[80px]"
-            />
-            <p className="mb-4 text-[13px] font-medium text-muted">What your team sees</p>
-            <AlertCard
+        <SplitSection
+          text={
+            <>
+              <SectionHeading
+                eyebrow="The problem"
+                title="A fake app only has to look right once."
+                description="People search the store for your name and tap the first thing that looks familiar. They rarely check who actually published it."
+              />
+              <Timeline items={STORY} />
+              <p className="mt-8 leading-relaxed text-muted">
+                A copycat can steal sign-ins, ask for card details, show unwanted ads or collect
+                data from the phone, and the angry reviews are aimed at your brand.
+              </p>
+            </>
+          }
+          media={
+            <FindingExample
               kind="app"
               name="ACME Wallet Pro"
               facts={[
@@ -163,165 +174,57 @@ export function AppIntelligencePage() {
                 'Name includes your brand',
               ]}
               level="high"
+              caption="Illustrative example: how one finding appears to your team. The app name is made up."
             />
-            <UnderTheHood className="mt-5">
-              image similarity · name match · publisher check
-            </UnderTheHood>
-          </Reveal>
-        </div>
-
-        <Reveal className="mt-24 flex items-end justify-between gap-6">
-          <h3 className="text-title font-semibold">What a copycat app can do</h3>
-          <p className="hidden text-[14px] text-muted sm:block">And why it lands on you.</p>
-        </Reveal>
-        <RevealGroup className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {HARMS.map((harm) => (
-            <RevealItem key={harm.title}>
-              <KindCard
-                icon={<harm.icon aria-hidden className="size-5" />}
-                title={harm.title}
-                text={harm.text}
-                example={harm.example}
-              />
-            </RevealItem>
-          ))}
-        </RevealGroup>
+          }
+        />
       </Section>
 
-      {/* 02 — How it works */}
       <Section tone="white">
         <SectionHeading
-          index="02"
-          eyebrow="How it works"
-          align="split"
-          title={
-            <>
-              From a store listing to a <em>reviewed</em> complaint.
-            </>
-          }
-          description="The same four steps for every app we find. Each part of a listing is checked on its own, so even a partial copy stands out."
+          eyebrow="What we compare"
+          title="Copycats rarely copy everything."
+          description="So Similo checks each part of a listing on its own, and keeps your own apps and partners out of the way."
         />
-        <div className="mt-16">
+        <CardGrid className="mt-12">
+          {COMPARE.map((item) => (
+            <FeatureCard
+              key={item.title}
+              icon={<item.icon aria-hidden className="size-5" />}
+              title={item.title}
+              description={item.text}
+            >
+              <p className="text-[13px] text-muted">Under the hood: {item.under}</p>
+            </FeatureCard>
+          ))}
+        </CardGrid>
+      </Section>
+
+      <Section>
+        <SectionHeading
+          eyebrow="How it works"
+          title="From a store listing to a reviewed complaint."
+          description="The same four steps for every app we find."
+        />
+        <div className="mt-12">
           <ProcessSteps steps={STEPS} />
         </div>
       </Section>
 
-      {/* 03 — What we compare */}
-      <Section>
-        <SectionHeading
-          index="03"
-          eyebrow="What we compare"
-          align="split"
-          title={
-            <>
-              Copycats rarely copy <em>everything</em>.
-            </>
-          }
-          description="So Similo checks each part of a listing separately — and keeps your own apps and partners out of the way."
-        />
-        <RevealGroup className="mt-14 grid grid-cols-1 gap-5 lg:grid-cols-6">
-          <RevealItem className="lg:col-span-3">
-            <Tile
-              title="A logo that looks like yours"
-              description="We compare the pictures themselves, so a small change of colour or shape still shows up."
-              underHood="perceptual hashing · image embeddings"
-            >
-              <IconCompare />
-            </Tile>
-          </RevealItem>
-          <RevealItem className="lg:col-span-3">
-            <Tile
-              title="A name that sounds like yours"
-              description="Your name with a word added, a letter changed or a similar meaning."
-              underHood="fuzzy matching · semantic text similarity"
-            >
-              <NameCompare />
-            </Tile>
-          </RevealItem>
-          <RevealItem className="lg:col-span-2">
-            <Tile
-              title="The wrong publisher"
-              description="The listing looks like you, but the company behind it isn’t on your list."
-              underHood="publisher identity check"
-            >
-              <PublisherCheck />
-            </Tile>
-          </RevealItem>
-          <RevealItem className="lg:col-span-2">
-            <Tile
-              title="Borrowed details"
-              description="Descriptions, screenshots and categories that mirror your real app."
-              underHood="listing metadata · screenshot similarity"
-            >
-              <BorrowedDetails />
-            </Tile>
-          </RevealItem>
-          <RevealItem className="lg:col-span-2">
-            <Tile
-              title="Your partners stay off the list"
-              description="Tell us your official apps and partners once. They’re recognised, never alerted."
-              underHood="allow-list"
-            >
-              <PartnerAllowList />
-            </Tile>
-          </RevealItem>
-        </RevealGroup>
-      </Section>
-
-      {/* 04 — Where the data comes from */}
       <Section tone="white">
-        <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-[1fr_1.05fr] lg:gap-20">
-          <div>
-            <SectionHeading
-              index="04"
-              eyebrow="Where we look"
-              title={
-                <>
-                  Honest about <em>where</em> app data comes from.
-                </>
-              }
-              description="App stores don’t all allow the same access. We only use official or licensed sources, and your workspace shows exactly which ones are switched on."
-            />
-            <Reveal>
-              <ul className="mt-10 space-y-5">
-                <li>
-                  <p className="font-semibold">Apple App Store</p>
-                  <p className="mt-1 leading-relaxed text-muted">
-                    Apple publishes an official search that returns app names, publishers and icons.
-                  </p>
-                </li>
-                <li>
-                  <p className="font-semibold">Google Play</p>
-                  <p className="mt-1 leading-relaxed text-muted">
-                    There is no public search for other people’s apps — Google’s official tools only
-                    cover your own — so finding copycats there needs a licensed data provider.
-                  </p>
-                </li>
-                <li>
-                  <p className="font-semibold">Other app stores</p>
-                  <p className="mt-1 leading-relaxed text-muted">
-                    Added one at a time, where each store’s rules allow, with their limits written
-                    down.
-                  </p>
-                </li>
-              </ul>
-            </Reveal>
-          </div>
-          <Reveal>
-            <AppSourcesPanel />
-          </Reveal>
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
+          <SectionHeading
+            eyebrow="Where we look"
+            title="Honest about where app data comes from."
+            description="App stores don’t all allow the same access. We only use official or licensed sources, and your workspace shows exactly which ones are switched on."
+          />
+          <RuledList items={SOURCES} />
         </div>
       </Section>
 
-      {/* 05 — Questions */}
-      <FaqSection
-        index="05"
+      <FaqBlock
         tone="light"
-        title={
-          <>
-            Questions, <em>answered</em>.
-          </>
-        }
+        title="Questions, answered."
         description="What people usually ask before they start watching the app stores."
         items={FAQ}
         link={{ label: 'Read: the rogue mobile apps playbook', to: '/resources/rogue-mobile-apps' }}
@@ -329,11 +232,7 @@ export function AppIntelligencePage() {
 
       <CtaBand
         eyebrow="App review"
-        title={
-          <>
-            Know which apps are <em>using</em> your name.
-          </>
-        }
+        title="Know which apps are using your name."
         description="Tell us your official apps and the companies you publish under, and we’ll show you how copycats are found and reviewed."
         primary={{ label: 'Request an app review', to: '/contact' }}
         secondary={{ label: 'How the AI compares apps', to: '/technology' }}

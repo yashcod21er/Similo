@@ -1,11 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { AlertTriangle, ArrowRight, CheckCircle2, ChevronDown, Loader2 } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
 import { useId, type ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/Button';
-import { EASE_OUT } from '@/lib/motion';
 import { ApiError, apiRequest } from '@/lib/api-client';
 import { cn } from '@/lib/cn';
 import {
@@ -16,7 +14,7 @@ import {
 } from './schema';
 
 const inputClass =
-  'mt-2 block w-full rounded-xl border border-line-strong bg-white px-4 py-3 text-[15px] text-ink shadow-[inset_0_1px_2px_rgb(11_16_32/0.04)] outline-none transition-[border-color,box-shadow] placeholder:text-muted/70 hover:border-ink/30 focus:border-crimson focus:ring-4 focus:ring-crimson/15 aria-invalid:border-crimson aria-invalid:ring-4 aria-invalid:ring-crimson/10';
+  'mt-2 block w-full rounded-lg border border-line-strong bg-white px-4 py-3 text-[15px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-muted/70 hover:border-ink/30 focus:border-crimson focus:ring-2 focus:ring-crimson/20 aria-invalid:border-crimson aria-invalid:ring-2 aria-invalid:ring-crimson/15';
 
 function Field({
   label,
@@ -98,29 +96,16 @@ export function DemoRequestForm() {
 
   if (mutation.isSuccess) {
     return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.97 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: EASE_OUT }}
-        role="status"
-        className="flex flex-col items-center px-6 py-16 text-center"
-      >
-        <motion.span
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', bounce: 0.5, delay: 0.15 }}
-          className="flex size-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/50"
-        >
-          <CheckCircle2 className="size-8" />
-        </motion.span>
-        <h2 className="text-title mt-6 font-semibold">
+      <div role="status" className="px-6 py-14 sm:px-8">
+        <CheckCircle2 aria-hidden className="size-8 text-emerald-600" />
+        <h2 className="text-title mt-5 font-semibold">
           Thank you, {getValues('fullName').split(' ')[0]}.
         </h2>
-        <p className="mt-3 max-w-sm text-muted">
+        <p className="mt-3 max-w-md leading-relaxed text-muted">
           Your request has been received. We will reply to {getValues('workEmail')} to arrange a
-          time.
+          time. We do not promise a fixed response time, but we read every request.
         </p>
-      </motion.div>
+      </div>
     );
   }
 
@@ -200,7 +185,7 @@ export function DemoRequestForm() {
           {INTEREST_OPTIONS.map((option) => (
             <label
               key={option.value}
-              className="flex cursor-pointer items-center gap-3 rounded-xl border border-line-strong bg-white px-4 py-3 text-[14.5px] transition-[border-color,background-color,box-shadow] hover:border-ink/30 has-checked:border-crimson has-checked:bg-crimson/[0.04] has-checked:ring-1 has-checked:ring-crimson/30 has-focus-visible:ring-4 has-focus-visible:ring-crimson/15"
+              className="flex cursor-pointer items-center gap-3 rounded-lg border border-line-strong bg-white px-4 py-3 text-[14.5px] transition-[border-color,background-color] hover:border-ink/30 has-checked:border-crimson has-checked:bg-crimson/[0.04] has-focus-visible:ring-2 has-focus-visible:ring-crimson/20"
             >
               <input
                 type="checkbox"
@@ -247,7 +232,7 @@ export function DemoRequestForm() {
       </div>
 
       <div>
-        <label className="flex items-start gap-3 rounded-xl bg-paper p-4 text-[14px] leading-relaxed text-muted ring-1 ring-line">
+        <label className="flex items-start gap-3 rounded-lg bg-paper p-4 text-[14px] leading-relaxed text-muted ring-1 ring-line">
           <input
             type="checkbox"
             className="mt-0.5 size-4 shrink-0 accent-crimson"
@@ -268,23 +253,18 @@ export function DemoRequestForm() {
         )}
       </div>
 
-      <AnimatePresence>
-        {serverError && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            role="alert"
-            className="flex gap-3 overflow-hidden rounded-xl border border-crimson/30 bg-crimson/[0.05] p-4 text-[14px]"
-          >
-            <AlertTriangle aria-hidden className="mt-0.5 size-4 shrink-0 text-crimson-dark" />
-            <div>
-              <p className="font-medium">Your request was not sent.</p>
-              <p className="mt-0.5 text-muted">{serverError.message}</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {serverError && (
+        <div
+          role="alert"
+          className="flex gap-3 rounded-lg border border-crimson/30 bg-crimson/[0.05] p-4 text-[14px]"
+        >
+          <AlertTriangle aria-hidden className="mt-0.5 size-4 shrink-0 text-crimson-dark" />
+          <div>
+            <p className="font-medium">Your request was not sent.</p>
+            <p className="mt-0.5 text-muted">{serverError.message}</p>
+          </div>
+        </div>
+      )}
 
       <Button type="submit" size="lg" className="w-full" disabled={mutation.isPending}>
         {mutation.isPending ? (

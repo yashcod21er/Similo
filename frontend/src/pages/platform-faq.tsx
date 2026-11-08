@@ -8,22 +8,20 @@ import type { ReactNode } from 'react';
  * large screens), questions on the right.
  */
 export function FaqBlock({
-  index,
   title,
   description,
   items,
 }: {
-  index: string;
   title: ReactNode;
   description?: ReactNode;
   items: AccordionItem[];
 }) {
   return (
-    <div className="grid gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-20">
+    <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-20">
       <div className="lg:sticky lg:top-28 lg:self-start">
-        <SectionHeading index={index} eyebrow="Questions" title={title} description={description} />
+        <SectionHeading eyebrow="Questions" title={title} description={description} />
       </div>
-      <Reveal delay={0.1}>
+      <Reveal delay={0.05}>
         <Accordion items={items} defaultOpen={null} />
       </Reveal>
     </div>

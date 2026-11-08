@@ -103,10 +103,6 @@ const REASONS = [
 export function AppAlertVisual() {
   return (
     <div className="relative mx-auto w-full max-w-lg">
-      <div
-        aria-hidden
-        className="absolute -inset-10 -z-10 rounded-full bg-crimson/20 blur-[90px]"
-      />
       <ProductWindow title="New alert · app store">
         <div className="grid grid-cols-1 gap-2 p-5 sm:grid-cols-2 sm:p-6">
           <StoreListing

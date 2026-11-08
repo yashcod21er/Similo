@@ -19,17 +19,14 @@ export function ProductWindow({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-[22px] bg-midnight text-white shadow-stage ring-1 ring-white/10',
+        'overflow-hidden rounded-xl bg-midnight text-white ring-1 ring-ink/10',
         className,
       )}
     >
       <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
         <div className="flex min-w-0 items-center gap-2.5">
-          <span
-            aria-hidden
-            className="size-2 shrink-0 rounded-full bg-crimson shadow-[0_0_10px_2px_rgb(217_47_72/0.6)]"
-          />
-          <p className="truncate font-mono text-[11.5px] tracking-wide text-white/70">{title}</p>
+          <span aria-hidden className="size-2 shrink-0 rounded-full bg-crimson" />
+          <p className="truncate font-mono text-[12px] text-white/70">{title}</p>
         </div>
         {action ?? <ExampleTag />}
       </div>

@@ -186,7 +186,7 @@ function CommandDialog({ onClose }: { onClose: () => void }) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -8, scale: 0.98 }}
         transition={{ duration: 0.22, ease: EASE_OUT }}
-        className="relative w-full max-w-xl overflow-hidden rounded-3xl bg-white shadow-stage ring-1 ring-line"
+        className="relative w-full max-w-xl overflow-hidden rounded-xl bg-white shadow-stage ring-1 ring-line"
       >
         <div className="flex items-center gap-3 border-b border-line px-5">
           <Search aria-hidden className="size-5 shrink-0 text-muted" />
@@ -232,7 +232,7 @@ function CommandDialog({ onClose }: { onClose: () => void }) {
               <li key={group} role="presentation">
                 <p
                   role="presentation"
-                  className="px-3 pt-3 pb-1.5 font-mono text-[11px] tracking-[0.08em] text-muted uppercase"
+                  className="px-3 pt-3 pb-1.5 text-[12px] font-medium text-muted"
                 >
                   {group}
                 </p>
@@ -249,18 +249,11 @@ function CommandDialog({ onClose }: { onClose: () => void }) {
                         onPointerMove={() => setActive(index)}
                         onClick={() => run(command)}
                         className={cn(
-                          'flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
-                          selected ? 'bg-paper ring-1 ring-line' : '',
+                          'flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5',
+                          selected ? 'bg-paper' : '',
                         )}
                       >
-                        <span
-                          className={cn(
-                            'flex size-9 shrink-0 items-center justify-center rounded-lg ring-1 transition-colors',
-                            selected
-                              ? 'bg-crimson text-white ring-crimson'
-                              : 'bg-white text-crimson-dark ring-line',
-                          )}
-                        >
+                        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white text-crimson ring-1 ring-line">
                           <command.icon aria-hidden className="size-4" />
                         </span>
                         <span className="min-w-0 flex-1">

@@ -16,7 +16,7 @@ the same two halves as the mark beside it, put back together at exactly the same
 | Logo in the interface (header, footer)    | `<Logo />` on light, `<Logo tone="dark" />` on midnight                  |
 | App-icon tile                             | `<LogoMark className="size-8" />` (self-contained on light and dark)     |
 | Bare symbol in the current text colour    | `<LogoSymbol />`, or `<LogoSymbol accent />` for a crimson copy          |
-| Wordmark that fills its container's width | `<LogoWordmark />` (for example the giant footer wordmark)               |
+| Wordmark that fills its container's width | `<LogoWordmark />` (for large decorative uses)               |
 | Browser tab                               | `frontend/public/favicon.svg`, redrawn on a 16 px grid                   |
 | iOS home screen                           | `frontend/public/apple-touch-icon.png`, 180 × 180, full bleed            |
 | Files for documents and slides            | `frontend/public/brand/` (`similo-logo.svg`, `similo-logo-white.svg`, …) |
@@ -27,9 +27,8 @@ The SVGs are decorative (`aria-hidden`); `Logo` carries a screen-reader label, "
 
 In running text, write **Similo** with a capital S. The logo itself is always lowercase.
 
-**Footer wordmark.** To keep today's faded look, use
-`<LogoWordmark className="text-ink/[0.11] mask-fade-b" />`. `mask-fade-b` already exists in
-`index.css`.
+**Large faded wordmark.** The v3 website no longer uses one in the footer. If a page needs it,
+use `<LogoWordmark className="text-ink/[0.11] mask-fade-b" />` (`mask-fade-b` is in `index.css`).
 
 ## The idea
 

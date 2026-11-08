@@ -52,10 +52,10 @@ export function AlertCard({
   return (
     <div
       className={cn(
-        'rounded-2xl p-5 text-left',
+        'rounded-xl p-5 text-left',
         dark
-          ? 'bg-white/[0.06] text-white ring-1 ring-white/12 backdrop-blur-xl'
-          : 'bg-white text-ink shadow-lifted ring-1 ring-line',
+          ? 'bg-white/[0.06] text-white ring-1 ring-white/12'
+          : 'bg-white text-ink ring-1 ring-line',
         className,
       )}
     >

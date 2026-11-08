@@ -1,8 +1,6 @@
-import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router';
-import { ButtonLink } from '@/components/ui/Button';
 import { Container } from '@/components/ui/layout';
-import { Logo, LogoWordmark } from '@/components/ui/Logo';
+import { Logo } from '@/components/ui/Logo';
 import { useSystemStatus } from '@/features/system-status/api';
 import { cn } from '@/lib/cn';
 import { footerColumns } from './navigation';
@@ -24,7 +22,7 @@ function LiveStatus() {
   return (
     <Link
       to="/status"
-      className="inline-flex items-center gap-2 rounded-full bg-paper px-3 py-1.5 text-[13px] text-muted ring-1 ring-line transition-colors hover:text-ink"
+      className="inline-flex items-center gap-2 text-[13px] text-muted transition-colors hover:text-ink"
     >
       <span className="relative flex size-2">
         <span
@@ -42,59 +40,40 @@ function LiveStatus() {
 
 export function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden border-t border-line bg-white">
-      <Container className="pt-16 lg:pt-20">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.1fr_2fr]">
-          <div className="max-w-sm">
-            <Logo />
-            <p className="mt-5 leading-relaxed text-muted">
-              Similo finds websites, apps and trademarks that copy your brand, explains why each one
-              looks risky, and helps your team act on the evidence.
-            </p>
-            <div className="mt-7 flex flex-wrap items-center gap-3">
-              <ButtonLink to="/contact" size="sm" variant="dark">
-                Request a demo
-              </ButtonLink>
-              <LiveStatus />
+    <footer className="border-t border-line bg-white">
+      <Container className="grid grid-cols-1 gap-12 py-14 lg:grid-cols-[1fr_2fr] lg:py-16">
+        <div className="max-w-xs">
+          <Logo />
+          <p className="mt-4 text-[14.5px] leading-relaxed text-muted">
+            Similo finds websites, apps and trademarks that copy your brand, and helps your team act
+            on the evidence.
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+          {footerColumns.map((column) => (
+            <div key={column.title}>
+              <p className="text-[13px] font-semibold text-ink">{column.title}</p>
+              <ul className="mt-4 space-y-3">
+                {column.links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      to={link.to}
+                      className="text-[14.5px] text-muted transition-colors hover:text-ink"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
-            {footerColumns.map((column) => (
-              <div key={column.title}>
-                <p className="text-[13px] font-semibold tracking-[-0.01em] text-ink">
-                  {column.title}
-                </p>
-                <ul className="mt-4 space-y-3">
-                  {column.links.map((link) => (
-                    <li key={link.label}>
-                      <Link
-                        to={link.to}
-                        className="group inline-flex items-center gap-1 text-[14.5px] text-muted transition-colors hover:text-ink"
-                      >
-                        {link.label}
-                        <ArrowUpRight
-                          aria-hidden
-                          className="size-3.5 opacity-0 transition-opacity group-hover:opacity-100"
-                        />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
       </Container>
 
-      {/* Oversized custom wordmark (never re-typed in a font) fading into the page edge. */}
-      <Container>
-        <LogoWordmark className="mt-16 mb-2 text-ink/[0.09] select-none mask-fade-b" />
-      </Container>
-
       <div className="border-t border-line">
-        <Container className="flex flex-col gap-2 py-6 text-[13px] text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Similo</p>
-          <p>Product visuals on this site use illustrative sample data.</p>
+        <Container className="flex flex-col gap-3 py-5 text-[13px] text-muted sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} Similo. Product visuals use illustrative sample data.</p>
+          <LiveStatus />
         </Container>
       </div>
     </footer>

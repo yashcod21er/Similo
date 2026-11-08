@@ -4,17 +4,17 @@
 @import '@fontsource/instrument-serif/latin-400-italic.css';
 
 /*
- * Similo design tokens (design system v2, "Clarity").
+ * Similo design tokens (design system v3, "Calm").
  * See docs/DESIGN-SYSTEM.md for how they are meant to be used.
  * Tailwind turns each token into utilities, e.g. `bg-midnight`, `text-ink`,
- * `border-line`, `font-serif`, `animate-marquee`.
+ * `border-line`.
  */
 @theme {
   /* Brand palette (fixed by the product brief) */
-  --color-midnight: #0b1020; /* Midnight Navy: product stages, footer accents */
+  --color-midnight: #0b1020; /* Midnight Navy: the one dark band per page, product stages */
   --color-slate-deep: #252c40; /* Slate: raised surfaces on dark */
   --color-crimson: #d92f48; /* Signal colour: risk, primary call to action */
-  --color-crimson-dark: #b8243b; /* Hover / pressed crimson */
+  --color-crimson-dark: #b8243b; /* Hover / pressed crimson, small text accents */
   --color-coral: #e98a91; /* Soft accent on dark surfaces */
   --color-paper: #f7f7fa; /* Off-white page canvas */
   --color-ink: #111827; /* Main text */
@@ -32,72 +32,44 @@
   --color-fuchsia-*: initial;
   --color-indigo-*: initial;
 
-  /* Typography: Geist for everything, Geist Mono for data and labels, and
-     Instrument Serif italic only for the one emphasised word in a headline. */
+  /* Typography: Geist for everything, Geist Mono for data and domains. */
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
   --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
 
-  /* Elevation: soft, layered shadows tinted with the navy, never pure black */
-  --shadow-soft: 0 1px 2px rgb(11 16 32 / 0.04), 0 4px 16px -4px rgb(11 16 32 / 0.08);
-  --shadow-lifted: 0 1px 2px rgb(11 16 32 / 0.05), 0 18px 48px -12px rgb(11 16 32 / 0.18);
-  --shadow-stage: 0 40px 120px -30px rgb(11 16 32 / 0.55);
+  /* Elevation: almost flat. Cards use borders; shadows are for floating
+     layers only (menus, dialogs). */
+  --shadow-soft: 0 1px 2px rgb(11 16 32 / 0.04), 0 4px 12px -4px rgb(11 16 32 / 0.08);
+  --shadow-lifted: 0 1px 2px rgb(11 16 32 / 0.05), 0 12px 32px -12px rgb(11 16 32 / 0.16);
+  --shadow-stage: 0 16px 48px -16px rgb(11 16 32 / 0.28);
 
-  /* Motion */
-  --animate-marquee: marquee 40s linear infinite;
-  --animate-spin-slow: spin 60s linear infinite;
-  --animate-spin-slower: spin 90s linear infinite reverse;
-  --animate-scan: scan 3.2s ease-in-out infinite;
+  /* Motion: the only looping animation left is the live status indicator. */
   --animate-ping-slow: ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
-
-  @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
-  }
-
-  @keyframes scan {
-    0%,
-    100% {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    15%,
-    85% {
-      opacity: 1;
-    }
-    50% {
-      transform: translateY(100%);
-    }
-  }
 }
 
-/* Fluid type scale. Each step pairs size, line height and tracking. */
+/* Type scale. Each step pairs size, line height and tracking. */
 @utility text-display {
-  font-size: clamp(2.6rem, 1.2rem + 5.4vw, 5.75rem);
-  line-height: 0.98;
-  letter-spacing: -0.048em;
+  font-size: clamp(2.375rem, 1.45rem + 3vw, 3.75rem);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
 }
 
 @utility text-headline {
-  font-size: clamp(2rem, 1.3rem + 2.6vw, 3.4rem);
-  line-height: 1.04;
-  letter-spacing: -0.04em;
+  font-size: clamp(1.875rem, 1.35rem + 1.8vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
 }
 
 @utility text-title {
-  font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
-  line-height: 1.2;
-  letter-spacing: -0.025em;
+  font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
 @utility text-lead {
-  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
   line-height: 1.6;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.005em;
 }
 
 @layer base {
@@ -117,13 +89,19 @@
     @apply bg-paper font-sans text-ink;
   }
 
-  /* One emphasised word per headline: <h2>Find the copycats <em>first</em></h2> */
-  :is(h1, h2, h3) em {
+  /* The serif italic accent is allowed in a page's hero headline only (h1).
+     In section headings (h2, h3) <em> stays plain, so old markup can't bring
+     the "serif word in every headline" look back. */
+  h1 em {
     font-family: var(--font-serif);
     font-style: italic;
     font-weight: 400;
     letter-spacing: -0.01em;
     padding-right: 0.04em;
+  }
+
+  :is(h2, h3) em {
+    font-style: normal;
   }
 
   ::selection {
@@ -142,42 +120,8 @@
 }
 
 @layer utilities {
-  /* Fine grids behind hero areas. */
-  .bg-grid-dark {
-    background-image:
-      linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
-    background-size: 48px 48px;
-  }
-
-  .bg-grid-light {
-    background-image:
-      linear-gradient(to right, rgb(17 24 39 / 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(17 24 39 / 0.05) 1px, transparent 1px);
-    background-size: 48px 48px;
-  }
-
-  /* Dot matrix used on light canvases. */
-  .bg-dots {
-    background-image: radial-gradient(rgb(17 24 39 / 0.12) 1px, transparent 1px);
-    background-size: 22px 22px;
-  }
-
-  .bg-dots-dark {
-    background-image: radial-gradient(rgb(255 255 255 / 0.1) 1px, transparent 1px);
-    background-size: 22px 22px;
-  }
-
-  /* Fade the edges of a horizontally scrolling strip. */
-  .mask-fade-x {
-    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-  }
-
+  /* Fade a wordmark into the page edge (documented in docs/BRAND.md). */
   .mask-fade-b {
     mask-image: linear-gradient(to bottom, black 60%, transparent);
-  }
-
-  .mask-radial {
-    mask-image: radial-gradient(ellipse at center, black 30%, transparent 72%);
   }
 }

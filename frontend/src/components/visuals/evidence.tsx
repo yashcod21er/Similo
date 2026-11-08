@@ -138,9 +138,7 @@ export function FingerprintDemo({ className }: { className?: string }) {
   const matches = text === SAMPLE;
 
   return (
-    <div
-      className={cn('rounded-3xl bg-white p-6 shadow-lifted ring-1 ring-line sm:p-7', className)}
-    >
+    <div className={cn('rounded-2xl bg-white p-6 ring-1 ring-line sm:p-7', className)}>
       <div className="flex items-center justify-between gap-3">
         <label htmlFor={inputId} className="text-[15px] font-semibold tracking-[-0.01em]">
           Try it: change one character

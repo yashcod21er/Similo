@@ -1,31 +1,49 @@
 import { ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router';
 import { ButtonLink } from '@/components/ui/Button';
-import { Container, Eyebrow } from '@/components/ui/layout';
+import { Container } from '@/components/ui/layout';
+
+const USEFUL_LINKS = [
+  { label: 'Domain Intelligence', to: '/solutions/domain-intelligence' },
+  { label: 'App Intelligence', to: '/solutions/app-intelligence' },
+  { label: 'Trademark Intelligence', to: '/solutions/trademark-intelligence' },
+  { label: 'Investigation & Evidence', to: '/solutions/investigation-evidence' },
+  { label: 'Guides and explainers', to: '/resources' },
+  { label: 'Contact us', to: '/contact' },
+];
 
 export function NotFoundPage() {
   return (
-    <section className="relative isolate overflow-hidden">
-      <div aria-hidden className="bg-dots mask-radial absolute inset-0 -z-10 opacity-70" />
-      <div
-        aria-hidden
-        className="absolute -top-56 left-1/2 -z-10 h-[480px] w-[820px] -translate-x-1/2 rounded-full bg-coral/25 blur-[130px]"
-      />
-      <Container className="flex flex-col items-center py-28 text-center sm:py-36">
-        <Eyebrow>Error 404</Eyebrow>
-        <h1 className="text-headline mt-6 font-semibold text-balance">
-          Close — but not the <em className="text-crimson">real</em> page.
-        </h1>
-        <p className="text-lead mt-5 max-w-md text-muted">
-          This link is broken or the page has moved. A bit like a lookalike website: it looks right,
-          but it is not what you were after.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <ButtonLink to="/" size="lg">
-            <ArrowLeft aria-hidden className="size-4" /> Back to home
-          </ButtonLink>
-          <ButtonLink to="/resources" variant="outline" size="lg">
-            Browse guides
-          </ButtonLink>
+    <section className="bg-white">
+      <Container className="py-20 sm:py-28 lg:py-32">
+        <div className="max-w-2xl">
+          <p className="text-[13px] font-medium text-crimson-dark">Error 404</p>
+          <h1 className="text-headline mt-5 font-semibold text-balance">
+            We can’t find that page.
+          </h1>
+          <p className="text-lead mt-5 max-w-lg text-pretty text-muted">
+            The link may be broken, or the page may have moved. Try one of these instead.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <ButtonLink to="/" size="lg">
+              <ArrowLeft aria-hidden className="size-4" /> Back to home
+            </ButtonLink>
+            <ButtonLink to="/resources" variant="outline" size="lg">
+              Browse guides
+            </ButtonLink>
+          </div>
+          <ul className="mt-12 max-w-sm divide-y divide-line border-y border-line">
+            {USEFUL_LINKS.map((link) => (
+              <li key={link.to}>
+                <Link
+                  to={link.to}
+                  className="block py-3 text-[15px] font-medium text-ink hover:text-crimson-dark"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </Container>
     </section>
