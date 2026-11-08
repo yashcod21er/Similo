@@ -45,6 +45,11 @@ const envSchema = z
       .url()
       .default('http://localhost:5173')
       .transform((value) => value.replace(/\/+$/, '')),
+    // Signs the JWT access tokens. Long random value; required in production.
+    JWT_SECRET: optionalString.refine(
+      (value) => value === undefined || value.length >= 32,
+      'must be at least 32 characters',
+    ),
     AI_SERVICE_URL: z.url().default('http://localhost:8000'),
     AI_SERVICE_TIMEOUT_MS: z.coerce.number().int().positive().default(3000),
   })
@@ -55,6 +60,9 @@ const envSchema = z
         path: ['MONGODB_URI'],
         message: 'is required in production',
       });
+    }
+    if (env.NODE_ENV === 'production' && !env.JWT_SECRET) {
+      ctx.addIssue({ code: 'custom', path: ['JWT_SECRET'], message: 'is required in production' });
     }
   });
 

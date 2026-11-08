@@ -10,7 +10,7 @@ const ARGON2ID = 2; // `Algorithm.Argon2id` (a const enum, which isolatedModules
 
 const HASH_OPTIONS = { algorithm: ARGON2ID, memoryCost: 19_456, timeCost: 2, parallelism: 1 };
 
-export const PASSWORD_MIN_LENGTH = 12;
+export const PASSWORD_MIN_LENGTH = 10;
 /** Upper bound stops someone sending a megabyte "password" to waste CPU on hashing. */
 export const PASSWORD_MAX_LENGTH = 128;
 
@@ -44,6 +44,29 @@ export async function equaliseTiming(password: string): Promise<void> {
  * don't force symbols or digits; we block known-bad choices instead.
  */
 const COMMON_PASSWORDS = new Set([
+  '1234567890',
+  '0123456789',
+  '0987654321',
+  '1111111111',
+  '0000000000',
+  '12345678910',
+  'qwertyuiop',
+  'qwerty1234',
+  '1q2w3e4r5t',
+  'asdfghjkl1',
+  'password12',
+  'password123',
+  'password1!',
+  'iloveyou12',
+  'iloveyou123',
+  'letmein123',
+  'welcome123',
+  'admin12345',
+  'changeme12',
+  'abcdefghij',
+  'abcd123456',
+  'football12',
+  'similo1234',
   '123456789012',
   '1234567890123',
   '12345678901234',

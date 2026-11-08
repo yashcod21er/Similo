@@ -1,5 +1,7 @@
 import type { Request, RequestHandler, Response } from 'express';
 import { AppError, ErrorCode } from '../lib/errors.js';
+import type { AccessTokenService } from '../modules/auth/access-token.js';
+import { setAccessCookie, type AuthCookieConfig } from '../modules/auth/auth.cookies.js';
 import type { AuthContext, RequestContext } from '../modules/auth/auth.types.js';
 import type { MembershipRepository } from '../modules/organizations/organization.repository.js';
 import { can, type Permission } from '../modules/organizations/roles.js';
@@ -15,38 +17,56 @@ function unauthenticated(): AppError {
 }
 
 /**
- * Reads the session cookie and works out who is calling. The role is read from
- * the membership on every request, so a role change or removal takes effect
- * immediately, not when the session expires.
+ * Works out who is calling:
+ *
+ * 1. A valid JWT access token (cookie) identifies the caller without a session lookup.
+ * 2. If it is missing or expired, a valid refresh token (cookie, stored hashed)
+ *    silently issues a new access token, so the website never has to handle expiry.
+ * 3. The role is read from the membership on every request, so a role change or
+ *    removal takes effect immediately, not when a token expires.
  */
 export function createRequireAuth({
   sessions,
+  accessTokens,
   memberships,
   users,
-  cookieName,
+  cookies,
 }: {
   sessions: SessionService;
+  accessTokens: AccessTokenService;
   memberships: MembershipRepository;
   users: UserRepository;
-  cookieName: string;
+  cookies: AuthCookieConfig;
 }): RequestHandler {
   return async (req, res, next) => {
-    const token: unknown = req.cookies?.[cookieName];
-    const session = typeof token === 'string' ? await sessions.resolve(token) : null;
-    if (!session) throw unauthenticated();
+    const accessToken: unknown = req.cookies?.[cookies.access];
+    let claims = typeof accessToken === 'string' ? await accessTokens.verify(accessToken) : null;
+
+    if (!claims) {
+      const refreshToken: unknown = req.cookies?.[cookies.refresh];
+      const session =
+        typeof refreshToken === 'string' ? await sessions.resolve(refreshToken) : null;
+      if (!session) throw unauthenticated();
+      claims = {
+        userId: session.userId,
+        organizationId: session.organizationId,
+        sessionId: session.id,
+      };
+      setAccessCookie(res, cookies, await accessTokens.sign(claims));
+    }
 
     const [membership, user] = await Promise.all([
-      memberships.find(session.organizationId, session.userId),
-      users.findById(session.userId),
+      memberships.find(claims.organizationId, claims.userId),
+      users.findById(claims.userId),
     ]);
     if (!membership || !user) {
       // Removed from the organisation (or deleted) since signing in.
-      await sessions.revoke(session.id);
+      await sessions.revoke(claims.sessionId);
       throw unauthenticated();
     }
 
     const auth: AuthContext = {
-      sessionId: session.id,
+      sessionId: claims.sessionId,
       user: { id: user.id, name: user.name, email: user.email },
       organizationId: membership.organizationId,
       role: membership.role,

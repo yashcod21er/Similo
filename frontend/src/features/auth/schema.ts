@@ -6,7 +6,7 @@ import { z } from 'zod';
  * its field-level answers are shown next to the same fields.
  */
 
-export const PASSWORD_MIN_LENGTH = 12;
+export const PASSWORD_MIN_LENGTH = 10;
 
 const email = z
   .string()

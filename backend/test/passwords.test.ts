@@ -29,7 +29,7 @@ describe('password rules', () => {
   });
 
   it('explains each rejection in plain words', () => {
-    expect(passwordProblem('short')).toMatch(/at least 12 characters/);
+    expect(passwordProblem('short')).toMatch(/at least 10 characters/);
     expect(passwordProblem('password1234')).toMatch(/too common/);
     expect(passwordProblem('aaaaaaaaaaaaaaa')).toMatch(/too common/);
     expect(passwordProblem('asha.rao-is-great', { email: 'asha.rao@example.com' })).toMatch(

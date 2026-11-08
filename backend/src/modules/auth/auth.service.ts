@@ -31,8 +31,10 @@ export const MAX_FAILED_SIGN_INS = 5;
 export const LOCK_MS = 15 * 60 * 1000;
 
 export interface SignedIn {
-  /** Raw session token — goes into the HTTP-only cookie, never into a response body. */
+  /** Raw refresh token — goes into an HTTP-only cookie, never into a response body. */
   token: string;
+  /** The refresh session's id; the access JWT carries it as `sid`. */
+  sessionId: string;
   me: MeDto;
 }
 
@@ -124,13 +126,13 @@ export function createAuthService(deps: Dependencies): AuthService {
     role: Role,
     context: RequestContext,
   ): Promise<SignedIn> {
-    const { token } = await sessions.create({
+    const { token, session } = await sessions.create({
       userId: user.id,
       organizationId: organization.id,
       ...context,
     });
     await users.recordSuccessfulSignIn(user.id, now());
-    return { token, me: toMe(user, organization, role) };
+    return { token, sessionId: session.id, me: toMe(user, organization, role) };
   }
 
   /** A valid, unexpired invite for this token, or an INVITE_INVALID error. */

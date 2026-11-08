@@ -1,9 +1,10 @@
-import { Router, type RequestHandler } from 'express';
+import { Router, type RequestHandler, type Response } from 'express';
 import { rateLimit } from 'express-rate-limit';
 import { AppError, ErrorCode } from '../../lib/errors.js';
 import { sendSuccess } from '../../lib/http-response.js';
 import { getAuth, requestContext } from '../../middleware/auth.js';
-import { clearSessionCookie, setSessionCookie, type SessionCookieConfig } from './auth.cookies.js';
+import type { AccessTokenService } from './access-token.js';
+import { clearAuthCookies, setAuthCookies, type AuthCookieConfig } from './auth.cookies.js';
 import {
   acceptInviteSchema,
   changePasswordSchema,
@@ -11,7 +12,7 @@ import {
   signInSchema,
   signUpSchema,
 } from './auth.schemas.js';
-import type { AuthService } from './auth.service.js';
+import type { AuthService, SignedIn } from './auth.service.js';
 
 export interface RateLimitSetting {
   windowMs: number;
@@ -50,20 +51,33 @@ function limiter({ windowMs, limit }: RateLimitSetting): RequestHandler {
 
 /**
  * /api/v1/auth — sign up, sign in, sign out, "me", password change, invitations.
- * The session token only ever travels in the HTTP-only cookie, never in a body.
+ * Tokens only ever travel in HTTP-only cookies, never in a response body:
+ * a 15-minute JWT access token and a refresh token (stored hashed in MongoDB).
  */
 export function createAuthRouter({
   authService,
   requireAuth,
-  cookie,
+  accessTokens,
+  cookies,
   rateLimits,
 }: {
   authService: AuthService;
   requireAuth: RequestHandler;
-  cookie: SessionCookieConfig;
+  accessTokens: AccessTokenService;
+  cookies: AuthCookieConfig;
   rateLimits: AuthRateLimits;
 }): Router {
   const router = Router();
+
+  /** Signs the access JWT for a new sign-in and sets both cookies. */
+  async function issueTokens(res: Response, { token, sessionId, me }: SignedIn): Promise<void> {
+    const accessToken = await accessTokens.sign({
+      userId: me.user.id,
+      organizationId: me.organization.id,
+      sessionId,
+    });
+    setAuthCookies(res, cookies, { accessToken, refreshToken: token });
+  }
 
   // Responses here are personal: never cache them anywhere.
   router.use((_req, res, next) => {
@@ -73,21 +87,21 @@ export function createAuthRouter({
 
   router.post('/sign-up', limiter(rateLimits.signUp), async (req, res) => {
     const input = signUpSchema.parse(req.body);
-    const { token, me } = await authService.signUp(input, requestContext(req));
-    setSessionCookie(res, cookie, token);
-    sendSuccess(res, me, 201);
+    const signedIn = await authService.signUp(input, requestContext(req));
+    await issueTokens(res, signedIn);
+    sendSuccess(res, signedIn.me, 201);
   });
 
   router.post('/sign-in', limiter(rateLimits.signIn), async (req, res) => {
     const input = signInSchema.parse(req.body);
-    const { token, me } = await authService.signIn(input, requestContext(req));
-    setSessionCookie(res, cookie, token);
-    sendSuccess(res, me);
+    const signedIn = await authService.signIn(input, requestContext(req));
+    await issueTokens(res, signedIn);
+    sendSuccess(res, signedIn.me);
   });
 
   router.post('/sign-out', requireAuth, async (_req, res) => {
     await authService.signOut(getAuth(res));
-    clearSessionCookie(res, cookie);
+    clearAuthCookies(res, cookies);
     sendSuccess(res, { signedOut: true });
   });
 
@@ -125,13 +139,9 @@ export function createAuthRouter({
       );
     }
     const input = acceptInviteSchema.parse(req.body);
-    const { token: sessionToken, me } = await authService.acceptInvite(
-      token.data,
-      input,
-      requestContext(req),
-    );
-    setSessionCookie(res, cookie, sessionToken);
-    sendSuccess(res, me, 201);
+    const signedIn = await authService.acceptInvite(token.data, input, requestContext(req));
+    await issueTokens(res, signedIn);
+    sendSuccess(res, signedIn.me, 201);
   });
 
   return router;

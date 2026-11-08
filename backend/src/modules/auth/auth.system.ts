@@ -16,7 +16,8 @@ import {
 import type { SessionRepository } from '../sessions/session.repository.js';
 import { createSessionService } from '../sessions/session.service.js';
 import type { UserRepository } from '../users/user.repository.js';
-import { sessionCookieConfig, type SessionCookieConfig } from './auth.cookies.js';
+import { createAccessTokenService, type AccessTokenService } from './access-token.js';
+import { authCookieConfig, type AuthCookieConfig } from './auth.cookies.js';
 import { DEFAULT_AUTH_RATE_LIMITS, type AuthRateLimits } from './auth.routes.js';
 import { createAuthService, type AuthService } from './auth.service.js';
 
@@ -35,7 +36,8 @@ export interface AuthSystem {
   organizationService: OrganizationService;
   auditService: AuditService;
   requireAuth: RequestHandler;
-  cookie: SessionCookieConfig;
+  accessTokens: AccessTokenService;
+  cookies: AuthCookieConfig;
   rateLimits: AuthRateLimits;
 }
 
@@ -49,6 +51,7 @@ export function createAuthSystem({
   logger,
   appUrl,
   cookieSecure,
+  jwtSecret,
   now = () => new Date(),
   rateLimits = DEFAULT_AUTH_RATE_LIMITS,
 }: {
@@ -57,13 +60,16 @@ export function createAuthSystem({
   logger: Logger;
   appUrl: string;
   cookieSecure: boolean;
+  /** Signs the JWT access tokens (HS256). At least 32 characters. */
+  jwtSecret: string;
   now?: () => Date;
   rateLimits?: AuthRateLimits;
 }): AuthSystem {
   const { users, organizations, memberships, invites } = repositories;
   const sessions = createSessionService({ sessions: repositories.sessions, now });
   const auditService = createAuditService({ repository: repositories.audit, logger });
-  const cookie = sessionCookieConfig({ secure: cookieSecure });
+  const cookies = authCookieConfig({ secure: cookieSecure });
+  const accessTokens = createAccessTokenService({ secret: jwtSecret, now });
 
   return {
     authService: createAuthService({
@@ -88,8 +94,9 @@ export function createAuthSystem({
       now,
     }),
     auditService,
-    requireAuth: createRequireAuth({ sessions, memberships, users, cookieName: cookie.name }),
-    cookie,
+    requireAuth: createRequireAuth({ sessions, accessTokens, memberships, users, cookies }),
+    accessTokens,
+    cookies,
     rateLimits,
   };
 }

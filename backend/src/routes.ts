@@ -50,7 +50,8 @@ export function createApiRouter({
     createAuthRouter({
       authService: auth.authService,
       requireAuth: auth.requireAuth,
-      cookie: auth.cookie,
+      accessTokens: auth.accessTokens,
+      cookies: auth.cookies,
       rateLimits: auth.rateLimits,
     }),
   );

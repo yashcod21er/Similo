@@ -13,6 +13,9 @@ import { createClock, createFakeAuthRepositories, fakeTransaction } from './fake
 
 export const silentLogger = pino({ level: 'silent' });
 
+/** Fixed secret for signing access tokens in tests (never used outside tests). */
+export const TEST_JWT_SECRET = 'test-only-jwt-secret-0123456789abcdef';
+
 export function fakeCheck(
   name: string,
   critical: boolean,
@@ -64,6 +67,7 @@ export function createTestAuth({
     logger: silentLogger,
     appUrl: 'http://localhost:5173',
     cookieSecure: false,
+    jwtSecret: TEST_JWT_SECRET,
     now: clock.now,
     rateLimits,
   });

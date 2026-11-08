@@ -11,6 +11,7 @@ import {
   pingDatabase,
 } from './db/mongo.js';
 import { createLogger, type Logger } from './lib/logger.js';
+import { generateToken } from './lib/tokens.js';
 import { mongoAuditRepository } from './modules/audit/audit.repository.js';
 import { createAuthSystem } from './modules/auth/auth.system.js';
 import { mongoDemoRequestRepository } from './modules/demo-requests/demo-request.repository.js';
@@ -87,6 +88,7 @@ async function main(): Promise<void> {
     appUrl: env.APP_URL,
     // Secure cookies need https, which production has and local development doesn't.
     cookieSecure: env.NODE_ENV === 'production',
+    jwtSecret: env.JWT_SECRET ?? developmentJwtSecret(logger),
   });
 
   const app = createApp({
@@ -161,3 +163,13 @@ main().catch((err: unknown) => {
   }
   process.exit(1);
 });
+
+/**
+ * Without JWT_SECRET (allowed outside production), use a random secret for this
+ * run only. Restarting then invalidates access tokens, and the browser silently
+ * gets a new one through its refresh token, so nobody is signed out.
+ */
+function developmentJwtSecret(logger: Logger): string {
+  logger.warn('JWT_SECRET is not set; using a random secret for this run (set it in backend/.env)');
+  return generateToken(48);
+}

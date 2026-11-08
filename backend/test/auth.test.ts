@@ -1,8 +1,10 @@
 import request, { type Response } from 'supertest';
 import { describe, expect, it } from 'vitest';
+import { SignJWT } from 'jose';
+import { ACCESS_TOKEN_TTL_MS } from '../src/modules/auth/access-token.js';
 import { LOCK_MS, MAX_FAILED_SIGN_INS } from '../src/modules/auth/auth.service.js';
 import { SESSION_IDLE_MS, SESSION_MAX_MS } from '../src/modules/sessions/session.service.js';
-import { buildAuthTestApp, RELAXED_RATE_LIMITS } from './helpers.js';
+import { buildAuthTestApp, RELAXED_RATE_LIMITS, TEST_JWT_SECRET } from './helpers.js';
 
 const PASSWORD = 'correct horse battery staple';
 const NEW_PASSWORD = 'violet lantern drifts north';
@@ -19,8 +21,26 @@ function setCookie(res: Response): string {
   return Array.isArray(raw) ? raw.join('\n') : (raw ?? '');
 }
 
+/** The refresh token (random, stored hashed). */
 function tokenFrom(res: Response): string {
-  return /similo_session=([\w-]+)/.exec(setCookie(res))?.[1] ?? '';
+  return /similo_refresh=([\w-]+)/.exec(setCookie(res))?.[1] ?? '';
+}
+
+/** The JWT access token. */
+function jwtFrom(res: Response): string {
+  return /similo_access=([\w.-]+)/.exec(setCookie(res))?.[1] ?? '';
+}
+
+function cookieLine(res: Response, name: string): string {
+  return (
+    setCookie(res)
+      .split('\n')
+      .find((line) => line.startsWith(`${name}=`)) ?? ''
+  );
+}
+
+function claimsOf(jwt: string): Record<string, string | number> {
+  return JSON.parse(Buffer.from(jwt.split('.')[1] ?? '', 'base64url').toString());
 }
 
 async function registered() {
@@ -43,14 +63,26 @@ describe('sign up', () => {
     });
     expect(signUp.body.data.permissions).toContain('members:manage');
 
-    // The session token travels only in an HTTP-only cookie, never in the body.
-    const cookie = setCookie(signUp);
-    expect(cookie).toMatch(/^similo_session=[\w-]{43};/);
-    expect(cookie).toContain('HttpOnly');
-    expect(cookie).toContain('SameSite=Lax');
-    expect(cookie).toContain('Path=/');
-    expect(cookie).not.toContain('Secure'); // local http; production sets Secure + __Host-
+    // Both tokens travel only in HTTP-only cookies, never in the body:
+    // a JWT access token (header.payload.signature) and a random refresh token.
+    expect(cookieLine(signUp, 'similo_access')).toMatch(
+      /^similo_access=eyJ[\w-]+\.[\w-]+\.[\w-]+;/,
+    );
+    expect(cookieLine(signUp, 'similo_refresh')).toMatch(/^similo_refresh=[\w-]{43};/);
+    for (const name of ['similo_access', 'similo_refresh']) {
+      const cookie = cookieLine(signUp, name);
+      expect(cookie).toContain('HttpOnly');
+      expect(cookie).toContain('SameSite=Lax');
+      expect(cookie).toContain('Path=/');
+      expect(cookie).not.toContain('Secure'); // local http; production sets Secure + __Host-
+    }
     expect(JSON.stringify(signUp.body)).not.toContain(tokenFrom(signUp));
+    expect(JSON.stringify(signUp.body)).not.toContain(jwtFrom(signUp));
+
+    // The JWT holds only ids and times: never the role, password or email.
+    const claims = claimsOf(jwtFrom(signUp));
+    expect(Object.keys(claims).sort()).toEqual(['aud', 'exp', 'iat', 'iss', 'org', 'sid', 'sub']);
+    expect(Number(claims.exp) - Number(claims.iat)).toBe(ACCESS_TOKEN_TTL_MS / 1000);
 
     // Stored safely: the session as a hash, the password as Argon2id.
     const [session] = [...stores.sessions.values()];
@@ -167,26 +199,32 @@ describe('sessions', () => {
   it('requires a valid session for /me', async () => {
     const { app } = buildAuthTestApp();
     const none = await request(app).get('/api/v1/auth/me');
-    const junk = await request(app).get('/api/v1/auth/me').set('Cookie', 'similo_session=junk');
+    const junk = await request(app)
+      .get('/api/v1/auth/me')
+      .set('Cookie', 'similo_access=junk; similo_refresh=junk');
     for (const res of [none, junk]) {
       expect(res.status).toBe(401);
       expect(res.body.error.code).toBe('UNAUTHENTICATED');
     }
   });
 
-  it('signs out: clears the cookie and ends the session on the server', async () => {
+  it('signs out: clears both cookies and deletes the refresh token on the server', async () => {
     const { app, agent, signUp, stores } = await registered();
     const token = tokenFrom(signUp);
 
     const res = await agent.post('/api/v1/auth/sign-out');
     expect(res.status).toBe(200);
-    expect(setCookie(res)).toMatch(/similo_session=;.*Expires=Thu, 01 Jan 1970/);
+    expect(cookieLine(res, 'similo_access')).toMatch(/^similo_access=;.*Expires=Thu, 01 Jan 1970/);
+    expect(cookieLine(res, 'similo_refresh')).toMatch(
+      /^similo_refresh=;.*Expires=Thu, 01 Jan 1970/,
+    );
     expect(stores.sessions.size).toBe(0);
+    expect((await agent.get('/api/v1/auth/me')).status).toBe(401);
 
-    // Replaying the old cookie no longer works.
+    // Replaying the old refresh token no longer works.
     const replay = await request(app)
       .get('/api/v1/auth/me')
-      .set('Cookie', `similo_session=${token}`);
+      .set('Cookie', `similo_refresh=${token}`);
     expect(replay.status).toBe(401);
   });
 
@@ -207,6 +245,53 @@ describe('sessions', () => {
   });
 });
 
+describe('JWT access tokens', () => {
+  async function forge(claims: Record<string, unknown>, secret = TEST_JWT_SECRET) {
+    // Same clock as the real token, so a rejection is never just "expired".
+    const at = Number(claims.iat);
+    return new SignJWT(claims)
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuer('similo')
+      .setAudience('similo-web')
+      .setIssuedAt(at)
+      .setExpirationTime(at + 600)
+      .sign(new TextEncoder().encode(secret));
+  }
+
+  it('renews an expired access token from the refresh token, without signing out', async () => {
+    const { agent, clock, signUp } = await registered();
+    clock.advance(ACCESS_TOKEN_TTL_MS + 1000);
+    const res = await agent.get('/api/v1/auth/me');
+    expect(res.status).toBe(200);
+    expect(jwtFrom(res)).not.toBe('');
+    expect(jwtFrom(res)).not.toBe(jwtFrom(signUp));
+  });
+
+  it('rejects tokens that were tampered with, forged or unsigned', async () => {
+    const { app, signUp } = await registered();
+    const [header, payload, signature] = jwtFrom(signUp).split('.');
+    const claims = claimsOf(jwtFrom(signUp));
+    const otherOrg = Buffer.from(JSON.stringify({ ...claims, org: 'f'.repeat(24) }));
+
+    const tampered = `${header}.${otherOrg.toString('base64url')}.${signature}`;
+    const wrongSecret = await forge(claims, 'an-attacker-guessed-this-secret-value!!');
+    const noneHeader = Buffer.from('{"alg":"none","typ":"JWT"}').toString('base64url');
+    const unsigned = `${noneHeader}.${payload}.`;
+
+    for (const token of [tampered, wrongSecret, unsigned, 'not.a.jwt']) {
+      const res = await request(app).get('/api/v1/auth/me').set('Cookie', `similo_access=${token}`);
+      expect(res.status, token.slice(0, 30)).toBe(401);
+    }
+  });
+
+  it('gives no access to an organisation the user is not a member of', async () => {
+    const { app, signUp } = await registered();
+    const token = await forge({ ...claimsOf(jwtFrom(signUp)), org: 'a'.repeat(24) });
+    const res = await request(app).get('/api/v1/auth/me').set('Cookie', `similo_access=${token}`);
+    expect(res.status).toBe(401);
+  });
+});
+
 describe('change password', () => {
   it('requires the current password', async () => {
     const { agent } = await registered();
@@ -220,7 +305,7 @@ describe('change password', () => {
   });
 
   it('signs out every other session but keeps this one', async () => {
-    const { app, agent, stores } = await registered();
+    const { app, agent, stores, clock } = await registered();
     const laptop = request.agent(app);
     await laptop
       .post('/api/v1/auth/sign-in')
@@ -232,6 +317,9 @@ describe('change password', () => {
       .send({ currentPassword: PASSWORD, newPassword: NEW_PASSWORD });
     expect(res.status).toBe(200);
 
+    // The laptop's refresh token is deleted at once; its access JWT runs out within 15 minutes.
+    expect(stores.sessions.size).toBe(1);
+    clock.advance(ACCESS_TOKEN_TTL_MS + 1000);
     expect((await agent.get('/api/v1/auth/me')).status).toBe(200);
     expect((await laptop.get('/api/v1/auth/me')).status).toBe(401);
     expect(stores.audit.map((event) => event.action)).toContain('auth.password_changed');
