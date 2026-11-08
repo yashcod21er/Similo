@@ -1,0 +1,11 @@
+# Store text files with LF line endings so Windows, macOS and Linux
+# contributors (and CI) produce identical diffs and Prettier output.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff2 binary

@@ -1,0 +1,40 @@
+{
+  "name": "similo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-powered brand protection and digital risk intelligence platform",
+  "type": "module",
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "concurrently --names web,api,ai --prefix-colors cyan,green,magenta \"npm:dev:web\" \"npm:dev:api\" \"npm:dev:ai\"",
+    "dev:web": "npm run dev --workspace @similo/web",
+    "dev:api": "npm run dev --workspace @similo/api",
+    "dev:ai": "uv run --directory services/ai uvicorn app.main:app --reload --port 8000",
+    "build": "npm run build --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "npm run test --workspaces",
+    "test:ai": "uv run --directory services/ai pytest",
+    "lint:ai": "uv run --directory services/ai ruff check .",
+    "check": "npm run typecheck && npm run lint && npm run test && npm run test:ai && npm run lint:ai"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^10.0.7",
+    "eslint": "^10.14.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.14.0",
+    "prettier": "^3.9.10",
+    "typescript": "~6.0.0",
+    "typescript-eslint": "^8.72.1"
+  }
+}

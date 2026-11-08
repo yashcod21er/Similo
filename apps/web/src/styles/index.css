@@ -1,0 +1,177 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+@import '@fontsource/instrument-serif/latin-400-italic.css';
+
+/*
+ * Similo design tokens (design system v2, "Clarity").
+ * See docs/DESIGN-SYSTEM.md for how they are meant to be used.
+ * Tailwind turns each token into utilities, e.g. `bg-midnight`, `text-ink`,
+ * `border-line`, `font-serif`, `animate-marquee`.
+ */
+@theme {
+  /* Brand palette (fixed by the product brief) */
+  --color-midnight: #0b1020; /* Midnight Navy: product stages, footer accents */
+  --color-slate-deep: #252c40; /* Slate: raised surfaces on dark */
+  --color-crimson: #d92f48; /* Signal colour: risk, primary call to action */
+  --color-crimson-dark: #b8243b; /* Hover / pressed crimson */
+  --color-coral: #e98a91; /* Soft accent on dark surfaces */
+  --color-paper: #f7f7fa; /* Off-white page canvas */
+  --color-ink: #111827; /* Main text */
+  --color-card: #e9ebf3; /* Quiet fills: chips, tracks, skeletons */
+
+  /* Neutrals derived from the palette */
+  --color-line: #e3e5ee; /* Hairline borders on light surfaces */
+  --color-line-strong: #cfd3e0; /* Borders that must stay visible (inputs) */
+  --color-muted: #555c70; /* Secondary text: 6.4:1 on white */
+
+  /* Brand rule: no purple or violet. Removing these palettes makes the rule
+     enforceable: `bg-purple-500` and friends simply don't exist. */
+  --color-purple-*: initial;
+  --color-violet-*: initial;
+  --color-fuchsia-*: initial;
+  --color-indigo-*: initial;
+
+  /* Typography: Geist for everything, Geist Mono for data and labels, and
+     Instrument Serif italic only for the one emphasised word in a headline. */
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
+  --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
+
+  /* Elevation: soft, layered shadows tinted with the navy, never pure black */
+  --shadow-soft: 0 1px 2px rgb(11 16 32 / 0.04), 0 4px 16px -4px rgb(11 16 32 / 0.08);
+  --shadow-lifted: 0 1px 2px rgb(11 16 32 / 0.05), 0 18px 48px -12px rgb(11 16 32 / 0.18);
+  --shadow-stage: 0 40px 120px -30px rgb(11 16 32 / 0.55);
+
+  /* Motion */
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-spin-slow: spin 60s linear infinite;
+  --animate-spin-slower: spin 90s linear infinite reverse;
+  --animate-scan: scan 3.2s ease-in-out infinite;
+  --animate-ping-slow: ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes scan {
+    0%,
+    100% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    15%,
+    85% {
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(100%);
+    }
+  }
+}
+
+/* Fluid type scale. Each step pairs size, line height and tracking. */
+@utility text-display {
+  font-size: clamp(2.6rem, 1.2rem + 5.4vw, 5.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.048em;
+}
+
+@utility text-headline {
+  font-size: clamp(2rem, 1.3rem + 2.6vw, 3.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+@utility text-title {
+  font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+@utility text-lead {
+  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    @apply bg-paper font-sans text-ink;
+  }
+
+  /* One emphasised word per headline: <h2>Find the copycats <em>first</em></h2> */
+  :is(h1, h2, h3) em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    padding-right: 0.04em;
+  }
+
+  ::selection {
+    @apply bg-crimson text-white;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-crimson;
+  }
+}
+
+@layer utilities {
+  /* Fine grids behind hero areas. */
+  .bg-grid-dark {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .bg-grid-light {
+    background-image:
+      linear-gradient(to right, rgb(17 24 39 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(17 24 39 / 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* Dot matrix used on light canvases. */
+  .bg-dots {
+    background-image: radial-gradient(rgb(17 24 39 / 0.12) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  .bg-dots-dark {
+    background-image: radial-gradient(rgb(255 255 255 / 0.1) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* Fade the edges of a horizontally scrolling strip. */
+  .mask-fade-x {
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, black 60%, transparent);
+  }
+
+  .mask-radial {
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 72%);
+  }
+}

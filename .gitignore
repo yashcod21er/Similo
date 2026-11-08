@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+.venv/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Secrets: never commit real environment files (templates end in .example)
+.env
+.env.*
+!.env.example
+
+# Test and tool caches
+coverage/
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+*.py[cod]
+.vite/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
