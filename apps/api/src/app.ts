@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { type Express } from 'express';
 import helmet from 'helmet';
@@ -6,6 +7,7 @@ import type { Logger } from './lib/logger.js';
 import { errorHandler } from './middleware/error-handler.js';
 import { notFoundHandler } from './middleware/not-found.js';
 import { createRequestLogger } from './middleware/request-logger.js';
+import { verifyOrigin } from './middleware/verify-origin.js';
 import { createApiRouter, type ApiRouterDependencies } from './routes.js';
 
 export interface AppDependencies extends ApiRouterDependencies {
@@ -42,10 +44,15 @@ export function createApp({ env, logger, ...routerDependencies }: AppDependencie
   // 4. JSON body parsing with a size limit to block oversized payloads.
   app.use(express.json({ limit: '1mb' }));
 
-  // 5. Versioned API routes.
+  // 5. Cookies (the HTTP-only session cookie), then reject data-changing
+  //    requests sent by other websites (CSRF defence).
+  app.use(cookieParser());
+  app.use(verifyOrigin(env.CORS_ORIGINS));
+
+  // 6. Versioned API routes.
   app.use('/api/v1', createApiRouter(routerDependencies));
 
-  // 6. Nothing matched → 404. Any error → consistent JSON error response.
+  // 7. Nothing matched → 404. Any error → consistent JSON error response.
   app.use(notFoundHandler);
   app.use(errorHandler);
 

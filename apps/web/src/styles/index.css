@@ -130,6 +130,12 @@
     @apply bg-crimson text-white;
   }
 
+  /* Edge draws its own "reveal password" eye; our password fields have a Show button. */
+  input::-ms-reveal,
+  input::-ms-clear {
+    display: none;
+  }
+
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-crimson;
   }

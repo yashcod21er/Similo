@@ -1,7 +1,20 @@
-import { QueryClient } from '@tanstack/react-query';
+import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
 import { ApiError } from '@/lib/api-client';
 
-export const queryClient = new QueryClient({
+/**
+ * When any request says "please sign in" (the session expired, or an admin
+ * removed this person), mark the visitor as signed out. The route guard then
+ * sends them to the sign-in page instead of showing a broken screen.
+ */
+function onUnauthenticated(error: unknown) {
+  if (error instanceof ApiError && error.status === 401 && error.code === 'UNAUTHENTICATED') {
+    queryClient.setQueryData(['session'], null);
+  }
+}
+
+export const queryClient: QueryClient = new QueryClient({
+  queryCache: new QueryCache({ onError: onUnauthenticated }),
+  mutationCache: new MutationCache({ onError: onUnauthenticated }),
   defaultOptions: {
     queries: {
       staleTime: 30_000,

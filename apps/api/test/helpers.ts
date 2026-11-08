@@ -1,5 +1,7 @@
 import { pino } from 'pino';
 import { createApp, type AppDependencies } from '../src/app.js';
+import type { AuthRateLimits } from '../src/modules/auth/auth.routes.js';
+import { createAuthSystem } from '../src/modules/auth/auth.system.js';
 import type {
   DemoRequestRepository,
   NewDemoRequest,
@@ -7,6 +9,7 @@ import type {
 import { createDemoRequestService } from '../src/modules/demo-requests/demo-request.service.js';
 import type { DependencyCheck, DependencyCheckResult } from '../src/modules/health/health.types.js';
 import { createHealthService } from '../src/modules/health/health.service.js';
+import { createClock, createFakeAuthRepositories, fakeTransaction } from './fakes/auth-fakes.js';
 
 export const silentLogger = pino({ level: 'silent' });
 
@@ -42,6 +45,43 @@ export function createFakeDemoRequestRepository() {
   return { repository, saved };
 }
 
+/** Rate limits high enough that ordinary tests never hit them. */
+export const RELAXED_RATE_LIMITS: AuthRateLimits = {
+  signIn: { windowMs: 60_000, limit: 1_000 },
+  signUp: { windowMs: 60_000, limit: 1_000 },
+  invites: { windowMs: 60_000, limit: 1_000 },
+};
+
+/** A complete auth system on in-memory storage with a controllable clock. */
+export function createTestAuth({
+  rateLimits = RELAXED_RATE_LIMITS,
+}: { rateLimits?: AuthRateLimits } = {}) {
+  const clock = createClock();
+  const { repositories, stores } = createFakeAuthRepositories(clock.now);
+  const auth = createAuthSystem({
+    repositories,
+    runInTransaction: fakeTransaction,
+    logger: silentLogger,
+    appUrl: 'http://localhost:5173',
+    cookieSecure: false,
+    now: clock.now,
+    rateLimits,
+  });
+  return { auth, stores, clock };
+}
+
+/** The app plus direct access to its fake storage and clock, for auth tests. */
+export function buildAuthTestApp(
+  options: { rateLimits?: AuthRateLimits; databaseReady?: boolean } = {},
+) {
+  const { auth, stores, clock } = createTestAuth(options);
+  const app = buildTestApp(healthyChecks, {
+    auth,
+    isDatabaseReady: () => options.databaseReady ?? true,
+  });
+  return { app, auth, stores, clock };
+}
+
 export function buildTestApp(
   checks: DependencyCheck[] = healthyChecks,
   overrides: Partial<AppDependencies> = {},
@@ -56,6 +96,8 @@ export function buildTestApp(
       isDatabaseReady: () => true,
       logger: silentLogger,
     }),
+    auth: createTestAuth().auth,
+    isDatabaseReady: () => true,
     ...overrides,
   });
 }

@@ -40,6 +40,11 @@ const envSchema = z
       'must start with mongodb:// or mongodb+srv://',
     ),
     MONGODB_DB_NAME: z.string().min(1).default('similo'),
+    // Public address of the website; used to build invitation links.
+    APP_URL: z
+      .url()
+      .default('http://localhost:5173')
+      .transform((value) => value.replace(/\/+$/, '')),
     AI_SERVICE_URL: z.url().default('http://localhost:8000'),
     AI_SERVICE_TIMEOUT_MS: z.coerce.number().int().positive().default(3000),
   })

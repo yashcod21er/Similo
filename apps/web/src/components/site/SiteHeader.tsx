@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 import { ButtonLink } from '@/components/ui/Button';
 import { Logo } from '@/components/ui/Logo';
+import { useSession } from '@/features/auth/api';
 import { EASE_OUT } from '@/lib/motion';
 import { cn } from '@/lib/cn';
 import { CommandMenu } from './CommandMenu';
@@ -227,9 +228,39 @@ function MobileNav({ onClose }: { onClose: () => void }) {
           <ButtonLink to="/#check" onClick={onClose} variant="outline" size="lg">
             Check your brand
           </ButtonLink>
+          <AccountLink mobile onNavigate={onClose} />
         </div>
       </nav>
     </motion.div>
+  );
+}
+
+/* -------------------------------------------------------------- Account */
+
+/** "Sign in" for visitors; "Dashboard" once signed in (the API decides, via /auth/me). */
+function AccountLink({
+  mobile = false,
+  onNavigate,
+}: {
+  mobile?: boolean;
+  onNavigate?: () => void;
+}) {
+  const { data: me } = useSession();
+  const to = me ? '/app' : '/sign-in';
+  if (mobile) {
+    return (
+      <ButtonLink to={to} onClick={onNavigate} variant="outline" size="lg">
+        {me ? 'Open dashboard' : 'Sign in'}
+      </ButtonLink>
+    );
+  }
+  return (
+    <Link
+      to={to}
+      className="hidden h-9 items-center rounded-full px-3.5 text-[14.5px] font-medium text-ink/75 transition-colors hover:bg-ink/[0.05] hover:text-ink md:inline-flex"
+    >
+      {me ? 'Dashboard' : 'Sign in'}
+    </Link>
   );
 }
 
@@ -311,6 +342,7 @@ export function SiteHeader() {
                 {shortcut}
               </kbd>
             </button>
+            <AccountLink />
             {/* Wrapper controls visibility; putting `hidden` on the button itself would
                 clash with the button's own `inline-flex` display class. */}
             <div className="hidden sm:block">

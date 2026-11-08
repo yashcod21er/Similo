@@ -9,7 +9,7 @@ import { NotFoundPage } from '@/pages/NotFoundPage';
  * The home page is bundled with the app so it appears instantly. Every other
  * page is code-split with `lazy`: its JavaScript is downloaded only when a
  * visitor first navigates to it, which keeps the initial download small.
- * The authenticated app (/app/*) is added in a later phase.
+ * Sign-in pages and the signed-in workspace (/app) are code-split the same way.
  */
 export const router = createBrowserRouter([
   {
@@ -81,6 +81,63 @@ export const router = createBrowserRouter([
           })),
       },
       { path: '*', element: <NotFoundPage /> },
+    ],
+  },
+
+  /* Sign in, sign up and invitations: a focused layout without site navigation. */
+  {
+    lazy: () => import('@/features/auth/AuthLayout').then((m) => ({ Component: m.AuthLayout })),
+    hydrateFallbackElement: <div className="min-h-dvh bg-paper" />,
+    children: [
+      {
+        path: 'sign-in',
+        lazy: () => import('@/features/auth/SignInPage').then((m) => ({ Component: m.SignInPage })),
+      },
+      {
+        path: 'sign-up',
+        lazy: () => import('@/features/auth/SignUpPage').then((m) => ({ Component: m.SignUpPage })),
+      },
+      {
+        path: 'invite/:token',
+        lazy: () =>
+          import('@/features/auth/AcceptInvitePage').then((m) => ({
+            Component: m.AcceptInvitePage,
+          })),
+      },
+    ],
+  },
+
+  /* The signed-in workspace. RequireAuth redirects visitors without a session. */
+  {
+    path: 'app',
+    lazy: () =>
+      import('@/features/app-shell/ProtectedApp').then((m) => ({ Component: m.ProtectedApp })),
+    hydrateFallbackElement: <div className="min-h-dvh bg-paper" />,
+    children: [
+      {
+        index: true,
+        lazy: () =>
+          import('@/features/app-shell/OverviewPage').then((m) => ({ Component: m.OverviewPage })),
+      },
+      {
+        path: 'members',
+        lazy: () =>
+          import('@/features/organization/MembersPage').then((m) => ({ Component: m.MembersPage })),
+      },
+      {
+        path: 'audit',
+        lazy: () =>
+          import('@/features/organization/AuditLogPage').then((m) => ({
+            Component: m.AuditLogPage,
+          })),
+      },
+      {
+        path: 'settings',
+        lazy: () =>
+          import('@/features/organization/SettingsPage').then((m) => ({
+            Component: m.SettingsPage,
+          })),
+      },
     ],
   },
 ]);

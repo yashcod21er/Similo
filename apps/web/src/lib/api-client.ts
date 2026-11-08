@@ -74,3 +74,28 @@ export async function apiRequest<T>(path: string, init: RequestInit = {}): Promi
     message: `The API returned an unexpected response (HTTP ${response.status}).`,
   });
 }
+
+/** POST/PATCH/DELETE with a JSON body, through the same envelope handling as `apiRequest`. */
+export function sendJson<T>(
+  path: string,
+  body?: unknown,
+  method: 'POST' | 'PATCH' | 'DELETE' = 'POST',
+): Promise<T> {
+  return apiRequest<T>(path, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    ...(body !== undefined && { body: JSON.stringify(body) }),
+  });
+}
+
+/** Field-level problems from a 400 VALIDATION_ERROR, as `{ path, message }` pairs. */
+export function validationDetails(error: unknown): { path: string; message: string }[] {
+  if (
+    error instanceof ApiError &&
+    error.code === 'VALIDATION_ERROR' &&
+    Array.isArray(error.details)
+  ) {
+    return error.details as { path: string; message: string }[];
+  }
+  return [];
+}

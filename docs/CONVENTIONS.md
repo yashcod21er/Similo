@@ -41,7 +41,11 @@ src/
 ```
 
 - Throw `AppError(status, CODE, message)` for expected failures. Let unexpected errors bubble up to the central handler.
-- Every query on tenant data takes `organizationId` (from Phase 2).
+- Every query on tenant data takes `organizationId` as its first argument, and services take it
+  only from `getAuth(res)` (the session), never from the body, query or URL.
+- Protected routes: mount behind `requireAuth`, then `requirePermission('<permission>')` per route.
+  New permissions go in `modules/organizations/roles.ts` (the single source of truth).
+- Security-relevant actions call `auditService.record(...)`; there is no update or delete for audit events.
 
 ## Web structure
 
@@ -61,6 +65,8 @@ src/
 ```
 
 - Server data goes through TanStack Query hooks (`features/<x>/api.ts`), not `useEffect` plus `fetch`.
+- Signed-in pages live under the `/app` route (wrapped in `RequireAuth`). Use `useCan(permission)`
+  only to show or hide controls; the API is the security boundary.
 - Every data view handles loading, empty, error and permission-restricted states.
 - Follow `docs/DESIGN-SYSTEM.md` (v2 "Clarity"): plain words first, light canvas, dark product
   visuals only inside `Stage`/`ProductWindow`, one `<em>` accent per headline.

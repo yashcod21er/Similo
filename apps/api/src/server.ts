@@ -2,6 +2,8 @@ import type { Server } from 'node:http';
 import { createApp } from './app.js';
 import { createAiServiceClient } from './clients/ai-service.client.js';
 import { EnvValidationError, loadDotEnvFile, parseEnv } from './config/env.js';
+import { ensureIndexes } from './db/indexes.js';
+import { runInMongoTransaction } from './db/transaction.js';
 import {
   connectToDatabase,
   disconnectFromDatabase,
@@ -9,10 +11,19 @@ import {
   pingDatabase,
 } from './db/mongo.js';
 import { createLogger, type Logger } from './lib/logger.js';
+import { mongoAuditRepository } from './modules/audit/audit.repository.js';
+import { createAuthSystem } from './modules/auth/auth.system.js';
 import { mongoDemoRequestRepository } from './modules/demo-requests/demo-request.repository.js';
 import { createDemoRequestService } from './modules/demo-requests/demo-request.service.js';
 import { createAiServiceCheck, createDatabaseCheck } from './modules/health/health.checks.js';
 import { createHealthService } from './modules/health/health.service.js';
+import {
+  mongoInviteRepository,
+  mongoMembershipRepository,
+  mongoOrganizationRepository,
+} from './modules/organizations/organization.repository.js';
+import { mongoSessionRepository } from './modules/sessions/session.repository.js';
+import { mongoUserRepository } from './modules/users/user.repository.js';
 
 /**
  * Entry point ("composition root"): reads configuration, creates the real
@@ -26,6 +37,8 @@ async function main(): Promise<void> {
   if (env.MONGODB_URI) {
     try {
       await connectToDatabase({ uri: env.MONGODB_URI, dbName: env.MONGODB_DB_NAME, logger });
+      // Unique emails, auto-expiring sessions etc. must exist before the first request.
+      await ensureIndexes();
     } catch (err) {
       if (env.NODE_ENV === 'production') {
         // In production, crash so the platform restarts us and alerts someone.
@@ -60,7 +73,30 @@ async function main(): Promise<void> {
     logger,
   });
 
-  const app = createApp({ env, logger, healthService, demoRequestService });
+  const auth = createAuthSystem({
+    repositories: {
+      users: mongoUserRepository,
+      organizations: mongoOrganizationRepository,
+      memberships: mongoMembershipRepository,
+      invites: mongoInviteRepository,
+      sessions: mongoSessionRepository,
+      audit: mongoAuditRepository,
+    },
+    runInTransaction: runInMongoTransaction,
+    logger,
+    appUrl: env.APP_URL,
+    // Secure cookies need https, which production has and local development doesn't.
+    cookieSecure: env.NODE_ENV === 'production',
+  });
+
+  const app = createApp({
+    env,
+    logger,
+    healthService,
+    demoRequestService,
+    auth,
+    isDatabaseReady: isDatabaseConnected,
+  });
 
   // Express 5 calls the listen callback even when listening fails, so success
   // and failure are handled with the server's own 'listening' / 'error' events.

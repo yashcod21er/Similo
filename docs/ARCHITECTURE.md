@@ -85,19 +85,21 @@ and HTTP-only cookies (Phase 2) work exactly as they will in production behind o
 
 ## 5. Security baseline
 
-| Concern               | Phase 1                                                                                                                                    | Planned                                                                                            |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| Secrets               | Read from environment variables and validated at startup; `.env` is git-ignored; error messages name the variable but never show its value | Secret manager in production                                                                       |
-| HTTP headers          | `helmet` (CSP, HSTS, nosniff, frame options); `X-Powered-By` removed                                                                       | —                                                                                                  |
-| CORS                  | Allow-list only (`CORS_ORIGINS`), credentials enabled                                                                                      | —                                                                                                  |
-| Body limits           | JSON bodies limited to 1 MB                                                                                                                | Upload size and type validation (Phase 4)                                                          |
-| Log hygiene           | `authorization`, `cookie` and `set-cookie` headers redacted; request logs keep only method, URL and status                                 | —                                                                                                  |
-| AI service            | Not exposed to browsers; `/docs` disabled in production                                                                                    | Shared service token on `/internal/*` (Phase 5)                                                    |
-| Auth / RBAC / tenancy | —                                                                                                                                          | Phase 2 (see §6)                                                                                   |
-| Rate limiting         | `POST /demo-requests`: 5 per 15 min per client (`express-rate-limit`); `TRUST_PROXY` sets how many proxies to trust for client IPs         | Phase 2 (login and expensive endpoints)                                                            |
-| SSRF                  | —                                                                                                                                          | Phase 5: URL fetchers block private/loopback/metadata IPs and re-check the IP after DNS resolution |
+| Concern               | Phase 1                                                                                                                                                                                                                                                                           | Planned                                                                                            |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Secrets               | Read from environment variables and validated at startup; `.env` is git-ignored; error messages name the variable but never show its value                                                                                                                                        | Secret manager in production                                                                       |
+| HTTP headers          | `helmet` (CSP, HSTS, nosniff, frame options); `X-Powered-By` removed                                                                                                                                                                                                              | —                                                                                                  |
+| CORS                  | Allow-list only (`CORS_ORIGINS`), credentials enabled                                                                                                                                                                                                                             | —                                                                                                  |
+| Body limits           | JSON bodies limited to 1 MB                                                                                                                                                                                                                                                       | Upload size and type validation (Phase 4)                                                          |
+| Log hygiene           | `authorization`, `cookie` and `set-cookie` headers redacted; request logs keep only method, URL and status                                                                                                                                                                        | —                                                                                                  |
+| AI service            | Not exposed to browsers; `/docs` disabled in production                                                                                                                                                                                                                           | Shared service token on `/internal/*` (Phase 5)                                                    |
+| Auth / RBAC / tenancy | Phase 2: Argon2id passwords; opaque session token in an HTTP-only, SameSite=Lax cookie (`__Host-` + Secure in production), stored as a SHA-256 hash with idle (7 d) and absolute (30 d) expiry; five roles checked per route with `requirePermission`; role read on every request | MFA and SSO (Phase 10)                                                                             |
+| Rate limiting         | Demo requests 5/15 min; sign-in 10/15 min; sign-up 5/h; invitation links 30/15 min (per client, `express-rate-limit`); account pause for 15 min after 5 wrong passwords                                                                                                           | Shared Redis store when the API runs on several instances                                          |
+| CSRF                  | Phase 2: SameSite=Lax cookies plus an `Origin` allow-list check on every POST/PATCH/DELETE (`verifyOrigin`)                                                                                                                                                                       | —                                                                                                  |
+| Audit                 | Phase 2: append-only audit log (sign-ins, failures, lockouts, invitations, role changes, removals) with actor, target, IP                                                                                                                                                         | Export and retention settings                                                                      |
+| SSRF                  | —                                                                                                                                                                                                                                                                                 | Phase 5: URL fetchers block private/loopback/metadata IPs and re-check the IP after DNS resolution |
 
-## 6. Multi-tenancy and authorisation (designed now, built in Phase 2)
+## 6. Multi-tenancy and authorisation (built in Phase 2)
 
 - Every tenant-owned document has an `organizationId`, and every collection has compound indexes that start with `organizationId`.
 - The organisation comes from the **authenticated session**, never from the request body or URL.
@@ -109,7 +111,10 @@ and HTTP-only cookies (Phase 2) work exactly as they will in production behind o
 - **Proposed session strategy:** opaque session ID in an HTTP-only, `Secure`, `SameSite=Lax`
   cookie, with sessions stored in MongoDB (TTL index). It's simpler and safer than JWT
   refresh-token rotation for a first-party web app, and sessions can be revoked instantly
-  (logout, password change, member removal). This is the planned decision for Phase 2.
+  (logout, password change, member removal). Built this way in Phase 2.
+- Proven by `apps/api/test/tenant-isolation.test.ts`: with the other organisation's real IDs,
+  members, invitations and audit entries are invisible and unchangeable (404), and an
+  `organizationId` sent in a request body is ignored.
 
 ## 7. Data sources and their limits
 
@@ -146,6 +151,11 @@ The platform must not claim coverage it doesn't have. Each source is an adapter 
 | D18 | Home-page brand checker runs entirely in the browser (`src/lib/lookalikes.ts`, unit-tested)                       | A real, instant demo with no backend, no data collection and no fake results — it says it shows _possible_ imitations                       |
 | D19 | Site-wide ⌘K / Ctrl K command menu built from `navigation.ts` and the resource content                            | Fast keyboard navigation; one source of truth, so new pages and guides appear automatically                                                 |
 | D20 | Product renamed BrandShield → Similo; identifiers use `similo` (packages, services, default DB)                   | "BrandShield" is already the name of an existing brand-protection company; "Similo" comes from "similar"                                    |
+| D21 | Sessions: opaque random token in an HTTP-only cookie, stored hashed in MongoDB (TTL), not JWTs                    | Instant sign-out, role changes and removals; nothing readable by page scripts; no token rotation scheme to get wrong                        |
+| D22 | Argon2id via `@node-rs/argon2` (prebuilt, no compiler) with OWASP baseline settings                               | Current OWASP recommendation; works on Windows without native build tools                                                                   |
+| D23 | Invitations are one-time links shown once (hash stored), shared by the inviter; no email yet                      | No email provider is configured; never pretend an email was sent                                                                            |
+| D24 | Repositories take `organizationId` first; services get the organisation only from the session                     | An unscoped query can't be written by accident; request bodies can't choose a tenant                                                        |
+| D25 | Auth tests on in-memory fakes with a controllable clock, plus an Atlas test in a throwaway database               | Fast, deterministic tests of expiry and lockout; real proof of indexes and transactions                                                     |
 
 ## 9. Risks and open questions
 
@@ -166,9 +176,9 @@ The platform must not claim coverage it doesn't have. Each source is an adapter 
 | ----- | ------------------------------------------------------------------------------------------ | -------------------------------------- |
 | 0     | Repository inspection, architecture                                                        | ✅ Done                                |
 | 1     | Foundation: monorepo, web, API, AI service, config, logging, errors, health checks         | ✅ Done (Atlas connected and verified) |
-| 2     | Authentication, organisations, roles, protected routes                                     | Next (unblocked)                       |
+| 2     | Authentication, organisations, roles, protected routes                                     | ✅ Done                                |
 | 3     | Public website: 11 pages, brand checker hero, resources, demo-request form + API endpoint  | ✅ Done (redesigned to v2 "Clarity")   |
-| 4     | Brand management (brands, logos, domains, trademarks, monitoring config)                   | —                                      |
+| 4     | Brand management (brands, logos, domains, trademarks, monitoring config)                   | Next                                   |
 | 5     | First end-to-end domain monitoring (discovery adapter, similarity, RDAP, BullMQ, findings) | —                                      |
 | 6     | AI intelligence (text/image similarity, OCR, explainable risk scoring, evaluation set)     | —                                      |
 | 7     | Investigations and evidence (provenance, SHA-256, timeline, reports)                       | —                                      |
@@ -176,6 +186,27 @@ The platform must not claim coverage it doesn't have. Each source is an adapter 
 | 9     | App and trademark monitoring                                                               | —                                      |
 | 10    | Production readiness (security audit, performance, deployment, backups)                    | —                                      |
 | Later | MCP server (read-only tools, permission-checked)                                           | Extension point only                   |
+
+### Phase 2 — accounts, organisations and roles
+
+| Endpoint                                       | Who                        | Purpose                                       |
+| ---------------------------------------------- | -------------------------- | --------------------------------------------- |
+| `POST /auth/sign-up`, `POST /auth/sign-in`     | Anyone (rate-limited)      | Create an organisation + Owner; sign in       |
+| `POST /auth/sign-out`, `GET /auth/me`          | Signed in                  | End this session; who am I, role, permissions |
+| `POST /auth/change-password`                   | Signed in                  | Also signs out every other session            |
+| `GET /auth/invites/:token`, `POST …/accept`    | Link holder (rate-limited) | Preview and accept an invitation              |
+| `GET`/`PATCH /organization`                    | All / Owner, Admin         | Organisation summary; rename                  |
+| `GET /organization/members`                    | All roles                  | Members with roles                            |
+| `PATCH`/`DELETE /organization/members/:userId` | Owner, Admin (Owner rules) | Change role; remove (signs them out at once)  |
+| `GET`/`POST`/`DELETE /organization/invites`    | Owner, Admin               | Pending invitations; create link; revoke      |
+| `GET /audit-events`                            | Owner, Admin, Legal        | Audit log, newest first, cursor-paginated     |
+
+Owner rules: only Owners can grant, change or remove the Owner role; nobody can change their own
+role or remove themselves; an organisation always keeps at least one Owner.
+
+Website: `/sign-in`, `/sign-up`, `/invite/:token` (focused layout) and the protected workspace
+`/app` (Overview, Members, Audit log, Settings). `RequireAuth` only decides what to show; the API
+enforces every rule.
 
 ### Phase 3 — public website
 

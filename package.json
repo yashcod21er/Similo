@@ -23,7 +23,9 @@
     "test": "npm run test --workspaces",
     "test:ai": "uv run --directory services/ai pytest",
     "lint:ai": "uv run --directory services/ai ruff check .",
-    "check": "npm run typecheck && npm run lint && npm run test && npm run test:ai && npm run lint:ai"
+    "check": "npm run typecheck && npm run lint && npm run test && npm run test:ai && npm run lint:ai",
+    "seed:demo": "npm run seed:demo --workspace @similo/api --",
+    "auth:reset-password": "npm run auth:reset-password --workspace @similo/api --"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
