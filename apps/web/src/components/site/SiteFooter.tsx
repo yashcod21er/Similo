@@ -2,7 +2,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router';
 import { ButtonLink } from '@/components/ui/Button';
 import { Container } from '@/components/ui/layout';
-import { Logo } from '@/components/ui/Logo';
+import { Logo, LogoWordmark } from '@/components/ui/Logo';
 import { useSystemStatus } from '@/features/system-status/api';
 import { cn } from '@/lib/cn';
 import { footerColumns } from './navigation';
@@ -86,14 +86,9 @@ export function SiteFooter() {
         </div>
       </Container>
 
-      {/* Oversized wordmark that fades into the page edge. */}
+      {/* Oversized custom wordmark (never re-typed in a font) fading into the page edge. */}
       <Container>
-        <p
-          aria-hidden
-          className="mt-16 bg-gradient-to-b from-ink/[0.11] to-ink/0 bg-clip-text pb-2 text-center text-[clamp(3rem,15vw,13rem)] whitespace-nowrap leading-[0.8] font-semibold tracking-[-0.07em] text-transparent select-none"
-        >
-          Similo
-        </p>
+        <LogoWordmark className="mt-16 mb-2 text-ink/[0.09] select-none mask-fade-b" />
       </Container>
 
       <div className="border-t border-line">
