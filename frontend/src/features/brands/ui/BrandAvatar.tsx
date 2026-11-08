@@ -21,7 +21,7 @@ export function BrandAvatar({
     <span
       className={cn(
         'flex shrink-0 items-center justify-center overflow-hidden rounded-2xl text-[15px] font-semibold text-ink ring-1 ring-line',
-        showLogo ? 'bg-white' : 'bg-paper',
+        showLogo ? 'bg-white' : 'bg-cream',
         className,
       )}
     >

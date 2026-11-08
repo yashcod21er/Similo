@@ -145,7 +145,7 @@ export function AboutPage() {
           <ul className="divide-y divide-line border-y border-line">
             {WONT.map((item) => (
               <li key={item} className="flex items-center gap-4 py-5">
-                <X aria-hidden className="size-5 shrink-0 text-crimson" />
+                <X aria-hidden className="size-5 shrink-0 text-accent" />
                 <span className="text-[1.0625rem] leading-snug">{item}</span>
               </li>
             ))}

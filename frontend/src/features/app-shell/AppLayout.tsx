@@ -48,7 +48,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         </Link>
       </div>
 
-      <div className="mx-3 rounded-2xl bg-paper px-4 py-3 ring-1 ring-line">
+      <div className="mx-3 rounded-2xl bg-cream px-4 py-3 ring-1 ring-line">
         <p className="truncate text-[14px] font-semibold">{me.organization.name}</p>
         <p className="mt-0.5 text-[12.5px] text-muted">Your role: {me.roleLabel}</p>
       </div>
@@ -82,7 +82,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <div className="flex items-center gap-3 px-2 py-2">
           <span
             aria-hidden
-            className="flex size-9 shrink-0 items-center justify-center rounded-full bg-crimson/10 text-[13px] font-semibold text-crimson-dark"
+            className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent/10 text-[13px] font-semibold text-accent-ink"
           >
             {initials(me.user.name)}
           </span>
@@ -137,10 +137,10 @@ export function AppLayout() {
   }, [menuOpen]);
 
   return (
-    <div className="min-h-dvh bg-paper">
+    <div className="min-h-dvh bg-cream">
       <a
         href="#main"
-        className="sr-only z-50 rounded-md bg-crimson px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+        className="sr-only z-50 rounded-md bg-accent px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
       >
         Skip to content
       </a>
@@ -169,7 +169,7 @@ export function AppLayout() {
           <div className="fixed inset-0 z-50 lg:hidden">
             <motion.div
               aria-hidden
-              className="absolute inset-0 bg-midnight/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-night/40 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

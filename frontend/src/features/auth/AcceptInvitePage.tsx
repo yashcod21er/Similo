@@ -44,7 +44,7 @@ export function AcceptInvitePage() {
     return (
       <AuthCard title="This invitation can't be used">
         <div className="flex items-start gap-4">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-paper text-crimson-dark ring-1 ring-line">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-cream text-accent-ink ring-1 ring-line">
             <MailX aria-hidden className="size-5" />
           </span>
           <p className="text-[15px] text-muted">{preview.error.message}</p>
@@ -112,7 +112,7 @@ export function AcceptInvitePage() {
         {formError && <FormAlert>{formError}</FormAlert>}
         <div>
           <p className="text-[14px] font-medium text-ink">Email</p>
-          <p className="mt-2 rounded-xl bg-paper px-4 py-3 text-[15px] text-muted ring-1 ring-line">
+          <p className="mt-2 rounded-xl bg-cream px-4 py-3 text-[15px] text-muted ring-1 ring-line">
             {invite.email}
           </p>
         </div>

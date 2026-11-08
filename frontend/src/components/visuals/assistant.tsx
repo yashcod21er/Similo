@@ -21,7 +21,7 @@ export function AssistantPreview() {
           transition={{ duration: 0.4 }}
           className="flex justify-end gap-2"
         >
-          <p className="max-w-[80%] rounded-2xl rounded-tr-sm bg-crimson px-4 py-2.5 text-[13px]">
+          <p className="max-w-[80%] rounded-2xl rounded-tr-sm bg-accent px-4 py-2.5 text-[13px]">
             Why was acrne-login.com flagged against our brand?
           </p>
           <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-white/10">
@@ -35,15 +35,15 @@ export function AssistantPreview() {
           transition={{ duration: 0.5, ease: EASE_OUT, delay: 0.4 }}
           className="flex gap-2"
         >
-          <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-coral/20 text-coral">
+          <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-accent-soft/20 text-accent-soft">
             <Bot className="size-3.5" />
           </span>
           <div className="rounded-2xl rounded-tl-sm bg-white/[0.06] px-4 py-3 text-[13px] leading-relaxed ring-1 ring-white/10">
             <p>
               It replaces “m” with “rn”, which looks identical in many fonts
-              <sup className="text-coral">[1]</sup>. The page copies your sign-in screen and posts
-              credentials to an external host<sup className="text-coral">[2]</sup>. It was
-              registered two days before detection<sup className="text-coral">[3]</sup>.
+              <sup className="text-accent-soft">[1]</sup>. The page copies your sign-in screen and posts
+              credentials to an external host<sup className="text-accent-soft">[2]</sup>. It was
+              registered two days before detection<sup className="text-accent-soft">[3]</sup>.
             </p>
             <p className="mt-2.5 border-t border-white/10 pt-2.5 text-white/55">
               Not found in the case records: who operates the domain.
@@ -65,7 +65,7 @@ export function AssistantPreview() {
               key={source.id}
               className="flex items-center gap-2 font-mono text-[11px] text-white/60"
             >
-              <span className="text-coral">[{source.id}]</span>
+              <span className="text-accent-soft">[{source.id}]</span>
               <FileText className="size-3" />
               {source.label}
             </li>

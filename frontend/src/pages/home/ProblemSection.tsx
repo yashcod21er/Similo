@@ -39,7 +39,7 @@ export function ProblemSection() {
           <ul className="mt-8 divide-y divide-line border-y border-line">
             {KINDS.map((kind) => (
               <li key={kind.title} className="flex gap-4 py-5">
-                <kind.icon aria-hidden className="mt-0.5 size-5 shrink-0 text-crimson" />
+                <kind.icon aria-hidden className="mt-0.5 size-5 shrink-0 text-accent" />
                 <div>
                   <h3 className="font-semibold">{kind.title}</h3>
                   <p className="mt-1 leading-relaxed text-muted">{kind.text}</p>

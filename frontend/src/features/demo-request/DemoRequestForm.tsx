@@ -14,7 +14,7 @@ import {
 } from './schema';
 
 const inputClass =
-  'mt-2 block w-full rounded-lg border border-line-strong bg-white px-4 py-3 text-[15px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-muted/70 hover:border-ink/30 focus:border-crimson focus:ring-2 focus:ring-crimson/20 aria-invalid:border-crimson aria-invalid:ring-2 aria-invalid:ring-crimson/15';
+  'mt-2 block w-full rounded-lg border border-line-strong bg-white px-4 py-3 text-[15px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-muted/70 hover:border-ink/30 focus:border-accent focus:ring-2 focus:ring-accent/20 aria-invalid:border-accent aria-invalid:ring-2 aria-invalid:ring-accent/15';
 
 function Field({
   label,
@@ -37,7 +37,7 @@ function Field({
       </label>
       {children}
       {error && (
-        <p id={`${htmlFor}-error`} role="alert" className="mt-2 text-[13.5px] text-crimson-dark">
+        <p id={`${htmlFor}-error`} role="alert" className="mt-2 text-[13.5px] text-accent-ink">
           {error}
         </p>
       )}
@@ -185,12 +185,12 @@ export function DemoRequestForm() {
           {INTEREST_OPTIONS.map((option) => (
             <label
               key={option.value}
-              className="flex cursor-pointer items-center gap-3 rounded-lg border border-line-strong bg-white px-4 py-3 text-[14.5px] transition-[border-color,background-color] hover:border-ink/30 has-checked:border-crimson has-checked:bg-crimson/[0.04] has-focus-visible:ring-2 has-focus-visible:ring-crimson/20"
+              className="flex cursor-pointer items-center gap-3 rounded-lg border border-line-strong bg-white px-4 py-3 text-[14.5px] transition-[border-color,background-color] hover:border-ink/30 has-checked:border-accent has-checked:bg-accent/[0.04] has-focus-visible:ring-2 has-focus-visible:ring-accent/20"
             >
               <input
                 type="checkbox"
                 value={option.value}
-                className="size-4 accent-crimson"
+                className="size-4 accent-accent"
                 {...register('interests')}
               />
               {option.label}
@@ -201,7 +201,7 @@ export function DemoRequestForm() {
           <p
             id={`${fieldId('interests')}-error`}
             role="alert"
-            className="mt-2 text-[13.5px] text-crimson-dark"
+            className="mt-2 text-[13.5px] text-accent-ink"
           >
             {errors.interests.message}
           </p>
@@ -232,10 +232,10 @@ export function DemoRequestForm() {
       </div>
 
       <div>
-        <label className="flex items-start gap-3 rounded-lg bg-paper p-4 text-[14px] leading-relaxed text-muted ring-1 ring-line">
+        <label className="flex items-start gap-3 rounded-lg bg-cream p-4 text-[14px] leading-relaxed text-muted ring-1 ring-line">
           <input
             type="checkbox"
-            className="mt-0.5 size-4 shrink-0 accent-crimson"
+            className="mt-0.5 size-4 shrink-0 accent-accent"
             aria-invalid={Boolean(errors.consent)}
             aria-describedby={describedBy('consent')}
             {...register('consent')}
@@ -246,7 +246,7 @@ export function DemoRequestForm() {
           <p
             id={`${fieldId('consent')}-error`}
             role="alert"
-            className="mt-2 text-[13.5px] text-crimson-dark"
+            className="mt-2 text-[13.5px] text-accent-ink"
           >
             {errors.consent.message}
           </p>
@@ -256,9 +256,9 @@ export function DemoRequestForm() {
       {serverError && (
         <div
           role="alert"
-          className="flex gap-3 rounded-lg border border-crimson/30 bg-crimson/[0.05] p-4 text-[14px]"
+          className="flex gap-3 rounded-lg border border-accent/30 bg-accent/[0.05] p-4 text-[14px]"
         >
-          <AlertTriangle aria-hidden className="mt-0.5 size-4 shrink-0 text-crimson-dark" />
+          <AlertTriangle aria-hidden className="mt-0.5 size-4 shrink-0 text-accent-ink" />
           <div>
             <p className="font-medium">Your request was not sent.</p>
             <p className="mt-0.5 text-muted">{serverError.message}</p>

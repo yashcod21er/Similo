@@ -11,7 +11,7 @@ export function Container({ children, className }: { children: ReactNode; classN
 type Tone = 'light' | 'dark';
 
 /**
- * Small label above a heading: 13 px, medium weight, crimson. `index` is
+ * Small label above a heading: 13 px, medium weight, burnt orange. `index` is
  * accepted so older markup keeps compiling, but v3 no longer shows chapter
  * numbers.
  */
@@ -29,7 +29,7 @@ export function Eyebrow({
     <p
       className={cn(
         'text-[13px] font-medium',
-        tone === 'dark' ? 'text-coral' : 'text-crimson-dark',
+        tone === 'dark' ? 'text-accent-soft' : 'text-accent-ink',
         className,
       )}
     >
@@ -54,7 +54,7 @@ export function Pill({
         'inline-flex items-center gap-2 rounded-full px-3 py-1 text-[13px] font-medium',
         tone === 'dark'
           ? 'bg-white/[0.06] text-white/80 ring-1 ring-white/15'
-          : 'bg-paper text-ink/80 ring-1 ring-line',
+          : 'bg-cream text-ink/80 ring-1 ring-line',
         className,
       )}
     >
@@ -144,7 +144,7 @@ export function Stage({ children, className }: { children: ReactNode; className?
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-2xl bg-midnight text-white ring-1 ring-ink/10',
+        'overflow-hidden rounded-2xl bg-night text-white ring-1 ring-ink/10',
         className,
       )}
     >
@@ -159,7 +159,7 @@ export function ExampleTag({ className, tone = 'dark' }: { className?: string; t
     <span
       className={cn(
         'inline-flex shrink-0 items-center rounded-md px-2 py-0.5 text-[11.5px] font-medium whitespace-nowrap',
-        tone === 'dark' ? 'bg-white/10 text-white/70' : 'bg-card text-muted',
+        tone === 'dark' ? 'bg-white/10 text-white/70' : 'bg-cream-deep text-muted',
         className,
       )}
     >

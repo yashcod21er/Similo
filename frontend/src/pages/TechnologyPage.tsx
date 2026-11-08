@@ -217,7 +217,7 @@ export function TechnologyPage() {
                 className="grid scroll-mt-24 grid-cols-1 gap-6 border-t border-line py-10 lg:grid-cols-[1fr_1.7fr] lg:gap-16"
               >
                 <div>
-                  <p className="flex items-center gap-2 text-[13px] font-medium text-crimson-dark">
+                  <p className="flex items-center gap-2 text-[13px] font-medium text-accent-ink">
                     <check.icon aria-hidden className="size-5" />
                     {check.name}
                   </p>
@@ -297,7 +297,7 @@ export function TechnologyPage() {
                 className="grid grid-cols-1 gap-1 py-4 sm:grid-cols-[1fr_1.6fr_1fr] sm:items-center sm:gap-8"
               >
                 <span className="flex items-center gap-3 font-semibold">
-                  <item.icon aria-hidden className="size-5 shrink-0 text-crimson" />
+                  <item.icon aria-hidden className="size-5 shrink-0 text-accent" />
                   {item.name}
                 </span>
                 <span className="text-muted">{item.job}</span>

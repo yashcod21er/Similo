@@ -5,7 +5,7 @@ import { cn } from '@/lib/cn';
 
 /** Shared look for text inputs and selects (design system v2). */
 export const inputClass =
-  'mt-2 block w-full rounded-xl border border-line-strong bg-white px-4 py-3 text-[15px] text-ink shadow-[inset_0_1px_2px_rgb(11_16_32/0.04)] outline-none transition-[border-color,box-shadow] placeholder:text-muted/70 hover:border-ink/30 focus:border-crimson focus:ring-4 focus:ring-crimson/15 aria-invalid:border-crimson aria-invalid:ring-4 aria-invalid:ring-crimson/10 disabled:cursor-not-allowed disabled:bg-paper disabled:text-muted';
+  'mt-2 block w-full rounded-xl border border-line-strong bg-white px-4 py-3 text-[15px] text-ink shadow-[inset_0_1px_2px_rgb(11_16_32/0.04)] outline-none transition-[border-color,box-shadow] placeholder:text-muted/70 hover:border-ink/30 focus:border-accent focus:ring-4 focus:ring-accent/15 aria-invalid:border-accent aria-invalid:ring-4 aria-invalid:ring-accent/10 disabled:cursor-not-allowed disabled:bg-cream disabled:text-muted';
 
 /** Label + control + hint + error, wired together for screen readers. */
 export function Field({
@@ -33,7 +33,7 @@ export function Field({
         </p>
       )}
       {error && (
-        <p id={`${htmlFor}-error`} role="alert" className="mt-2 text-[13.5px] text-crimson-dark">
+        <p id={`${htmlFor}-error`} role="alert" className="mt-2 text-[13.5px] text-accent-ink">
           {error}
         </p>
       )}
@@ -58,13 +58,13 @@ export function FormAlert({
       className={cn(
         'flex items-start gap-3 rounded-2xl px-4 py-3 text-[14px] ring-1',
         error
-          ? 'bg-crimson/[0.06] text-ink ring-crimson/25'
+          ? 'bg-accent/[0.06] text-ink ring-accent/25'
           : 'bg-emerald-50 text-ink ring-emerald-200',
         className,
       )}
     >
       {error ? (
-        <AlertTriangle aria-hidden className="mt-0.5 size-4 shrink-0 text-crimson-dark" />
+        <AlertTriangle aria-hidden className="mt-0.5 size-4 shrink-0 text-accent-ink" />
       ) : (
         <CheckCircle2 aria-hidden className="mt-0.5 size-4 shrink-0 text-emerald-700" />
       )}
@@ -121,7 +121,7 @@ export function PasswordInput({ className, ...props }: Omit<ComponentProps<'inpu
       <button
         type="button"
         onClick={() => setVisible((value) => !value)}
-        className="absolute top-1/2 right-2 mt-1 -translate-y-1/2 rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-muted hover:bg-paper hover:text-ink"
+        className="absolute top-1/2 right-2 mt-1 -translate-y-1/2 rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-muted hover:bg-cream hover:text-ink"
       >
         {visible ? 'Hide' : 'Show'}
         <span className="sr-only"> password</span>

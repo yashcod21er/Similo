@@ -248,8 +248,8 @@ function TrademarkForm({
 
 const STATUS_STYLE: Record<TrademarkStatus, string> = {
   registered: 'bg-emerald-50 text-emerald-900 ring-emerald-200',
-  filed: 'bg-paper text-ink ring-line',
-  expired: 'bg-crimson/[0.06] text-crimson-dark ring-crimson/25',
+  filed: 'bg-cream text-ink ring-line',
+  expired: 'bg-accent/[0.06] text-accent-ink ring-accent/25',
 };
 
 function TrademarkRow({
@@ -287,7 +287,7 @@ function TrademarkRow({
           {trademark.classes.map((niceClass) => (
             <li
               key={niceClass}
-              className="rounded-full bg-paper px-2.5 py-0.5 text-[12.5px] ring-1 ring-line"
+              className="rounded-full bg-cream px-2.5 py-0.5 text-[12.5px] ring-1 ring-line"
             >
               Class {niceClass}
             </li>

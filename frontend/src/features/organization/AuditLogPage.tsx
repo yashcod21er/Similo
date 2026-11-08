@@ -43,7 +43,7 @@ export function AuditLogPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-[14px]">
               <caption className="sr-only">Audit log, newest first</caption>
-              <thead className="border-b border-line bg-paper text-[12.5px] text-muted">
+              <thead className="border-b border-line bg-cream text-[12.5px] text-muted">
                 <tr>
                   <th scope="col" className="px-5 py-3 font-medium sm:px-6">
                     When

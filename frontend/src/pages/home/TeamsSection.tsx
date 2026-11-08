@@ -47,7 +47,7 @@ export function TeamsSection() {
           <ul className="mt-8 divide-y divide-line border-y border-line">
             {TEAMS.map((team) => (
               <li key={team.team} className="flex gap-4 py-5">
-                <team.icon aria-hidden className="mt-0.5 size-5 shrink-0 text-crimson" />
+                <team.icon aria-hidden className="mt-0.5 size-5 shrink-0 text-accent" />
                 <div>
                   <h3 className="font-semibold">{team.team}</h3>
                   <p className="mt-1 leading-relaxed text-muted">{team.text}</p>

@@ -171,7 +171,7 @@ function CommandDialog({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 z-[60] flex items-start justify-center px-3 pt-[12vh]">
       <motion.div
         aria-hidden
-        className="absolute inset-0 bg-midnight/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-night/40 backdrop-blur-sm"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -250,10 +250,10 @@ function CommandDialog({ onClose }: { onClose: () => void }) {
                         onClick={() => run(command)}
                         className={cn(
                           'flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5',
-                          selected ? 'bg-paper' : '',
+                          selected ? 'bg-cream' : '',
                         )}
                       >
-                        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white text-crimson ring-1 ring-line">
+                        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white text-accent ring-1 ring-line">
                           <command.icon aria-hidden className="size-4" />
                         </span>
                         <span className="min-w-0 flex-1">
@@ -278,7 +278,7 @@ function CommandDialog({ onClose }: { onClose: () => void }) {
           })}
         </ul>
 
-        <div className="flex items-center justify-between border-t border-line bg-paper px-5 py-2.5 font-mono text-[11px] text-muted">
+        <div className="flex items-center justify-between border-t border-line bg-cream px-5 py-2.5 font-mono text-[11px] text-muted">
           <span>↑ ↓ to move · Enter to open</span>
           <span className="hidden sm:inline">Ctrl K / ⌘ K</span>
         </div>

@@ -144,12 +144,12 @@ function InviteForm({ myRole, onDone }: { myRole: Role; onDone: () => void }) {
           {options.map((option) => (
             <label
               key={option.value}
-              className="flex cursor-pointer items-start gap-3 rounded-2xl p-3.5 ring-1 ring-line transition-colors has-[:checked]:bg-crimson/[0.04] has-[:checked]:ring-crimson/50 hover:bg-paper"
+              className="flex cursor-pointer items-start gap-3 rounded-2xl p-3.5 ring-1 ring-line transition-colors has-[:checked]:bg-accent/[0.04] has-[:checked]:ring-accent/50 hover:bg-cream"
             >
               <input
                 type="radio"
                 value={option.value}
-                className="mt-1 size-4 accent-[#d92f48]"
+                className="mt-1 size-4 accent-[#c2500a]"
                 {...register('role')}
               />
               <span>
@@ -183,7 +183,7 @@ function RoleControl({
   const changeRole = useChangeRole();
   if (!editable) {
     return (
-      <span className="rounded-full bg-paper px-2.5 py-1 text-[12.5px] font-medium ring-1 ring-line">
+      <span className="rounded-full bg-cream px-2.5 py-1 text-[12.5px] font-medium ring-1 ring-line">
         {member.roleLabel}
       </span>
     );
@@ -198,7 +198,7 @@ function RoleControl({
         onChange={(event) =>
           changeRole.mutate({ userId: member.userId, role: event.target.value as Role })
         }
-        className="rounded-xl border border-line-strong bg-white py-2 pr-8 pl-3 text-[14px] outline-none focus:border-crimson focus:ring-4 focus:ring-crimson/15"
+        className="rounded-xl border border-line-strong bg-white py-2 pr-8 pl-3 text-[14px] outline-none focus:border-accent focus:ring-4 focus:ring-accent/15"
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -207,7 +207,7 @@ function RoleControl({
         ))}
       </select>
       {changeRole.error && (
-        <p role="alert" className="mt-1 max-w-56 text-[12.5px] text-crimson-dark">
+        <p role="alert" className="mt-1 max-w-56 text-[12.5px] text-accent-ink">
           {changeRole.error.message}
         </p>
       )}
@@ -259,7 +259,7 @@ export function MembersPage() {
                 >
                   <span
                     aria-hidden
-                    className="flex size-10 shrink-0 items-center justify-center rounded-full bg-crimson/10 text-[13px] font-semibold text-crimson-dark"
+                    className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent/10 text-[13px] font-semibold text-accent-ink"
                   >
                     {initials(member.name)}
                   </span>

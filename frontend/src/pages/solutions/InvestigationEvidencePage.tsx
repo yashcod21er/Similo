@@ -161,7 +161,7 @@ function CaseFileExample() {
         <ul className="mt-3 divide-y divide-line border-y border-line">
           {EVIDENCE_FILES.map((item) => (
             <li key={item.file} className="flex items-center gap-3 py-3">
-              <item.icon aria-hidden className="size-5 shrink-0 text-crimson" />
+              <item.icon aria-hidden className="size-5 shrink-0 text-accent" />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[14px]">{item.name}</p>
                 <p className="truncate font-mono text-[12px] text-muted">{item.file}</p>

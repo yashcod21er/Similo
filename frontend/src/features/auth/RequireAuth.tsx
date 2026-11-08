@@ -6,7 +6,7 @@ import { useSession } from './api';
 
 function FullScreen({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-paper px-4 text-center">
+    <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-cream px-4 text-center">
       {children}
     </div>
   );
@@ -35,7 +35,7 @@ export function RequireAuth({ children }: { children: ReactNode }) {
   if (session.isError) {
     return (
       <FullScreen>
-        <ServerCrash aria-hidden className="size-8 text-crimson-dark" />
+        <ServerCrash aria-hidden className="size-8 text-accent-ink" />
         <h1 className="text-title font-semibold">Similo can&apos;t be reached right now</h1>
         <p className="max-w-md text-muted">{session.error.message}</p>
         <Button variant="dark" onClick={() => void session.refetch()}>

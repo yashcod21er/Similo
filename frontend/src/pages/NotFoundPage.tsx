@@ -17,7 +17,7 @@ export function NotFoundPage() {
     <section className="bg-white">
       <Container className="py-20 sm:py-28 lg:py-32">
         <div className="max-w-2xl">
-          <p className="text-[13px] font-medium text-crimson-dark">Error 404</p>
+          <p className="text-[13px] font-medium text-accent-ink">Error 404</p>
           <h1 className="text-headline mt-5 font-semibold text-balance">
             We can’t find that page.
           </h1>
@@ -37,7 +37,7 @@ export function NotFoundPage() {
               <li key={link.to}>
                 <Link
                   to={link.to}
-                  className="block py-3 text-[15px] font-medium text-ink hover:text-crimson-dark"
+                  className="block py-3 text-[15px] font-medium text-ink hover:text-accent-ink"
                 >
                   {link.label}
                 </Link>

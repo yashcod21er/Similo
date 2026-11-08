@@ -47,7 +47,7 @@ export function EvidenceVaultCard() {
           <p className="text-[15px] font-semibold tracking-[-0.01em]">Fake sign-in pages</p>
           <p className="mt-1 text-[12px] text-white/50">3 alerts linked · Owner: analyst</p>
         </div>
-        <span className="shrink-0 rounded-full bg-crimson/20 px-2.5 py-1 text-[11.5px] font-semibold text-coral">
+        <span className="shrink-0 rounded-full bg-accent/20 px-2.5 py-1 text-[11.5px] font-semibold text-accent-soft">
           High priority
         </span>
       </div>
@@ -63,7 +63,7 @@ export function EvidenceVaultCard() {
               transition={{ duration: 0.5, ease: EASE_OUT, delay: 0.2 + index * 0.1 }}
               className="flex items-center gap-3 rounded-xl bg-white/[0.03] p-3 ring-1 ring-white/10"
             >
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.06] text-coral">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.06] text-accent-soft">
                 <item.icon aria-hidden className="size-4" />
               </span>
               <div className="min-w-0 flex-1">
@@ -82,7 +82,7 @@ export function EvidenceVaultCard() {
             <li key={note.text} className="relative text-[12.5px] leading-snug">
               <span
                 aria-hidden
-                className="absolute top-1.5 -left-[19px] size-1.5 rounded-full bg-coral"
+                className="absolute top-1.5 -left-[19px] size-1.5 rounded-full bg-accent-soft"
               />
               <span className="text-white/60">{note.who} · </span>
               <span className="text-white/85">{note.text}</span>
@@ -158,7 +158,7 @@ export function FingerprintDemo({ className }: { className?: string }) {
         onChange={(event) => setText(event.target.value)}
         rows={2}
         spellCheck={false}
-        className="mt-4 w-full resize-none rounded-2xl bg-paper px-4 py-3 font-mono text-[14px] leading-relaxed ring-1 ring-line-strong outline-none focus:ring-2 focus:ring-crimson"
+        className="mt-4 w-full resize-none rounded-2xl bg-cream px-4 py-3 font-mono text-[14px] leading-relaxed ring-1 ring-line-strong outline-none focus:ring-2 focus:ring-accent"
       />
 
       {canHash ? (
@@ -176,7 +176,7 @@ export function FingerprintDemo({ className }: { className?: string }) {
                 ? Array.from(current, (char, index) => (
                     <span
                       key={index}
-                      className={char === original?.[index] ? 'text-ink' : 'text-crimson-dark'}
+                      className={char === original?.[index] ? 'text-ink' : 'text-accent-ink'}
                     >
                       {char}
                     </span>
@@ -186,7 +186,7 @@ export function FingerprintDemo({ className }: { className?: string }) {
           </div>
         </dl>
       ) : (
-        <p className="mt-5 rounded-xl bg-paper p-4 text-sm text-muted">
+        <p className="mt-5 rounded-xl bg-cream p-4 text-sm text-muted">
           Your browser only allows this calculation on secure (https) pages.
         </p>
       )}
@@ -195,7 +195,7 @@ export function FingerprintDemo({ className }: { className?: string }) {
         aria-live="polite"
         className={cn(
           'mt-5 flex items-center gap-2 rounded-xl px-3.5 py-3 text-[14px] font-medium',
-          matches ? 'bg-emerald-50 text-emerald-800' : 'bg-crimson/10 text-crimson-dark',
+          matches ? 'bg-emerald-50 text-emerald-800' : 'bg-accent/10 text-accent-ink',
         )}
       >
         {matches ? (

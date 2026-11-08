@@ -5,7 +5,7 @@ import { cn } from '@/lib/cn';
  *
  * The symbol is the "o" of the wordmark, cut along its equator. The bottom half (an exact
  * copy) slides right until the two ends meet, which turns the letter into ∼, the sign for
- * "is similar to". The original half is white; the copy is crimson, the colour Similo uses
+ * "is similar to". The original half is white; the copy is burnt orange, the colour Similo uses
  * for risk. The letterforms start from Geist (SIL Open Font License 1.1) and are hand-spaced,
  * so never re-type the wordmark in a font: use these components or the files in /public/brand.
  */
@@ -29,21 +29,21 @@ const WORDMARK =
  */
 const LOCKUP_WORDMARK = 'matrix(0.02509 0 0 0.02509 40.516 22.699)';
 
-const NAVY = '#0B1020';
-const CRIMSON = '#D92F48';
+const NIGHT = '#12110f';
+const ORANGE = '#c2500a';
 
 /** The app-icon tile. Self-contained, so it works on light and dark surfaces. */
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden className={cn('size-8', className)}>
-      <rect width="32" height="32" rx="8.5" fill={NAVY} />
+      <rect width="32" height="32" rx="8.5" fill={NIGHT} />
       <path d={ORIGINAL} fill="#FFFFFF" />
-      <path d={COPY} fill={CRIMSON} />
+      <path d={COPY} fill={ORANGE} />
     </svg>
   );
 }
 
-/** The bare ∼ in the current text colour. `accent` paints the copy crimson. */
+/** The bare ∼ in the current text colour. `accent` paints the copy burnt orange. */
 export function LogoSymbol({
   className,
   accent = false,
@@ -59,7 +59,7 @@ export function LogoSymbol({
       className={cn('h-4 w-auto', className)}
     >
       <path d={ORIGINAL} />
-      <path d={COPY} fill={accent ? CRIMSON : undefined} />
+      <path d={COPY} fill={accent ? ORANGE : undefined} />
     </svg>
   );
 }
@@ -105,7 +105,7 @@ export function Logo({
       )}
     >
       <svg viewBox="0 0 109.41 32" aria-hidden className="h-8 w-auto shrink-0">
-        <rect width="32" height="32" rx="8.5" fill={NAVY} />
+        <rect width="32" height="32" rx="8.5" fill={NIGHT} />
         {tone === 'dark' && (
           <rect
             x="0.5"
@@ -119,7 +119,7 @@ export function Logo({
           />
         )}
         <path d={ORIGINAL} fill="#FFFFFF" />
-        <path d={COPY} fill={CRIMSON} />
+        <path d={COPY} fill={ORANGE} />
         <path d={WORDMARK} transform={LOCKUP_WORDMARK} fill="currentColor" />
       </svg>
       <span className="sr-only">Similo</span>

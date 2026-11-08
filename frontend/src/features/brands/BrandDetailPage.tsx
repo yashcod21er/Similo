@@ -55,8 +55,8 @@ function StatusControl({ brand }: { brand: Brand }) {
           <label
             key={choice.value}
             className={cn(
-              'cursor-pointer rounded-full px-4 py-1.5 text-[14px] font-medium transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-crimson',
-              brand.status === choice.value ? 'bg-midnight text-white' : 'text-ink hover:bg-paper',
+              'cursor-pointer rounded-full px-4 py-1.5 text-[14px] font-medium transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent',
+              brand.status === choice.value ? 'bg-night text-white' : 'text-ink hover:bg-cream',
             )}
           >
             <input

@@ -17,7 +17,7 @@ export function ChipList({
       {items.map((item) => (
         <li
           key={item}
-          className="rounded-full bg-paper px-3 py-1 text-[13.5px] text-ink ring-1 ring-line"
+          className="rounded-full bg-cream px-3 py-1 text-[13.5px] text-ink ring-1 ring-line"
         >
           {label(item)}
         </li>
@@ -102,16 +102,16 @@ export function ChipInput({
       <div
         onClick={() => inputRef.current?.focus()}
         className={cn(
-          'flex flex-wrap gap-2 rounded-xl border bg-white p-2 shadow-[inset_0_1px_2px_rgb(11_16_32/0.04)] transition-[border-color,box-shadow] focus-within:border-crimson focus-within:ring-4 focus-within:ring-crimson/15',
+          'flex flex-wrap gap-2 rounded-xl border bg-white p-2 shadow-[inset_0_1px_2px_rgb(11_16_32/0.04)] transition-[border-color,box-shadow] focus-within:border-accent focus-within:ring-4 focus-within:ring-accent/15',
           invalid
-            ? 'border-crimson ring-4 ring-crimson/10'
+            ? 'border-accent ring-4 ring-accent/10'
             : 'border-line-strong hover:border-ink/30',
         )}
       >
         {items.map((item) => (
           <span
             key={item}
-            className="inline-flex max-w-full items-center gap-1 rounded-full bg-paper py-1 pr-1 pl-3 text-[13.5px] text-ink ring-1 ring-line"
+            className="inline-flex max-w-full items-center gap-1 rounded-full bg-cream py-1 pr-1 pl-3 text-[13.5px] text-ink ring-1 ring-line"
           >
             <span className="min-w-0 break-words">{item}</span>
             <button
@@ -139,7 +139,7 @@ export function ChipInput({
         />
       </div>
       {problem && (
-        <p id={problemId} role="alert" className="mt-2 text-[13.5px] text-crimson-dark">
+        <p id={problemId} role="alert" className="mt-2 text-[13.5px] text-accent-ink">
           {problem}
         </p>
       )}

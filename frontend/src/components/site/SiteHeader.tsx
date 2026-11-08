@@ -32,9 +32,9 @@ function DropdownPanel({ menu, onNavigate }: { menu: NavMenu; onNavigate: () => 
               <Link
                 to={item.to}
                 onClick={onNavigate}
-                className="flex gap-3 rounded-lg p-3 transition-colors hover:bg-paper"
+                className="flex gap-3 rounded-lg p-3 transition-colors hover:bg-cream"
               >
-                <item.icon aria-hidden className="mt-0.5 size-5 shrink-0 text-crimson" />
+                <item.icon aria-hidden className="mt-0.5 size-5 shrink-0 text-accent" />
                 <span>
                   <span className="block text-[15px] font-medium text-ink">{item.label}</span>
                   <span className="mt-0.5 block text-[13.5px] leading-snug text-muted">
@@ -49,9 +49,9 @@ function DropdownPanel({ menu, onNavigate }: { menu: NavMenu; onNavigate: () => 
           <Link
             to={menu.featured.to}
             onClick={onNavigate}
-            className="group flex flex-col rounded-lg bg-paper p-4 transition-colors hover:bg-card/70"
+            className="group flex flex-col rounded-lg bg-cream p-4 transition-colors hover:bg-cream-deep/70"
           >
-            <span className="text-[13px] font-medium text-crimson-dark">
+            <span className="text-[13px] font-medium text-accent-ink">
               {menu.featured.eyebrow}
             </span>
             <span className="mt-2 text-[15px] leading-snug font-semibold tracking-[-0.01em]">
@@ -188,7 +188,7 @@ function MobileNav({ onClose }: { onClose: () => void }) {
                       onClick={onClose}
                       className="flex items-center gap-3 rounded-lg py-2.5"
                     >
-                      <item.icon aria-hidden className="size-5 shrink-0 text-crimson" />
+                      <item.icon aria-hidden className="size-5 shrink-0 text-accent" />
                       <span>
                         <span className="block font-medium">{item.label}</span>
                         <span className="block text-[13px] text-muted">{item.description}</span>
@@ -325,7 +325,7 @@ export function SiteHeader() {
               >
                 <Search aria-hidden className="size-4" />
                 <span className="hidden sm:inline">Search</span>
-                <kbd className="hidden rounded bg-paper px-1.5 py-0.5 font-mono text-[10.5px] ring-1 ring-line sm:inline">
+                <kbd className="hidden rounded bg-cream px-1.5 py-0.5 font-mono text-[10.5px] ring-1 ring-line sm:inline">
                   {shortcut}
                 </kbd>
               </button>

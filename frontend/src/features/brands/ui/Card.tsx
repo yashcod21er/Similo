@@ -34,7 +34,7 @@ export function Card({
 /** A quiet message box for "nothing here yet" inside a tab. */
 export function EmptyNote({ children }: { children: ReactNode }) {
   return (
-    <p className="rounded-2xl bg-paper px-4 py-6 text-center text-[14.5px] text-ink ring-1 ring-line">
+    <p className="rounded-2xl bg-cream px-4 py-6 text-center text-[14.5px] text-ink ring-1 ring-line">
       {children}
     </p>
   );

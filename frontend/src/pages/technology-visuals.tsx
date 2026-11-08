@@ -26,7 +26,7 @@ export function ScoreBreakdown() {
             <p className="text-[13px] font-medium text-muted">Priority for acrne-login.com</p>
             <p className="mt-1 flex items-baseline gap-3">
               <span className="text-5xl font-semibold tracking-tight">{total}</span>
-              <span className="rounded-md bg-crimson/10 px-2 py-0.5 text-[13px] font-semibold text-crimson-dark">
+              <span className="rounded-md bg-accent/10 px-2 py-0.5 text-[13px] font-semibold text-accent-ink">
                 High
               </span>
             </p>
@@ -41,9 +41,9 @@ export function ScoreBreakdown() {
                 <span className="shrink-0 font-mono text-[13px]">+{part.points}</span>
               </div>
               <div className="mt-2 flex items-center gap-3">
-                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-card">
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-cream-deep">
                   <div
-                    className="h-full rounded-full bg-crimson"
+                    className="h-full rounded-full bg-accent"
                     style={{ width: `${(part.points / MAX_POINTS) * 100}%` }}
                   />
                 </div>

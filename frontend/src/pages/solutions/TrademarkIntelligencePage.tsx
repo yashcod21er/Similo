@@ -130,7 +130,7 @@ export function TrademarkIntelligencePage() {
                   <li key={risk} className="flex gap-3 leading-relaxed text-ink/85">
                     <span
                       aria-hidden
-                      className="mt-2.5 size-1.5 shrink-0 rounded-full bg-crimson"
+                      className="mt-2.5 size-1.5 shrink-0 rounded-full bg-accent"
                     />
                     {risk}
                   </li>

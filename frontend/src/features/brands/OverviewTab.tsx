@@ -123,7 +123,7 @@ export function OverviewTab({
               <button
                 type="button"
                 onClick={() => onOpenTab(item.tab)}
-                className="flex w-full flex-col items-start rounded-2xl p-4 text-left ring-1 ring-line transition-colors hover:bg-paper"
+                className="flex w-full flex-col items-start rounded-2xl p-4 text-left ring-1 ring-line transition-colors hover:bg-cream"
               >
                 <span className="text-[13.5px] text-muted">{item.label}</span>
                 <span className="mt-0.5 font-medium">{item.value}</span>

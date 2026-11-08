@@ -13,7 +13,7 @@ function ClassChip({ value, overlap }: { value: number; overlap?: boolean }) {
       className={cn(
         'rounded-full px-2 py-0.5 font-mono text-[10.5px] ring-1',
         overlap
-          ? 'bg-crimson/20 text-coral ring-crimson/40'
+          ? 'bg-accent/20 text-accent-soft ring-accent/40'
           : 'bg-white/5 text-white/70 ring-white/10',
       )}
     >
@@ -36,11 +36,11 @@ export function TrademarkWatchCard() {
       title="trademark watch · new filing"
       className="mx-auto w-full max-w-lg [contain:inline-size]"
     >
-      <div className="border-b border-white/10 bg-crimson/[0.08] px-5 py-4">
+      <div className="border-b border-white/10 bg-accent/[0.08] px-5 py-4">
         <div className="flex items-end justify-between gap-4">
           <div>
             <p className="flex items-center gap-2 text-[12.5px] text-white/70">
-              <CalendarClock aria-hidden className="size-4 text-coral" />
+              <CalendarClock aria-hidden className="size-4 text-accent-soft" />
               Time left to object
             </p>
             <p className="mt-1 text-3xl font-semibold tracking-[-0.03em]">
@@ -55,7 +55,7 @@ export function TrademarkWatchCard() {
         </div>
         <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-coral to-crimson"
+            className="h-full rounded-full bg-gradient-to-r from-accent-soft to-accent"
             initial={{ width: 0 }}
             whileInView={{ width: `${elapsed}%` }}
             viewport={{ once: true }}
@@ -65,7 +65,7 @@ export function TrademarkWatchCard() {
       </div>
 
       <div className="grid grid-cols-2 gap-px bg-white/10">
-        <div className="bg-midnight p-4 sm:p-5">
+        <div className="bg-night p-4 sm:p-5">
           <p className="text-[11.5px] text-white/50">Your trademark</p>
           <p className="mt-1.5 text-[15px] font-semibold tracking-[-0.01em]">ACME GLOBAL</p>
           <div className="mt-2.5 flex flex-wrap items-center gap-1">
@@ -74,8 +74,8 @@ export function TrademarkWatchCard() {
             <ClassChip value={42} overlap />
           </div>
         </div>
-        <div className="bg-midnight p-4 sm:p-5">
-          <p className="text-[11.5px] text-coral">New filing</p>
+        <div className="bg-night p-4 sm:p-5">
+          <p className="text-[11.5px] text-accent-soft">New filing</p>
           <p className="mt-1.5 text-[15px] font-semibold tracking-[-0.01em]">ACME-CLOUDX</p>
           <div className="mt-2.5 flex flex-wrap items-center gap-1">
             <span className="mr-0.5 text-[10.5px] text-white/60">Classes</span>
@@ -98,7 +98,7 @@ export function TrademarkWatchCard() {
               transition={{ duration: 0.45, ease: EASE_OUT, delay: 0.4 + index * 0.1 }}
               className="flex items-start gap-2.5"
             >
-              <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-crimson/25 text-coral">
+              <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-accent/25 text-accent-soft">
                 <Check aria-hidden className="size-2.5" strokeWidth={3} />
               </span>
               <span className="text-[13px] leading-snug">
@@ -109,11 +109,11 @@ export function TrademarkWatchCard() {
           ))}
         </ul>
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
-          <span className="rounded-full bg-crimson/20 px-2.5 py-1 text-[12px] font-semibold text-coral">
+          <span className="rounded-full bg-accent/20 px-2.5 py-1 text-[12px] font-semibold text-accent-soft">
             High priority
           </span>
           <span className="inline-flex items-center gap-1.5 text-[12px] text-white/65">
-            <FileText aria-hidden className="size-3.5 text-coral" />
+            <FileText aria-hidden className="size-3.5 text-accent-soft" />
             Draft notes for legal review
           </span>
         </div>
@@ -150,7 +150,7 @@ export function SoundAlikePanel() {
             <span
               className={cn(
                 'inline-flex items-center gap-1.5 text-[12.5px]',
-                row.match ? 'text-coral' : 'text-white/50',
+                row.match ? 'text-accent-soft' : 'text-white/50',
               )}
             >
               {row.match ? (
@@ -182,11 +182,11 @@ export function ProductClassPanel() {
               className={cn(
                 'flex aspect-square items-center justify-center rounded-md font-mono text-[10.5px]',
                 mine && other
-                  ? 'bg-crimson text-white shadow-[0_0_14px_rgb(217_47_72/0.6)]'
+                  ? 'bg-accent text-white shadow-[0_0_14px_rgb(217_47_72/0.6)]'
                   : mine
                     ? 'bg-white/15 text-white'
                     : other
-                      ? 'bg-coral/25 text-coral'
+                      ? 'bg-accent-soft/25 text-accent-soft'
                       : 'bg-white/[0.04] text-white/30',
               )}
             >
@@ -200,10 +200,10 @@ export function ProductClassPanel() {
           <span aria-hidden className="size-2.5 rounded-sm bg-white/25" /> Your classes
         </span>
         <span className="flex items-center gap-1.5">
-          <span aria-hidden className="size-2.5 rounded-sm bg-coral/50" /> Their classes
+          <span aria-hidden className="size-2.5 rounded-sm bg-accent-soft/50" /> Their classes
         </span>
         <span className="flex items-center gap-1.5">
-          <span aria-hidden className="size-2.5 rounded-sm bg-crimson" /> Both — worth a look
+          <span aria-hidden className="size-2.5 rounded-sm bg-accent" /> Both — worth a look
         </span>
       </div>
     </div>
@@ -227,7 +227,7 @@ export function LogoPanel() {
           </div>
           <div className="mt-2 h-1.5 rounded-full bg-white/10">
             <motion.div
-              className="h-full rounded-full bg-coral"
+              className="h-full rounded-full bg-accent-soft"
               initial={{ width: 0 }}
               animate={{ width: `${signal.value * 100}%` }}
               transition={{ duration: 1, ease: EASE_OUT, delay: index * 0.1 }}
@@ -261,11 +261,11 @@ export function JournalPanel() {
           className={cn(
             'flex items-center gap-3 rounded-xl px-4 py-3 ring-1',
             index === JOURNAL_STEPS.length - 1
-              ? 'bg-crimson/15 ring-crimson/40'
+              ? 'bg-accent/15 ring-accent/40'
               : 'bg-white/[0.04] ring-white/10',
           )}
         >
-          <span className="font-mono text-[11px] text-coral">
+          <span className="font-mono text-[11px] text-accent-soft">
             {String(index + 1).padStart(2, '0')}
           </span>
           <span className="text-[13px]">{step.label}</span>
@@ -294,7 +294,7 @@ export function OppositionWindows({ className }: { className?: string }) {
   return (
     <div className={cn('rounded-2xl bg-white p-6 ring-1 ring-line', className)}>
       <p className="flex items-center gap-2 text-[13px] font-medium text-muted">
-        <Layers3 aria-hidden className="size-4 text-crimson-dark" />
+        <Layers3 aria-hidden className="size-4 text-accent-ink" />
         How long you have to object after publication
       </p>
       <ul className="mt-5 space-y-4">
@@ -307,9 +307,9 @@ export function OppositionWindows({ className }: { className?: string }) {
               </span>
               <span className="shrink-0 font-mono text-[12.5px] text-ink">{period.label}</span>
             </div>
-            <div className="mt-2 h-2 overflow-hidden rounded-full bg-card">
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-cream-deep">
               <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-coral to-crimson"
+                className="h-full rounded-full bg-gradient-to-r from-accent-soft to-accent"
                 initial={{ width: 0 }}
                 whileInView={{ width: `${(period.days / 120) * 100}%` }}
                 viewport={{ once: true }}

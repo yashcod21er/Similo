@@ -31,7 +31,7 @@ function StatusIcon({ state }: { state: DependencyState }) {
     case 'up':
       return <CheckCircle2 aria-hidden className="size-5 shrink-0 text-emerald-600" />;
     case 'down':
-      return <XCircle aria-hidden className="size-5 shrink-0 text-crimson-dark" />;
+      return <XCircle aria-hidden className="size-5 shrink-0 text-accent-ink" />;
     case 'not_configured':
       return <CircleDashed aria-hidden className="size-5 shrink-0 text-amber-600" />;
   }
@@ -79,11 +79,11 @@ export function SystemStatusPage() {
   const { data, error, isPending, isFetching, refetch } = useSystemStatus();
 
   return (
-    <div className="bg-paper">
+    <div className="bg-cream">
       <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-20">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[13px] font-medium text-crimson-dark">Platform</p>
+            <p className="text-[13px] font-medium text-accent-ink">Platform</p>
             <h1 className="text-headline mt-4 font-semibold">System status</h1>
             <p className="mt-4 max-w-md leading-relaxed text-muted">
               Live checks of the connection between the web app, the API, the database and the AI
@@ -94,7 +94,7 @@ export function SystemStatusPage() {
             type="button"
             onClick={() => void refetch()}
             disabled={isFetching}
-            className="inline-flex h-10 items-center gap-2 rounded-full border border-line-strong bg-white px-4 text-sm font-medium hover:bg-paper disabled:opacity-50"
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-line-strong bg-white px-4 text-sm font-medium hover:bg-cream disabled:opacity-50"
           >
             <RefreshCw aria-hidden className={`size-4 ${isFetching ? 'animate-spin' : ''}`} />
             Refresh
@@ -113,7 +113,7 @@ export function SystemStatusPage() {
           {error && (
             <Panel>
               <div role="alert" className="flex items-start gap-3 px-5 py-5 sm:px-6">
-                <AlertTriangle aria-hidden className="mt-0.5 size-5 shrink-0 text-crimson-dark" />
+                <AlertTriangle aria-hidden className="mt-0.5 size-5 shrink-0 text-accent-ink" />
                 <div>
                   <p className="font-medium">The API could not be reached</p>
                   <p className="mt-1 text-sm text-muted">{error.message}</p>

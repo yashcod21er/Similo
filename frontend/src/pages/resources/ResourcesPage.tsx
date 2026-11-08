@@ -36,7 +36,7 @@ function ResourceCard({ resource }: { resource: Resource }) {
         ratio="aspect-[3/2]"
         sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 100vw"
       />
-      <p className="mt-5 text-[13px] font-medium text-crimson-dark">
+      <p className="mt-5 text-[13px] font-medium text-accent-ink">
         {resource.category} · {resource.type}
       </p>
       <h3 className="mt-2 text-[1.1875rem] leading-snug font-semibold tracking-[-0.02em] group-hover:underline group-hover:decoration-line-strong group-hover:underline-offset-4">
@@ -70,7 +70,7 @@ function FeaturedResource({ resource }: { resource: Resource }) {
           Read the guide
           <ArrowRight
             aria-hidden
-            className="size-4 text-crimson-dark transition-transform group-hover:translate-x-1"
+            className="size-4 text-accent-ink transition-transform group-hover:translate-x-1"
           />
           <span className="text-[13px] font-normal text-muted">
             · {resource.readMinutes} min read
@@ -127,14 +127,14 @@ export function ResourcesPage() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search guides"
-                className="h-12 w-full rounded-lg border border-line-strong bg-white pr-12 pl-12 text-base outline-none placeholder:text-muted/80 hover:border-ink/30 focus:border-crimson focus:ring-2 focus:ring-crimson/20"
+                className="h-12 w-full rounded-lg border border-line-strong bg-white pr-12 pl-12 text-base outline-none placeholder:text-muted/80 hover:border-ink/30 focus:border-accent focus:ring-2 focus:ring-accent/20"
               />
               {query && (
                 <button
                   type="button"
                   aria-label="Clear search"
                   onClick={() => setQuery('')}
-                  className="absolute top-1/2 right-2 -translate-y-1/2 rounded-md p-2 text-muted hover:bg-paper"
+                  className="absolute top-1/2 right-2 -translate-y-1/2 rounded-md p-2 text-muted hover:bg-cream"
                 >
                   <X aria-hidden className="size-4" />
                 </button>
@@ -147,7 +147,7 @@ export function ResourcesPage() {
                   key={term}
                   type="button"
                   onClick={() => setQuery(term)}
-                  className="font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-crimson"
+                  className="font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-accent"
                 >
                   {term}
                 </button>
@@ -201,7 +201,7 @@ export function ResourcesPage() {
                 setQuery('');
                 setCategory('All');
               }}
-              className="mt-5 font-medium text-crimson-dark hover:underline"
+              className="mt-5 font-medium text-accent-ink hover:underline"
             >
               Clear filters
             </button>

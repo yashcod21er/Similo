@@ -21,7 +21,7 @@ const NEXT_STEPS = [
 
 export function ContactPage() {
   return (
-    <section className="bg-paper">
+    <section className="bg-cream">
       <Container className="grid grid-cols-1 gap-12 py-14 sm:py-20 lg:grid-cols-[1fr_1.1fr] lg:gap-16 lg:py-24">
         <div>
           <Eyebrow>Request a demo</Eyebrow>
@@ -39,7 +39,7 @@ export function ContactPage() {
           <ol className="mt-5 space-y-5">
             {NEXT_STEPS.map((step, index) => (
               <li key={step.title} className="flex gap-4">
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-white text-[13px] font-medium text-crimson-dark ring-1 ring-line-strong">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-white text-[13px] font-medium text-accent-ink ring-1 ring-line-strong">
                   {index + 1}
                 </span>
                 <div>
@@ -51,7 +51,7 @@ export function ContactPage() {
           </ol>
 
           <div className="mt-10 flex gap-3.5 rounded-xl border border-line bg-white p-5">
-            <Lock aria-hidden className="mt-0.5 size-5 shrink-0 text-crimson" />
+            <Lock aria-hidden className="mt-0.5 size-5 shrink-0 text-accent" />
             <p className="text-[14.5px] leading-relaxed text-muted">
               Your details are used only to reply to your request. If our system can’t save the
               form, it will tell you straight away, so nothing is lost silently.

@@ -99,7 +99,7 @@ function EmptyBrands({ canManage, onAdd }: { canManage: boolean; onAdd: () => vo
   return (
     <div className="rounded-3xl bg-white p-6 ring-1 ring-line sm:p-10">
       <div className="mx-auto max-w-2xl">
-        <span className="flex size-12 items-center justify-center rounded-2xl bg-paper ring-1 ring-line">
+        <span className="flex size-12 items-center justify-center rounded-2xl bg-cream ring-1 ring-line">
           <ShieldCheck aria-hidden className="size-6 text-ink" />
         </span>
         <h2 className="text-title mt-5 font-semibold">Add the first brand you want to protect</h2>
@@ -123,7 +123,7 @@ function EmptyBrands({ canManage, onAdd }: { canManage: boolean; onAdd: () => vo
             <span>Your registered trademarks, entered by you, to compare with new filings.</span>
           </li>
         </ul>
-        <p className="mt-5 rounded-2xl bg-paper px-4 py-3 text-[14.5px] text-ink ring-1 ring-line">
+        <p className="mt-5 rounded-2xl bg-cream px-4 py-3 text-[14.5px] text-ink ring-1 ring-line">
           <strong className="font-semibold">Monitoring starts in a later phase.</strong> For now you
           can add and organise your brand details. Nothing is being scanned yet.
         </p>

@@ -72,7 +72,7 @@ export function SplitHero({
 
 /**
  * One band of a page. Alternate `light` (paper) and `white`; use `dark`
- * (midnight) at most once per page.
+ * (night) at most once per page.
  */
 export function Section({
   children,
@@ -91,7 +91,7 @@ export function Section({
       className={cn(
         'scroll-mt-20 py-20 lg:py-28',
         tone === 'white' && 'border-y border-line bg-white',
-        tone === 'dark' && 'bg-midnight text-white',
+        tone === 'dark' && 'bg-night text-white',
         className,
       )}
     >
@@ -117,7 +117,7 @@ export function CtaBand({
   secondary?: { label: string; to: string };
 }) {
   return (
-    <section className="bg-midnight text-white">
+    <section className="bg-night text-white">
       <Container className="grid grid-cols-1 gap-8 py-16 lg:grid-cols-[1.5fr_1fr] lg:items-center lg:gap-16 lg:py-20">
         <Reveal>
           <Eyebrow tone="dark">{eyebrow}</Eyebrow>
@@ -169,7 +169,7 @@ export function ProcessSteps({
       {steps.map((step, index) => (
         <RevealItem key={step.title}>
           <div className={cn('border-t pt-5', dark ? 'border-white/20' : 'border-line-strong')}>
-            <p className={cn('text-[13px] font-medium', dark ? 'text-coral' : 'text-crimson-dark')}>
+            <p className={cn('text-[13px] font-medium', dark ? 'text-accent-soft' : 'text-accent-ink')}>
               Step {index + 1}
             </p>
             <h3 className={cn('text-title mt-2 font-semibold', dark && 'text-white')}>
@@ -208,7 +208,7 @@ export function FeatureCard({
 }) {
   return (
     <SpotlightCard className={cn('flex h-full flex-col p-6', className)}>
-      {icon && <span className="mb-5 text-crimson [&>svg]:size-5">{icon}</span>}
+      {icon && <span className="mb-5 text-accent [&>svg]:size-5">{icon}</span>}
       <h3 className="text-[1.0625rem] font-semibold tracking-[-0.015em]">{title}</h3>
       <p className="mt-2 leading-relaxed text-muted">{description}</p>
       {children && <div className="mt-5 flex-1">{children}</div>}

@@ -14,7 +14,7 @@ import { NotFoundPage } from '@/pages/NotFoundPage';
 export const router = createBrowserRouter([
   {
     element: <SiteLayout />,
-    hydrateFallbackElement: <div className="min-h-dvh bg-paper" />,
+    hydrateFallbackElement: <div className="min-h-dvh bg-cream" />,
     children: [
       { index: true, element: <HomePage /> },
       {
@@ -87,7 +87,7 @@ export const router = createBrowserRouter([
   /* Sign in, sign up and invitations: a focused layout without site navigation. */
   {
     lazy: () => import('@/features/auth/AuthLayout').then((m) => ({ Component: m.AuthLayout })),
-    hydrateFallbackElement: <div className="min-h-dvh bg-paper" />,
+    hydrateFallbackElement: <div className="min-h-dvh bg-cream" />,
     children: [
       {
         path: 'sign-in',
@@ -112,7 +112,7 @@ export const router = createBrowserRouter([
     path: 'app',
     lazy: () =>
       import('@/features/app-shell/ProtectedApp').then((m) => ({ Component: m.ProtectedApp })),
-    hydrateFallbackElement: <div className="min-h-dvh bg-paper" />,
+    hydrateFallbackElement: <div className="min-h-dvh bg-cream" />,
     children: [
       {
         index: true,

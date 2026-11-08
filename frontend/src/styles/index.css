@@ -6,24 +6,24 @@
 /*
  * Similo design tokens (design system v3, "Calm").
  * See docs/DESIGN-SYSTEM.md for how they are meant to be used.
- * Tailwind turns each token into utilities, e.g. `bg-midnight`, `text-ink`,
+ * Tailwind turns each token into utilities, e.g. `bg-night`, `text-ink`,
  * `border-line`.
  */
 @theme {
-  /* Brand palette (fixed by the product brief) */
-  --color-midnight: #0b1020; /* Midnight Navy: the one dark band per page, product stages */
-  --color-slate-deep: #252c40; /* Slate: raised surfaces on dark */
-  --color-crimson: #d92f48; /* Signal colour: risk, primary call to action */
-  --color-crimson-dark: #b8243b; /* Hover / pressed crimson, small text accents */
-  --color-coral: #e98a91; /* Soft accent on dark surfaces */
-  --color-paper: #f7f7fa; /* Off-white page canvas */
-  --color-ink: #111827; /* Main text */
-  --color-card: #e9ebf3; /* Quiet fills: chips, tracks, skeletons */
+  /* Brand palette v4: cream + black + burnt orange */
+  --color-night: #12110f; /* Near-black: dark bands, hero, product windows */
+  --color-night-raised: #24211d; /* Raised surfaces on dark */
+  --color-accent: #c2500a; /* Burnt orange: primary actions, signature (white text 4.7:1) */
+  --color-accent-ink: #9e3f00; /* Burnt orange for small text on cream (5.8:1), hover */
+  --color-accent-soft: #ee8a45; /* Burnt orange on dark surfaces (6.9:1 on night) */
+  --color-cream: #f6f0e6; /* Page canvas */
+  --color-ink: #15130f; /* Main text */
+  --color-cream-deep: #eae1d3; /* Quiet fills: chips, tracks, skeletons */
 
-  /* Neutrals derived from the palette */
-  --color-line: #e3e5ee; /* Hairline borders on light surfaces */
-  --color-line-strong: #cfd3e0; /* Borders that must stay visible (inputs) */
-  --color-muted: #555c70; /* Secondary text: 6.4:1 on white */
+  /* Neutrals derived from the palette (warm) */
+  --color-line: #e0d6c6; /* Hairline borders on light surfaces */
+  --color-line-strong: #c9bba5; /* Borders that must stay visible (inputs) */
+  --color-muted: #5e564c; /* Secondary text: 6.3:1 on cream */
 
   /* Brand rule: no purple or violet. Removing these palettes makes the rule
      enforceable: `bg-purple-500` and friends simply don't exist. */
@@ -86,7 +86,7 @@
   }
 
   body {
-    @apply bg-paper font-sans text-ink;
+    @apply bg-cream font-sans text-ink;
   }
 
   /* The serif italic accent is allowed in a page's hero headline only (h1).
@@ -105,7 +105,7 @@
   }
 
   ::selection {
-    @apply bg-crimson text-white;
+    @apply bg-accent text-white;
   }
 
   /* Edge draws its own "reveal password" eye; our password fields have a Show button. */
@@ -115,7 +115,7 @@
   }
 
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-crimson;
+    @apply outline-2 outline-offset-2 outline-accent;
   }
 }
 

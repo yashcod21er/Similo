@@ -50,7 +50,7 @@ const QUEUE = [
     name: 'acme-login.com',
     why: 'Looks like your brand, has a login form',
     level: 'High risk',
-    levelClass: 'bg-crimson/10 text-crimson-dark',
+    levelClass: 'bg-accent/10 text-accent-ink',
   },
   {
     icon: Smartphone,
@@ -66,7 +66,7 @@ const QUEUE = [
     name: 'ACMEE',
     why: 'Sounds like your mark, same product class',
     level: 'Needs review',
-    levelClass: 'bg-card text-ink',
+    levelClass: 'bg-cream-deep text-ink',
   },
 ];
 
@@ -134,7 +134,7 @@ function AlertListExample() {
         <ul className="divide-y divide-line">
           {QUEUE.map((row) => (
             <li key={row.name} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-4">
-              <row.icon aria-hidden className="size-5 shrink-0 text-crimson" />
+              <row.icon aria-hidden className="size-5 shrink-0 text-accent" />
               <div className="min-w-0 flex-1 basis-40">
                 <p className="flex items-baseline gap-2">
                   <span className="truncate font-mono text-[15px] font-medium">{row.name}</span>
@@ -153,7 +153,7 @@ function AlertListExample() {
             </li>
           ))}
         </ul>
-        <p className="border-t border-line bg-paper px-5 py-3 text-[13px] text-muted">
+        <p className="border-t border-line bg-cream px-5 py-3 text-[13px] text-muted">
           Nothing is sent or taken down without a person’s approval.
         </p>
       </div>
@@ -213,7 +213,7 @@ export function PlatformPage() {
             <ul className="mt-8 space-y-3">
               {LIST_POINTS.map((item) => (
                 <li key={item} className="flex items-center gap-3 font-medium">
-                  <Check aria-hidden className="size-5 shrink-0 text-crimson" />
+                  <Check aria-hidden className="size-5 shrink-0 text-accent" />
                   {item}
                 </li>
               ))}
@@ -259,11 +259,11 @@ export function PlatformPage() {
                   className="group grid grid-cols-1 gap-1 py-5 sm:grid-cols-[1fr_1.4fr_auto] sm:items-center sm:gap-8"
                 >
                   <span className="flex items-center gap-3 text-[1.0625rem] font-semibold">
-                    <item.icon aria-hidden className="size-5 shrink-0 text-crimson" />
+                    <item.icon aria-hidden className="size-5 shrink-0 text-accent" />
                     {item.label}
                   </span>
                   <span className="text-muted sm:pl-0">{item.description}</span>
-                  <span className="mt-2 inline-flex items-center gap-1.5 text-[15px] font-medium text-crimson-dark sm:mt-0">
+                  <span className="mt-2 inline-flex items-center gap-1.5 text-[15px] font-medium text-accent-ink sm:mt-0">
                     Learn more
                     <ArrowRight
                       aria-hidden

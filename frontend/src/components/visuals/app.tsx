@@ -29,8 +29,8 @@ export function AppIcon({
       className={cn(
         'flex size-14 shrink-0 items-center justify-center rounded-[18px] shadow-lg',
         variant === 'official'
-          ? 'bg-gradient-to-br from-[#ff6b80] to-crimson shadow-crimson/30'
-          : 'bg-gradient-to-br from-[#f2788a] to-[#c93a50] shadow-crimson/20',
+          ? 'bg-gradient-to-br from-[#ff6b80] to-accent shadow-accent/30'
+          : 'bg-gradient-to-br from-[#f2788a] to-[#c93a50] shadow-accent/20',
         className,
       )}
     >
@@ -65,10 +65,10 @@ function StoreListing({
     <div
       className={cn(
         'rounded-2xl p-4 ring-1',
-        official ? 'bg-white/[0.04] ring-white/10' : 'bg-crimson/[0.12] ring-crimson/40',
+        official ? 'bg-white/[0.04] ring-white/10' : 'bg-accent/[0.12] ring-accent/40',
       )}
     >
-      <p className={cn('text-[11.5px]', official ? 'text-white/50' : 'text-coral')}>
+      <p className={cn('text-[11.5px]', official ? 'text-white/50' : 'text-accent-soft')}>
         {official ? 'Your app' : 'Found in the store'}
       </p>
       <div className="mt-3 flex items-center gap-3">
@@ -79,7 +79,7 @@ function StoreListing({
             {official ? (
               <BadgeCheck aria-hidden className="size-3 shrink-0 text-emerald-400" />
             ) : (
-              <ShieldAlert aria-hidden className="size-3 shrink-0 text-coral" />
+              <ShieldAlert aria-hidden className="size-3 shrink-0 text-accent-soft" />
             )}
             <span className="truncate">{publisher}</span>
           </p>
@@ -131,7 +131,7 @@ export function AppAlertVisual() {
                 transition={{ duration: 0.5, ease: EASE_OUT, delay: 0.5 + index * 0.12 }}
                 className="flex items-center gap-3"
               >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.06] text-coral ring-1 ring-white/10">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.06] text-accent-soft ring-1 ring-white/10">
                   <reason.icon aria-hidden className="size-4" />
                 </span>
                 <span className="min-w-0 flex-1 text-[14px] font-medium">{reason.text}</span>
@@ -142,7 +142,7 @@ export function AppAlertVisual() {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 bg-white/[0.02] px-5 py-4 sm:px-6">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-crimson/20 px-2.5 py-1 text-[12.5px] font-semibold text-coral">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 px-2.5 py-1 text-[12.5px] font-semibold text-accent-soft">
             <AlertTriangle aria-hidden className="size-3.5" />
             High risk · sent for review
           </span>
@@ -160,7 +160,7 @@ export function AppAlertVisual() {
 /** Two icons side by side: easy to confuse at thumbnail size. */
 export function IconCompare() {
   return (
-    <div className="flex items-center justify-center gap-6 rounded-2xl bg-paper px-4 py-6 ring-1 ring-line">
+    <div className="flex items-center justify-center gap-6 rounded-2xl bg-cream px-4 py-6 ring-1 ring-line">
       <figure className="flex flex-col items-center gap-2">
         <AppIcon variant="official" />
         <figcaption className="text-[12px] text-muted">Yours</figcaption>
@@ -171,7 +171,7 @@ export function IconCompare() {
       </div>
       <figure className="flex flex-col items-center gap-2">
         <AppIcon variant="copy" />
-        <figcaption className="text-[12px] text-crimson-dark">Copy</figcaption>
+        <figcaption className="text-[12px] text-accent-ink">Copy</figcaption>
       </figure>
     </div>
   );
@@ -181,15 +181,15 @@ export function IconCompare() {
 export function NameCompare() {
   return (
     <div className="space-y-2">
-      <p className="flex items-center justify-between rounded-xl bg-paper px-4 py-3 ring-1 ring-line">
+      <p className="flex items-center justify-between rounded-xl bg-cream px-4 py-3 ring-1 ring-line">
         <span className="text-[15px] font-medium">ACME Wallet</span>
         <span className="text-[12px] text-muted">Your app</span>
       </p>
-      <p className="flex items-center justify-between rounded-xl bg-crimson/[0.05] px-4 py-3 ring-1 ring-crimson/25">
+      <p className="flex items-center justify-between rounded-xl bg-accent/[0.05] px-4 py-3 ring-1 ring-accent/25">
         <span className="text-[15px] font-medium">
-          ACME Wallet <mark className="rounded bg-crimson/15 px-1 text-crimson-dark">Pro</mark>
+          ACME Wallet <mark className="rounded bg-accent/15 px-1 text-accent-ink">Pro</mark>
         </span>
-        <span className="text-[12px] text-crimson-dark">Found</span>
+        <span className="text-[12px] text-accent-ink">Found</span>
       </p>
     </div>
   );
@@ -203,7 +203,7 @@ const PARTNERS = [
 /** Allow-list: official apps and partners are recognised, not alerted. */
 export function PartnerAllowList() {
   return (
-    <ul className="divide-y divide-line rounded-2xl bg-paper ring-1 ring-line">
+    <ul className="divide-y divide-line rounded-2xl bg-cream ring-1 ring-line">
       {PARTNERS.map((partner) => (
         <li key={partner.name} className="flex items-center gap-3 px-4 py-3">
           <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200">
@@ -285,19 +285,19 @@ export function AppSourcesPanel() {
 export function PublisherCheck() {
   return (
     <div className="space-y-2">
-      <p className="flex items-center justify-between gap-3 rounded-xl bg-paper px-4 py-3 ring-1 ring-line">
+      <p className="flex items-center justify-between gap-3 rounded-xl bg-cream px-4 py-3 ring-1 ring-line">
         <span className="min-w-0">
           <span className="block text-[12px] text-muted">Your publishers</span>
           <span className="block truncate text-[14px] font-medium">ACME Global Ltd</span>
         </span>
         <BadgeCheck aria-hidden className="size-4 shrink-0 text-emerald-600" />
       </p>
-      <p className="flex items-center justify-between gap-3 rounded-xl bg-crimson/[0.05] px-4 py-3 ring-1 ring-crimson/25">
+      <p className="flex items-center justify-between gap-3 rounded-xl bg-accent/[0.05] px-4 py-3 ring-1 ring-accent/25">
         <span className="min-w-0">
-          <span className="block text-[12px] text-crimson-dark">This listing</span>
+          <span className="block text-[12px] text-accent-ink">This listing</span>
           <span className="block truncate text-[14px] font-medium">Acme Apps Studio</span>
         </span>
-        <ShieldAlert aria-hidden className="size-4 shrink-0 text-crimson-dark" />
+        <ShieldAlert aria-hidden className="size-4 shrink-0 text-accent-ink" />
       </p>
     </div>
   );
@@ -312,7 +312,7 @@ const BORROWED = [
 /** Parts of a listing that mirror the real app. */
 export function BorrowedDetails() {
   return (
-    <dl className="divide-y divide-line rounded-2xl bg-paper ring-1 ring-line">
+    <dl className="divide-y divide-line rounded-2xl bg-cream ring-1 ring-line">
       {BORROWED.map((row) => (
         <div key={row.label} className="flex items-baseline justify-between gap-4 px-4 py-3">
           <dt className="text-[13px] text-muted">{row.label}</dt>

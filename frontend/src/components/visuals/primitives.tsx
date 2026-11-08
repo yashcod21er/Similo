@@ -19,13 +19,13 @@ export function ProductWindow({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-xl bg-midnight text-white ring-1 ring-ink/10',
+        'overflow-hidden rounded-xl bg-night text-white ring-1 ring-ink/10',
         className,
       )}
     >
       <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
         <div className="flex min-w-0 items-center gap-2.5">
-          <span aria-hidden className="size-2 shrink-0 rounded-full bg-crimson" />
+          <span aria-hidden className="size-2 shrink-0 rounded-full bg-accent" />
           <p className="truncate font-mono text-[12px] text-white/70">{title}</p>
         </div>
         {action ?? <ExampleTag />}
@@ -38,8 +38,8 @@ export function ProductWindow({
 export type RiskLevel = 'critical' | 'high' | 'medium' | 'low';
 
 const RISK_STYLES: Record<RiskLevel, { bar: string; text: string; label: string }> = {
-  critical: { bar: 'bg-crimson', text: 'text-crimson-dark', label: 'Critical' },
-  high: { bar: 'bg-coral', text: 'text-coral', label: 'High' },
+  critical: { bar: 'bg-accent', text: 'text-accent-ink', label: 'Critical' },
+  high: { bar: 'bg-accent-soft', text: 'text-accent-soft', label: 'High' },
   medium: { bar: 'bg-amber-400', text: 'text-amber-300', label: 'Medium' },
   low: { bar: 'bg-emerald-400', text: 'text-emerald-300', label: 'Low' },
 };
@@ -96,7 +96,7 @@ export function SignalRow({
   return (
     <div className="flex items-center justify-between gap-4 py-2 text-[12.5px]">
       <span className="text-white/55">{label}</span>
-      <span className={cn('font-mono text-right', emphasis ? 'text-coral' : 'text-white/90')}>
+      <span className={cn('font-mono text-right', emphasis ? 'text-accent-soft' : 'text-white/90')}>
         {value}
       </span>
     </div>
@@ -105,7 +105,7 @@ export function SignalRow({
 
 export function ReasonCode({ children }: { children: ReactNode }) {
   return (
-    <span className="rounded border border-crimson/40 bg-crimson/10 px-1.5 py-0.5 font-mono text-[10px] tracking-wide text-coral">
+    <span className="rounded border border-accent/40 bg-accent/10 px-1.5 py-0.5 font-mono text-[10px] tracking-wide text-accent-soft">
       {children}
     </span>
   );
@@ -116,7 +116,7 @@ export function MiniPanel({ children, className }: { children: ReactNode; classN
   return (
     <div
       className={cn(
-        'rounded-xl border border-line bg-paper p-3.5 font-mono text-[11px] leading-relaxed text-ink/80',
+        'rounded-xl border border-line bg-cream p-3.5 font-mono text-[11px] leading-relaxed text-ink/80',
         className,
       )}
     >

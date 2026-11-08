@@ -33,7 +33,7 @@ function AddressBar({
     <div
       className={cn(
         'flex items-center gap-3 rounded-xl px-3.5 py-3 ring-1',
-        official ? 'bg-white/[0.04] ring-white/10' : 'bg-crimson/[0.12] ring-crimson/40',
+        official ? 'bg-white/[0.04] ring-white/10' : 'bg-accent/[0.12] ring-accent/40',
       )}
     >
       <span className="w-16 shrink-0 text-[11.5px] text-white/50">{label}</span>
@@ -44,7 +44,7 @@ function AddressBar({
       {official ? (
         <BadgeCheck aria-hidden className="size-4 shrink-0 text-emerald-400" />
       ) : (
-        <AlertTriangle aria-hidden className="size-4 shrink-0 text-coral" />
+        <AlertTriangle aria-hidden className="size-4 shrink-0 text-accent-soft" />
       )}
     </div>
   );
@@ -73,7 +73,7 @@ export function DomainAlertVisual() {
             <AddressBar label="Found">
               ac
               <motion.span
-                className="rounded bg-crimson px-0.5 text-white"
+                className="rounded bg-accent px-0.5 text-white"
                 initial={{ opacity: 0.4 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
@@ -98,7 +98,7 @@ export function DomainAlertVisual() {
                 transition={{ duration: 0.5, ease: EASE_OUT, delay: 0.5 + index * 0.12 }}
                 className="flex items-center gap-3"
               >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.06] text-coral ring-1 ring-white/10">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.06] text-accent-soft ring-1 ring-white/10">
                   <reason.icon aria-hidden className="size-4" />
                 </span>
                 <span className="min-w-0 flex-1 text-[14px] font-medium">{reason.text}</span>
@@ -109,7 +109,7 @@ export function DomainAlertVisual() {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 bg-white/[0.02] px-5 py-4 sm:px-6">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-crimson/20 px-2.5 py-1 text-[12.5px] font-semibold text-coral">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 px-2.5 py-1 text-[12.5px] font-semibold text-accent-soft">
             <AlertTriangle aria-hidden className="size-3.5" />
             High risk · sent for review
           </span>
@@ -130,11 +130,11 @@ function MockLoginPage({ url, suspicious }: { url: string; suspicious?: boolean 
       className={cn(
         'relative overflow-hidden rounded-2xl border bg-white text-ink',
         suspicious
-          ? 'border-crimson/50 shadow-[0_12px_40px_-12px_rgb(217_47_72/0.35)]'
+          ? 'border-accent/50 shadow-[0_12px_40px_-12px_rgb(217_47_72/0.35)]'
           : 'border-line shadow-soft',
       )}
     >
-      <div className="flex items-center gap-2 border-b border-line bg-paper px-3 py-2">
+      <div className="flex items-center gap-2 border-b border-line bg-cream px-3 py-2">
         <span className="flex min-w-0 flex-1 items-center gap-1.5 rounded-full bg-white px-2.5 py-1 font-mono text-[10.5px] text-muted ring-1 ring-line">
           <Lock aria-hidden className="size-3 shrink-0" />
           <span className="truncate">{url}</span>
@@ -142,19 +142,19 @@ function MockLoginPage({ url, suspicious }: { url: string; suspicious?: boolean 
       </div>
       <div className="p-5">
         <div className="flex items-center gap-2">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-midnight text-xs font-semibold text-white">
+          <span className="flex size-7 items-center justify-center rounded-lg bg-night text-xs font-semibold text-white">
             A
           </span>
           <span className="text-sm font-semibold">ACME</span>
         </div>
         <p className="mt-4 text-[13px] font-semibold">Sign in to your account</p>
         <div className="mt-3 space-y-2">
-          <div className="h-8 rounded-lg border border-line bg-paper" />
-          <div className="h-8 rounded-lg border border-line bg-paper" />
+          <div className="h-8 rounded-lg border border-line bg-cream" />
+          <div className="h-8 rounded-lg border border-line bg-cream" />
           <div
             className={cn(
               'flex h-8 items-center justify-center rounded-lg text-[11px] font-medium text-white',
-              suspicious ? 'bg-crimson' : 'bg-midnight',
+              suspicious ? 'bg-accent' : 'bg-night',
             )}
           >
             Sign in
@@ -183,7 +183,7 @@ export function PageCompareVisual() {
           <MockLoginPage url="portal.acme.com/login" />
         </div>
         <div>
-          <p className="mb-2 flex items-center gap-1.5 text-[13px] font-medium text-crimson-dark">
+          <p className="mb-2 flex items-center gap-1.5 text-[13px] font-medium text-accent-ink">
             <AlertTriangle aria-hidden className="size-3.5" /> The copy we found
           </p>
           <MockLoginPage url="acrne-login.com/secure" suspicious />
@@ -199,14 +199,14 @@ export function PageCompareVisual() {
             transition={{ duration: 0.5, ease: EASE_OUT, delay: 0.2 + index * 0.1 }}
             className={cn(
               'rounded-xl px-4 py-3 ring-1',
-              finding.alert ? 'bg-crimson/[0.06] ring-crimson/25' : 'bg-paper ring-line',
+              finding.alert ? 'bg-accent/[0.06] ring-accent/25' : 'bg-cream ring-line',
             )}
           >
             <dt className="text-[12.5px] text-muted">{finding.label}</dt>
             <dd
               className={cn(
                 'mt-0.5 text-[17px] font-semibold tracking-[-0.02em]',
-                finding.alert && 'text-crimson-dark',
+                finding.alert && 'text-accent-ink',
               )}
             >
               {finding.value}
@@ -229,7 +229,7 @@ const REGISTRATION = [
 /** Who registered a name and when, in plain words. */
 export function RegistrationFacts() {
   return (
-    <dl className="divide-y divide-line rounded-2xl bg-paper ring-1 ring-line">
+    <dl className="divide-y divide-line rounded-2xl bg-cream ring-1 ring-line">
       {REGISTRATION.map((fact) => (
         <div key={fact.label} className="flex items-baseline justify-between gap-4 px-4 py-3">
           <dt className="text-[13px] text-muted">{fact.label}</dt>
@@ -267,10 +267,10 @@ export function SetupTimeline() {
             aria-hidden
             className={cn(
               'absolute top-1.5 -left-5 size-[11px] rounded-full ring-4 ring-white',
-              step.alert ? 'bg-crimson' : 'bg-line-strong',
+              step.alert ? 'bg-accent' : 'bg-line-strong',
             )}
           />
-          <span className={cn('text-[14px] font-medium', step.alert && 'text-crimson-dark')}>
+          <span className={cn('text-[14px] font-medium', step.alert && 'text-accent-ink')}>
             {step.event}
           </span>
           <span className="shrink-0 font-mono text-[11.5px] text-muted">{step.when}</span>
@@ -285,8 +285,8 @@ export function SetupTimeline() {
 /** A saved capture with its fingerprint. */
 export function EvidenceChip() {
   return (
-    <div className="flex items-center gap-3 rounded-2xl bg-paper px-4 py-3 ring-1 ring-line">
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white text-crimson-dark ring-1 ring-line">
+    <div className="flex items-center gap-3 rounded-2xl bg-cream px-4 py-3 ring-1 ring-line">
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white text-accent-ink ring-1 ring-line">
         <Fingerprint aria-hidden className="size-4" />
       </span>
       <div className="min-w-0 flex-1">
@@ -303,7 +303,7 @@ export function EvidenceChip() {
 /** A finding dismissed with a reason, so it does not come back. */
 export function DismissedChip() {
   return (
-    <div className="rounded-2xl bg-paper px-4 py-3 ring-1 ring-line">
+    <div className="rounded-2xl bg-cream px-4 py-3 ring-1 ring-line">
       <div className="flex items-center justify-between gap-3">
         <p className="truncate font-mono text-[13px] text-muted line-through decoration-line-strong">
           acme-recipes.blog

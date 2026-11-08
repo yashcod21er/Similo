@@ -32,7 +32,7 @@ export function PhotoFrame({
 }) {
   return (
     <figure className={className}>
-      <div className={cn('overflow-hidden rounded-2xl bg-card ring-1 ring-ink/5', ratio)}>
+      <div className={cn('overflow-hidden rounded-2xl bg-cream-deep ring-1 ring-ink/5', ratio)}>
         <Photo
           src={src}
           alt={alt}

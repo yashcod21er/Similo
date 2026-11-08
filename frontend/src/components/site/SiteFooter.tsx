@@ -10,14 +10,14 @@ function LiveStatus() {
   const { data, isError } = useSystemStatus();
 
   const { label, dot } = isError
-    ? { label: 'API unreachable', dot: 'bg-crimson' }
+    ? { label: 'API unreachable', dot: 'bg-accent' }
     : !data
       ? { label: 'Checking status…', dot: 'bg-line-strong' }
       : data.status === 'ok'
         ? { label: 'All systems operational', dot: 'bg-emerald-500' }
         : data.status === 'degraded'
           ? { label: 'Partially available', dot: 'bg-amber-500' }
-          : { label: 'Service disruption', dot: 'bg-crimson' };
+          : { label: 'Service disruption', dot: 'bg-accent' };
 
   return (
     <Link

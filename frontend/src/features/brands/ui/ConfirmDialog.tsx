@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
 import { FormAlert } from '@/components/ui/form';
 
-/** "Are you sure?" for changes that can't be undone. The risky button is the crimson one. */
+/** "Are you sure?" for changes that can't be undone. The risky button is the accent-coloured one. */
 export function ConfirmDialog({
   open,
   title,

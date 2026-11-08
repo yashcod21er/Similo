@@ -36,7 +36,7 @@ export function HowItWorks() {
       <Reveal className="mt-10">
         <Link
           to="/platform"
-          className="inline-flex items-center gap-1.5 text-[15px] font-medium text-crimson-dark hover:underline"
+          className="inline-flex items-center gap-1.5 text-[15px] font-medium text-accent-ink hover:underline"
         >
           See how the platform works <ArrowRight aria-hidden className="size-4" />
         </Link>

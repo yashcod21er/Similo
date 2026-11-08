@@ -87,7 +87,7 @@ export function OverviewPage() {
           label="Members"
           value={memberCount === undefined ? '…' : String(memberCount)}
           sub={
-            <Link to="/app/members" className="font-medium text-ink hover:text-crimson-dark">
+            <Link to="/app/members" className="font-medium text-ink hover:text-accent-ink">
               See everyone →
             </Link>
           }
@@ -96,7 +96,7 @@ export function OverviewPage() {
           label="Brands"
           value={brandCount === undefined ? '…' : String(brandCount)}
           sub={
-            <Link to="/app/brands" className="font-medium text-ink hover:text-crimson-dark">
+            <Link to="/app/brands" className="font-medium text-ink hover:text-accent-ink">
               See your brands →
             </Link>
           }
@@ -122,7 +122,7 @@ export function OverviewPage() {
                     'flex size-8 shrink-0 items-center justify-center rounded-full text-[13px] font-semibold',
                     step.done
                       ? 'bg-emerald-600 text-white'
-                      : 'bg-paper text-muted ring-1 ring-line',
+                      : 'bg-cream text-muted ring-1 ring-line',
                   )}
                 >
                   {step.done ? <Check className="size-4" /> : index + 1}
@@ -132,7 +132,7 @@ export function OverviewPage() {
                     {step.title}
                     {step.done && <span className="sr-only">(done)</span>}
                     {step.soon && (
-                      <span className="rounded-full bg-paper px-2 py-0.5 text-[12px] font-medium text-muted ring-1 ring-line">
+                      <span className="rounded-full bg-cream px-2 py-0.5 text-[12px] font-medium text-muted ring-1 ring-line">
                         {step.soon}
                       </span>
                     )}
@@ -141,7 +141,7 @@ export function OverviewPage() {
                   {link && (
                     <Link
                       to={link.to}
-                      className="mt-2 inline-flex items-center gap-1.5 text-[14.5px] font-medium text-crimson-dark hover:underline"
+                      className="mt-2 inline-flex items-center gap-1.5 text-[14.5px] font-medium text-accent-ink hover:underline"
                     >
                       {link.label} <ArrowRight aria-hidden className="size-4" />
                     </Link>

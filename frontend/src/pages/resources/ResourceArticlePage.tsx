@@ -69,7 +69,7 @@ export function ResourceArticlePage() {
                     <li key={section.heading}>
                       <a
                         href={`#${slugify(section.heading)}`}
-                        className="-ml-px block border-l border-transparent pl-4 text-sm text-muted hover:border-crimson hover:text-ink"
+                        className="-ml-px block border-l border-transparent pl-4 text-sm text-muted hover:border-accent hover:text-ink"
                       >
                         {section.heading}
                       </a>
@@ -104,7 +104,7 @@ export function ResourceArticlePage() {
                         >
                           <span
                             aria-hidden
-                            className="mt-3 size-1.5 shrink-0 rounded-full bg-crimson"
+                            className="mt-3 size-1.5 shrink-0 rounded-full bg-accent"
                           />
                           {bullet}
                         </li>
@@ -129,7 +129,7 @@ export function ResourceArticlePage() {
             </div>
 
             <aside>
-              <div className="rounded-xl border border-line bg-paper p-6 lg:sticky lg:top-28">
+              <div className="rounded-xl border border-line bg-cream p-6 lg:sticky lg:top-28">
                 <p className="font-semibold">See this in Similo</p>
                 <p className="mt-2 text-sm leading-relaxed text-muted">
                   We will show you how the platform spots and explains these warning signs.
@@ -155,11 +155,11 @@ export function ResourceArticlePage() {
                   ratio="aspect-[3/2]"
                   sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 100vw"
                 />
-                <p className="mt-5 text-[13px] font-medium text-crimson-dark">{item.category}</p>
+                <p className="mt-5 text-[13px] font-medium text-accent-ink">{item.category}</p>
                 <p className="mt-2 font-semibold leading-snug group-hover:underline group-hover:decoration-line-strong group-hover:underline-offset-4">
                   {item.title}
                 </p>
-                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-crimson-dark">
+                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-accent-ink">
                   Read
                   <ArrowRight
                     aria-hidden

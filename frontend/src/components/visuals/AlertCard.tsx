@@ -14,15 +14,15 @@ const KIND = {
 const LEVEL = {
   high: {
     label: 'High risk',
-    light: 'bg-crimson/10 text-crimson-dark',
-    dark: 'bg-crimson/20 text-coral',
+    light: 'bg-accent/10 text-accent-ink',
+    dark: 'bg-accent/20 text-accent-soft',
   },
   medium: {
     label: 'Medium risk',
     light: 'bg-amber-100 text-amber-800',
     dark: 'bg-amber-400/15 text-amber-300',
   },
-  review: { label: 'Needs review', light: 'bg-card text-ink', dark: 'bg-white/10 text-white/80' },
+  review: { label: 'Needs review', light: 'bg-cream-deep text-ink', dark: 'bg-white/10 text-white/80' },
 } as const;
 
 /**
@@ -69,7 +69,7 @@ export function AlertCard({
           <span
             className={cn(
               'flex size-6 items-center justify-center rounded-md',
-              dark ? 'bg-white/10 text-coral' : 'bg-paper text-crimson-dark ring-1 ring-line',
+              dark ? 'bg-white/10 text-accent-soft' : 'bg-cream text-accent-ink ring-1 ring-line',
             )}
           >
             <Icon aria-hidden className="size-3.5" />
@@ -89,7 +89,7 @@ export function AlertCard({
               aria-hidden
               className={cn(
                 'mt-[7px] size-1.5 shrink-0 rounded-full',
-                dark ? 'bg-coral' : 'bg-crimson',
+                dark ? 'bg-accent-soft' : 'bg-accent',
               )}
             />
             {fact}

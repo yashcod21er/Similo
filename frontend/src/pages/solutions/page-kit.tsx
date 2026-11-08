@@ -111,7 +111,7 @@ export function Timeline({
           <span
             className={cn(
               'w-16 shrink-0 pt-px text-[13px] font-medium',
-              item.ours ? 'text-crimson-dark' : 'text-muted',
+              item.ours ? 'text-accent-ink' : 'text-muted',
             )}
           >
             {item.when}
@@ -153,7 +153,7 @@ export function FaqBlock({
           {link && (
             <Link
               to={link.to}
-              className="group mt-7 inline-flex items-center gap-1.5 text-[15px] font-medium text-crimson-dark hover:underline"
+              className="group mt-7 inline-flex items-center gap-1.5 text-[15px] font-medium text-accent-ink hover:underline"
             >
               {link.label}
               <ArrowRight

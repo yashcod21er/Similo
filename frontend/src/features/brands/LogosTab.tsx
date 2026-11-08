@@ -116,7 +116,7 @@ export function LogosTab({ brand, canManage }: { brand: Brand; canManage: boolea
             onDrop={onDrop}
             className={cn(
               'flex flex-col items-center rounded-3xl border-2 border-dashed px-5 py-8 text-center transition-colors',
-              dragging ? 'border-crimson bg-crimson/[0.04]' : 'border-line-strong bg-paper',
+              dragging ? 'border-accent bg-accent/[0.04]' : 'border-line-strong bg-cream',
             )}
           >
             <UploadCloud aria-hidden className="size-8 text-muted" />

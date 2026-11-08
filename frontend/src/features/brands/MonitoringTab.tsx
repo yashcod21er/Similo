@@ -31,7 +31,7 @@ export function MonitoringTab({ brand, canManage }: { brand: Brand; canManage: b
     <div className="grid gap-6">
       <div
         role="note"
-        className="flex gap-3 rounded-2xl bg-paper px-4 py-3.5 text-[14.5px] ring-1 ring-line"
+        className="flex gap-3 rounded-2xl bg-cream px-4 py-3.5 text-[14.5px] ring-1 ring-line"
       >
         <Info aria-hidden className="mt-0.5 size-5 shrink-0 text-ink" />
         <p>
@@ -86,12 +86,12 @@ export function MonitoringTab({ brand, canManage }: { brand: Brand; canManage: b
               {SENSITIVITY_OPTIONS.map((option) => (
                 <label
                   key={option.value}
-                  className="flex cursor-pointer items-start gap-3 rounded-2xl p-3.5 ring-1 ring-line transition-colors has-[:checked]:bg-crimson/[0.04] has-[:checked]:ring-crimson/50 has-[:disabled]:cursor-not-allowed hover:bg-paper has-[:disabled]:hover:bg-transparent"
+                  className="flex cursor-pointer items-start gap-3 rounded-2xl p-3.5 ring-1 ring-line transition-colors has-[:checked]:bg-accent/[0.04] has-[:checked]:ring-accent/50 has-[:disabled]:cursor-not-allowed hover:bg-cream has-[:disabled]:hover:bg-transparent"
                 >
                   <input
                     type="radio"
                     value={option.value}
-                    className="mt-1 size-4 accent-[#d92f48]"
+                    className="mt-1 size-4 accent-[#c2500a]"
                     {...register('sensitivity')}
                   />
                   <span>

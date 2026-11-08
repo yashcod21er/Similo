@@ -59,7 +59,7 @@ function DialogPanel({
     <div className="fixed inset-0 z-[60] flex items-end justify-center p-3 sm:items-center">
       <motion.div
         aria-hidden
-        className="absolute inset-0 bg-midnight/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-night/40 backdrop-blur-sm"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -80,7 +80,7 @@ function DialogPanel({
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute top-4 right-4 inline-flex size-9 items-center justify-center rounded-full text-muted hover:bg-paper hover:text-ink"
+          className="absolute top-4 right-4 inline-flex size-9 items-center justify-center rounded-full text-muted hover:bg-cream hover:text-ink"
         >
           <X aria-hidden className="size-4" />
         </button>

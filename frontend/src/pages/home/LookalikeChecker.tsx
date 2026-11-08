@@ -39,12 +39,12 @@ export function LookalikeChecker() {
   return (
     <div className="grid grid-cols-1 overflow-hidden rounded-2xl border border-line bg-white lg:grid-cols-[1fr_1.4fr]">
       {/* ---------- Input ---------- */}
-      <div className="border-b border-line bg-paper p-6 sm:p-8 lg:border-r lg:border-b-0">
+      <div className="border-b border-line bg-cream p-6 sm:p-8 lg:border-r lg:border-b-0">
         <form role="search" onSubmit={(event) => event.preventDefault()}>
           <label htmlFor={inputId} className="text-[15px] font-medium">
             Your brand name
           </label>
-          <div className="mt-3 flex h-12 items-center gap-2.5 rounded-lg border border-line-strong bg-white px-3.5 focus-within:border-crimson focus-within:ring-2 focus-within:ring-crimson/25">
+          <div className="mt-3 flex h-12 items-center gap-2.5 rounded-lg border border-line-strong bg-white px-3.5 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/25">
             <Search aria-hidden className="size-4 shrink-0 text-muted" />
             <input
               id={inputId}
@@ -72,7 +72,7 @@ export function LookalikeChecker() {
           <ul className="mt-3 divide-y divide-line rounded-lg border border-line bg-white">
             {examples.map((example) => (
               <li key={example.kind} className="flex items-center gap-3 px-4 py-3">
-                <example.icon aria-hidden className="size-4 shrink-0 text-crimson" />
+                <example.icon aria-hidden className="size-4 shrink-0 text-accent" />
                 <span className="w-20 shrink-0 text-[13px] text-muted">{example.kind}</span>
                 <span className="min-w-0 truncate font-mono text-[14.5px]">{example.name}</span>
               </li>
@@ -85,7 +85,7 @@ export function LookalikeChecker() {
       <div className="min-w-0 p-6 sm:p-8">
         <p aria-live="polite" className="text-title font-semibold text-balance">
           {results.length} ways someone could imitate{' '}
-          <span className="font-mono text-crimson-dark">{brand}.com</span>
+          <span className="font-mono text-accent-ink">{brand}.com</span>
         </p>
         <p className="mt-2 text-[15px] text-muted">
           Each one is built the way copycats really do it. The changed part is highlighted.
@@ -100,12 +100,12 @@ export function LookalikeChecker() {
                   <p className="truncate font-mono text-[15px]">
                     {before}
                     {changed ? (
-                      <mark className="rounded bg-crimson/10 px-0.5 text-crimson-dark">
+                      <mark className="rounded bg-accent/10 px-0.5 text-accent-ink">
                         {changed}
                       </mark>
                     ) : (
                       // Nothing to highlight when a letter was removed: mark where it was.
-                      <span className="mx-px inline-block h-[1.05em] w-0.5 translate-y-[0.18em] rounded bg-crimson" />
+                      <span className="mx-px inline-block h-[1.05em] w-0.5 translate-y-[0.18em] rounded bg-accent" />
                     )}
                     {after}
                   </p>
@@ -129,7 +129,7 @@ export function LookalikeChecker() {
         </p>
         <Link
           to="/technology"
-          className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-crimson-dark hover:underline"
+          className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-accent-ink hover:underline"
         >
           How Similo compares names <ArrowRight aria-hidden className="size-4" />
         </Link>

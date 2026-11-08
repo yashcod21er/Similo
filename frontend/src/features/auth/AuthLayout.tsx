@@ -11,11 +11,11 @@ import { Logo } from '@/components/ui/Logo';
  */
 export function AuthLayout() {
   return (
-    <div className="grid min-h-dvh grid-cols-1 bg-paper lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+    <div className="grid min-h-dvh grid-cols-1 bg-cream lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
       <div className="flex min-w-0 flex-col">
         <a
           href="#main"
-          className="sr-only z-50 rounded-md bg-crimson px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+          className="sr-only z-50 rounded-md bg-accent px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
         >
           Skip to content
         </a>
@@ -51,7 +51,7 @@ export function AuthLayout() {
       </div>
 
       {/* Decorative photo (alt is empty on purpose). */}
-      <div aria-hidden className="relative hidden bg-card lg:block">
+      <div aria-hidden className="relative hidden bg-cream-deep lg:block">
         <div className="absolute inset-0">
           <Photo
             src="/images/core/window-laptop"

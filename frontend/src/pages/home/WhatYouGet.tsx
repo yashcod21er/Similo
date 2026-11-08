@@ -36,7 +36,7 @@ export function WhatYouGet() {
           <ul className="mt-8 space-y-5">
             {ITEMS.map((item) => (
               <li key={item.title} className="flex gap-3.5">
-                <Check aria-hidden className="mt-1 size-5 shrink-0 text-crimson" />
+                <Check aria-hidden className="mt-1 size-5 shrink-0 text-accent" />
                 <div>
                   <h3 className="font-semibold">{item.title}</h3>
                   <p className="mt-0.5 leading-relaxed text-muted">{item.text}</p>
@@ -46,7 +46,7 @@ export function WhatYouGet() {
           </ul>
         </Reveal>
         <Reveal delay={0.05}>
-          <figure className="mx-auto max-w-md rounded-2xl bg-paper p-5 ring-1 ring-line sm:p-8">
+          <figure className="mx-auto max-w-md rounded-2xl bg-cream p-5 ring-1 ring-line sm:p-8">
             <AlertCard
               kind="website"
               name="acme-login.com"
