@@ -9,7 +9,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig([
-  globalIgnores(['**/dist/**', '**/coverage/**', '**/node_modules/**', 'services/**']),
+  globalIgnores(['**/dist/**', '**/coverage/**', '**/node_modules/**', 'ai/**']),
 
   js.configs.recommended,
   tseslint.configs.recommended,
@@ -27,12 +27,12 @@ export default defineConfig([
   },
 
   {
-    files: ['apps/api/**/*.ts', '*.js'],
+    files: ['backend/**/*.ts', '*.js'],
     languageOptions: { globals: globals.node },
   },
 
   {
-    files: ['apps/web/**/*.{ts,tsx}'],
+    files: ['frontend/**/*.{ts,tsx}'],
     languageOptions: { globals: globals.browser },
     extends: [reactHooks.configs.flat.recommended, reactRefresh.configs.vite()],
   },

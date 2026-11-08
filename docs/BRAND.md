@@ -17,11 +17,11 @@ the same two halves as the mark beside it, put back together at exactly the same
 | App-icon tile                             | `<LogoMark className="size-8" />` (self-contained on light and dark)     |
 | Bare symbol in the current text colour    | `<LogoSymbol />`, or `<LogoSymbol accent />` for a crimson copy          |
 | Wordmark that fills its container's width | `<LogoWordmark />` (for example the giant footer wordmark)               |
-| Browser tab                               | `apps/web/public/favicon.svg`, redrawn on a 16 px grid                   |
-| iOS home screen                           | `apps/web/public/apple-touch-icon.png`, 180 × 180, full bleed            |
-| Files for documents and slides            | `apps/web/public/brand/` (`similo-logo.svg`, `similo-logo-white.svg`, …) |
+| Browser tab                               | `frontend/public/favicon.svg`, redrawn on a 16 px grid                   |
+| iOS home screen                           | `frontend/public/apple-touch-icon.png`, 180 × 180, full bleed            |
+| Files for documents and slides            | `frontend/public/brand/` (`similo-logo.svg`, `similo-logo-white.svg`, …) |
 
-All components live in `apps/web/src/components/ui/Logo.tsx` and share one set of path data.
+All components live in `frontend/src/components/ui/Logo.tsx` and share one set of path data.
 The SVGs are decorative (`aria-hidden`); `Logo` carries a screen-reader label, "Similo". If
 `LogoWordmark` is ever the only place the name appears, add visible or `sr-only` text next to it.
 

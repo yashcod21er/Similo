@@ -11,20 +11,26 @@ investigation, evidence collection and legal drafting. A person always makes the
 
 ## Repository layout
 
+The code is split into three parts, one folder each:
+
 ```
 .
-├── apps/
-│   ├── web/          React + TypeScript + Vite + Tailwind (port 5173)
-│   └── api/          Node.js + Express + TypeScript REST API (port 4000)
-├── services/
-│   └── ai/           Python + FastAPI AI service (port 8000)
+├── frontend/   Website and dashboard: React + TypeScript + Vite + Tailwind (port 5173)
+├── backend/    REST API: Node.js + Express + TypeScript + MongoDB (port 4000)
+├── ai/         AI service: Python + FastAPI (port 8000)
 ├── docs/
 │   ├── ARCHITECTURE.md   System design, decisions, risks, roadmap
 │   ├── BRAND.md          Logo and brand guidelines
 │   ├── CONVENTIONS.md    Coding and project conventions
 │   └── DESIGN-SYSTEM.md  Website design system v2 ("Clarity")
-└── package.json      npm workspaces + scripts that run everything
+└── package.json  npm workspaces + scripts that run everything
 ```
+
+How they connect: the browser loads the **frontend**, which calls the **backend** at `/api/v1/…`.
+Only the backend reads and writes MongoDB Atlas and calls the **AI service**.
+
+Each folder has its own guide to what is inside: [frontend/README.md](frontend/README.md),
+[backend/README.md](backend/README.md) and [ai/README.md](ai/README.md).
 
 ## Prerequisites
 
@@ -48,15 +54,15 @@ Also needed:
 # 1. Install the JavaScript dependencies for every workspace
 npm install
 
-# 2. Install the Python dependencies (creates services/ai/.venv)
-uv sync --directory services/ai
+# 2. Install the Python dependencies (creates ai/.venv)
+uv sync --directory ai
 
 # 3. Create local environment files from the templates (Windows: use `copy`)
-cp apps/api/.env.example apps/api/.env
-cp services/ai/.env.example services/ai/.env
-#    Then set MONGODB_URI in apps/api/.env if you have an Atlas cluster.
+cp backend/.env.example backend/.env
+cp ai/.env.example ai/.env
+#    Then set MONGODB_URI in backend/.env if you have an Atlas cluster.
 
-# 4. Start the web app, API and AI service together
+# 4. Start the frontend, backend and AI service together
 npm run dev
 ```
 
@@ -66,7 +72,7 @@ to MongoDB; until `MONGODB_URI` is set it shows an honest "could not save" messa
 
 | URL                                              | What it is                             |
 | ------------------------------------------------ | -------------------------------------- |
-| http://localhost:5173                            | Web app                                |
+| http://localhost:5173                            | Website and dashboard (frontend)       |
 | http://localhost:4000/api/v1/health              | API liveness                           |
 | http://localhost:4000/api/v1/health/dependencies | Database and AI service status         |
 | http://localhost:8000/health                     | AI service liveness                    |
@@ -74,19 +80,19 @@ to MongoDB; until `MONGODB_URI` is set it shows an honest "could not save" messa
 
 ## Scripts (run from the repository root)
 
-| Command                                            | What it does                                                                          |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `npm run dev`                                      | Run the web app, API and AI service together (`dev:web`, `dev:api`, `dev:ai` run one) |
-| `npm test`                                         | Web and API tests (Vitest)                                                            |
-| `npm run test:ai`                                  | AI service tests (pytest)                                                             |
-| `npm run typecheck`                                | TypeScript type check for all workspaces                                              |
-| `npm run lint` / `npm run lint:ai`                 | ESLint / Ruff                                                                         |
-| `npm run format`                                   | Format with Prettier                                                                  |
-| `npm run build`                                    | Production build of the API and web app                                               |
-| `npm run check`                                    | Type check + lint + all tests (run this before committing)                            |
-| `npm run seed:demo`                                | Create a sample organisation with one user per role (prints a new password each run)  |
-| `npm run seed:demo -- --remove`                    | Delete that sample organisation and its users                                         |
-| `npm run auth:reset-password -- --email <address>` | Set a new random password for an account (development only)                           |
+| Command                                            | What it does                                                                                        |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `npm run dev`                                      | Run the frontend, backend and AI service together (`dev:frontend`, `dev:backend`, `dev:ai` run one) |
+| `npm test`                                         | Frontend and backend tests (Vitest)                                                                 |
+| `npm run test:ai`                                  | AI service tests (pytest)                                                                           |
+| `npm run typecheck`                                | TypeScript type check for all workspaces                                                            |
+| `npm run lint` / `npm run lint:ai`                 | ESLint / Ruff                                                                                       |
+| `npm run format`                                   | Format with Prettier                                                                                |
+| `npm run build`                                    | Production build of the backend and frontend                                                        |
+| `npm run check`                                    | Type check + lint + all tests (run this before committing)                                          |
+| `npm run seed:demo`                                | Create a sample organisation with one user per role (prints a new password each run)                |
+| `npm run seed:demo -- --remove`                    | Delete that sample organisation and its users                                                       |
+| `npm run auth:reset-password -- --email <address>` | Set a new random password for an account (development only)                                         |
 
 ## Accounts, organisations and roles (Phase 2)
 
@@ -119,9 +125,9 @@ belonging to more than one organisation.
 1. Create a free M0 cluster at <https://cloud.mongodb.com>. M0 also supports Atlas Vector Search, which the RAG phase needs.
 2. **Database Access:** create a database user with a strong password.
 3. **Network Access:** add your current IP address.
-4. **Connect → Drivers:** copy the `mongodb+srv://…` string into `MONGODB_URI` in `apps/api/.env`.
+4. **Connect → Drivers:** copy the `mongodb+srv://…` string into `MONGODB_URI` in `backend/.env`.
 5. Restart `npm run dev`. The status page should show **MongoDB Atlas: Operational**.
-6. Run `npm test --workspace @similo/api`. The database integration tests (normally skipped) now run
+6. Run `npm test --workspace @similo/backend`. The database integration tests (normally skipped) now run
    against your cluster; the auth test uses a temporary database that it deletes afterwards.
 
 ## Troubleshooting
@@ -129,8 +135,8 @@ belonging to more than one organisation.
 - **The project is inside OneDrive.** OneDrive tries to sync `node_modules` and `.venv`
   (tens of thousands of files), which is slow and can cause `EPERM` file-lock errors.
   Move the project outside OneDrive (for example `C:\dev\similo`), delete
-  `node_modules` and `services/ai/.venv`, then reinstall.
-- **Port already in use.** Another copy of the app is still running. Stop it, or change `PORT` in `apps/api/.env`.
+  `node_modules` and `ai/.venv`, then reinstall.
+- **Port already in use.** Another copy of the app is still running. Stop it, or change `PORT` in `backend/.env`.
 - **`querySrv ECONNREFUSED` when connecting to Atlas.** Node.js could not look up the cluster's DNS
   SRV record (on some PCs Node asks `127.0.0.1` for DNS, where nothing answers). Use the
   **standard connection string** instead of `mongodb+srv://`: list the three hosts from

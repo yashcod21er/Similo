@@ -21,7 +21,7 @@ hero and every idea is shown with a concrete example.
    testimonials. Sample visuals carry `ExampleTag`. Interactive demos say what they really
    do (for example, "generated in your browser").
 
-## Tokens (`apps/web/src/styles/index.css`)
+## Tokens (`frontend/src/styles/index.css`)
 
 | Role            | Token                                          | Notes                                          |
 | --------------- | ---------------------------------------------- | ---------------------------------------------- |

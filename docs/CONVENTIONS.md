@@ -4,22 +4,22 @@
 
 - Run `npm run check` before every commit. It runs the type check, lint and all tests (TypeScript and Python).
 - Never commit `.env` files. When you add a variable, add it to the matching `.env.example`
-  with a comment, and (in the API) to the Zod schema in `apps/api/src/config/env.ts`.
+  with a comment, and (in the backend) to the Zod schema in `backend/src/config/env.ts`.
 - No fake data presented as real. Sample data lives in seed scripts or fixtures and is labelled
   `demo` / `fixture` everywhere it appears.
 - Never claim an integration works until a test or a manual run proves it. Document every external API's limits in `docs/ARCHITECTURE.md` §7.
 - The product name is **Similo** in prose and UI (never "Similo AI"). Code, package, service and
-  database names use lowercase `similo` (`@similo/web`, `similo-api`). Logo rules: `docs/BRAND.md`.
+  database names use lowercase `similo` (`@similo/frontend`, `@similo/backend`, `similo-api`). Logo rules: `docs/BRAND.md`.
 
-## TypeScript (web and API)
+## TypeScript (frontend and backend)
 
 - Strict mode, plus `noUncheckedIndexedAccess`: indexing an array or record may return `undefined`, so handle that case.
 - `import type` for type-only imports (enforced by ESLint and `verbatimModuleSyntax`).
-- API: relative imports end in `.js` (`import { x } from './x.js'`), because that is what Node runs after compiling.
-- Web: import from `src` with the `@/` alias (`import { apiRequest } from '@/lib/api-client'`).
+- Backend: relative imports end in `.js` (`import { x } from './x.js'`), because that is what Node runs after compiling.
+- Frontend: import from `src` with the `@/` alias (`import { apiRequest } from '@/lib/api-client'`).
 - Unused variables or arguments that must exist are prefixed with `_`.
 
-## API structure
+## Backend structure (`backend/`)
 
 ```
 src/
@@ -47,7 +47,7 @@ src/
   New permissions go in `modules/organizations/roles.ts` (the single source of truth).
 - Security-relevant actions call `auditService.record(...)`; there is no update or delete for audit events.
 
-## Web structure
+## Frontend structure (`frontend/`)
 
 ```
 src/
@@ -77,7 +77,7 @@ src/
   visuals with sample data carry `<ExampleTag />`.
 - New pages are added to `app/router.tsx` with `lazy` (code-split) and to `site/navigation.ts`.
 
-## Python (AI service)
+## Python (AI service, `ai/`)
 
 - Format and lint with Ruff (`npm run lint:ai`). Type hints on all public functions.
 - One router module per capability in `app/api/`. Algorithms go in plain modules that can be tested without HTTP.
@@ -85,9 +85,9 @@ src/
 
 ## Tests
 
-- API: `apps/api/test/*.test.ts`. Use `buildTestApp()` with fake dependencies. Name integration tests `*.integration.test.ts` and skip them automatically when credentials are missing.
-- Web: `*.test.tsx` next to the component. Stub `fetch`, never a real network.
-- Python: `services/ai/tests/test_*.py`.
+- Backend: `backend/test/*.test.ts`. Use `buildTestApp()` with fake dependencies. Name integration tests `*.integration.test.ts` and skip them automatically when credentials are missing.
+- Frontend: `*.test.tsx` next to the component. Stub `fetch`, never a real network.
+- AI service: `ai/tests/test_*.py`.
 - Test failure paths, not only the happy path.
 
 ## Git

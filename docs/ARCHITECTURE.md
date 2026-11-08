@@ -24,12 +24,12 @@ flowchart TB
 
 ### Who is responsible for what
 
-| Component                      | Responsible for                                                             | Never does                                                              |
-| ------------------------------ | --------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| **Web** (`apps/web`)           | UI, routing, forms, calling the API                                         | Hold secrets, enforce security (UI only hides things; the API enforces) |
-| **API** (`apps/api`)           | Auth, organisations, RBAC, CRUD, validation, audit logs, enqueuing jobs     | Long-running monitoring or AI work inside a request                     |
-| **Workers** (Phase 5)          | Scheduled monitoring, enrichment, calling the AI service, creating findings | Serve browser traffic                                                   |
-| **AI service** (`services/ai`) | Similarity, OCR, embeddings, risk scoring, RAG                              | Talk to browsers, decide tenant access on its own                       |
+| Component                  | Responsible for                                                             | Never does                                                              |
+| -------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| **Frontend** (`frontend/`) | UI, routing, forms, calling the API                                         | Hold secrets, enforce security (UI only hides things; the API enforces) |
+| **Backend** (`backend/`)   | Auth, organisations, RBAC, CRUD, validation, audit logs, enqueuing jobs     | Long-running monitoring or AI work inside a request                     |
+| **Workers** (Phase 5)      | Scheduled monitoring, enrichment, calling the AI service, creating findings | Serve browser traffic                                                   |
+| **AI service** (`ai/`)     | Similarity, OCR, embeddings, risk scoring, RAG                              | Talk to browsers, decide tenant access on its own                       |
 
 ## 2. Why this shape
 
@@ -112,7 +112,7 @@ and HTTP-only cookies (Phase 2) work exactly as they will in production behind o
   cookie, with sessions stored in MongoDB (TTL index). It's simpler and safer than JWT
   refresh-token rotation for a first-party web app, and sessions can be revoked instantly
   (logout, password change, member removal). Built this way in Phase 2.
-- Proven by `apps/api/test/tenant-isolation.test.ts`: with the other organisation's real IDs,
+- Proven by `backend/test/tenant-isolation.test.ts`: with the other organisation's real IDs,
   members, invitations and audit entries are invisible and unchangeable (404), and an
   `organizationId` sent in a request body is ignored.
 

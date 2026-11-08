@@ -5,27 +5,28 @@
   "description": "AI-powered brand protection and digital risk intelligence platform",
   "type": "module",
   "workspaces": [
-    "apps/*"
+    "backend",
+    "frontend"
   ],
   "engines": {
     "node": ">=22.12"
   },
   "scripts": {
-    "dev": "concurrently --names web,api,ai --prefix-colors cyan,green,magenta \"npm:dev:web\" \"npm:dev:api\" \"npm:dev:ai\"",
-    "dev:web": "npm run dev --workspace @similo/web",
-    "dev:api": "npm run dev --workspace @similo/api",
-    "dev:ai": "uv run --directory services/ai uvicorn app.main:app --reload --port 8000",
+    "dev": "concurrently --names frontend,backend,ai --prefix-colors cyan,green,magenta \"npm:dev:frontend\" \"npm:dev:backend\" \"npm:dev:ai\"",
+    "dev:frontend": "npm run dev --workspace @similo/frontend",
+    "dev:backend": "npm run dev --workspace @similo/backend",
+    "dev:ai": "uv run --directory ai uvicorn app.main:app --reload --port 8000",
     "build": "npm run build --workspaces",
     "typecheck": "npm run typecheck --workspaces",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "npm run test --workspaces",
-    "test:ai": "uv run --directory services/ai pytest",
-    "lint:ai": "uv run --directory services/ai ruff check .",
+    "test:ai": "uv run --directory ai pytest",
+    "lint:ai": "uv run --directory ai ruff check .",
     "check": "npm run typecheck && npm run lint && npm run test && npm run test:ai && npm run lint:ai",
-    "seed:demo": "npm run seed:demo --workspace @similo/api --",
-    "auth:reset-password": "npm run auth:reset-password --workspace @similo/api --"
+    "seed:demo": "npm run seed:demo --workspace @similo/backend --",
+    "auth:reset-password": "npm run auth:reset-password --workspace @similo/backend --"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
