@@ -11,9 +11,9 @@ export function Container({ children, className }: { children: ReactNode; classN
 type Tone = 'light' | 'dark';
 
 /**
- * Small label above a heading: 13 px, medium weight, burnt orange. `index` is
- * accepted so older markup keeps compiling, but v3 no longer shows chapter
- * numbers.
+ * Small label above a heading (v4): a short burnt-orange rule, then 12.5 px
+ * medium text with open tracking. `index` is accepted so older markup keeps
+ * compiling, but chapter numbers are not shown.
  */
 export function Eyebrow({
   children,
@@ -28,8 +28,11 @@ export function Eyebrow({
   return (
     <p
       className={cn(
-        'text-[13px] font-medium',
-        tone === 'dark' ? 'text-accent-soft' : 'text-accent-ink',
+        'flex items-center gap-2.5 text-[12.5px] font-medium tracking-[0.06em] uppercase',
+        "before:h-px before:w-5 before:shrink-0 before:content-['']",
+        tone === 'dark'
+          ? 'text-accent-soft before:bg-accent-soft/70'
+          : 'text-accent-ink before:bg-accent/60',
         className,
       )}
     >
@@ -53,8 +56,8 @@ export function Pill({
       className={cn(
         'inline-flex items-center gap-2 rounded-full px-3 py-1 text-[13px] font-medium',
         tone === 'dark'
-          ? 'bg-white/[0.06] text-white/80 ring-1 ring-white/15'
-          : 'bg-cream text-ink/80 ring-1 ring-line',
+          ? 'bg-cream/[0.06] text-cream/80 ring-1 ring-cream/15'
+          : 'bg-white text-ink/80 shadow-[0_1px_2px_rgb(21_19_15/0.05)] ring-1 ring-line',
         className,
       )}
     >
@@ -92,11 +95,11 @@ export function SectionHeading({
 }: SectionHeadingProps) {
   const titleClass = cn(
     'text-headline font-semibold text-balance',
-    tone === 'dark' ? 'text-white' : 'text-ink',
+    tone === 'dark' ? 'text-cream' : 'text-ink',
   );
   const descriptionClass = cn(
     'text-lead text-pretty',
-    tone === 'dark' ? 'text-white/70' : 'text-muted',
+    tone === 'dark' ? 'text-cream/70' : 'text-muted',
   );
   const eyebrowEl = eyebrow && <Eyebrow tone={tone}>{eyebrow}</Eyebrow>;
 
@@ -137,14 +140,14 @@ export function SectionHeading({
 }
 
 /**
- * Dark panel that holds a product visual on a light page. Flat: a navy
- * surface with a hairline ring, no bezel and no shadow.
+ * Dark panel that holds a product visual on a light page (v4): a night
+ * surface with a hairline ring and the layered dark window shadow.
  */
 export function Stage({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-2xl bg-night text-white ring-1 ring-ink/10',
+        'overflow-hidden rounded-2xl bg-night text-cream shadow-window ring-1 ring-ink/10',
         className,
       )}
     >
@@ -159,7 +162,7 @@ export function ExampleTag({ className, tone = 'dark' }: { className?: string; t
     <span
       className={cn(
         'inline-flex shrink-0 items-center rounded-md px-2 py-0.5 text-[11.5px] font-medium whitespace-nowrap',
-        tone === 'dark' ? 'bg-white/10 text-white/70' : 'bg-cream-deep text-muted',
+        tone === 'dark' ? 'bg-cream/10 text-cream/75' : 'bg-cream-deep text-muted',
         className,
       )}
     >

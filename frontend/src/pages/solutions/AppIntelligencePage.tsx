@@ -1,16 +1,23 @@
 import { FileText, ImageIcon, ShieldCheck, Type, UserRoundCheck, UsersRound } from 'lucide-react';
-import { PhotoFrame } from '@/components/marketing/PhotoFrame';
-import {
-  CtaBand,
-  FeatureCard,
-  ProcessSteps,
-  Section,
-  SplitHero,
-} from '@/components/marketing/sections';
+import { CtaBand, FeatureCard, Section, SplitHero } from '@/components/marketing/sections';
 import { SectionHeading } from '@/components/ui/layout';
-import { FindingExample } from './domain-app-parts';
-import { CardGrid, FaqBlock, RuledList, SplitSection, Timeline } from './page-kit';
-import { HERO_SIZES, PAGE_PHOTOS } from './photos';
+import {
+  AppComparePanel,
+  AppRespondPanel,
+  AppReviewPanel,
+  AppScene,
+  AppSearchPanel,
+  StoreSearchLight,
+} from '@/components/visuals/app';
+import {
+  CardGrid,
+  FaqBlock,
+  RuledList,
+  SplitSection,
+  StoryBand,
+  Timeline,
+  type StoryItem,
+} from './page-kit';
 
 const STORY = [
   { when: 'Search', text: 'A customer searches the app store for your name.' },
@@ -68,29 +75,37 @@ const COMPARE = [
   },
 ];
 
-const STEPS = [
+const STORY_ITEMS: StoryItem[] = [
   {
-    title: 'Search',
+    label: 'Search',
+    title: 'Your name, searched in the stores for you.',
     description:
       'We search approved app store sources for your brand, product names and common misspellings.',
     detail: 'Under the hood: approved sources only',
+    visual: <AppSearchPanel />,
   },
   {
-    title: 'Compare',
+    label: 'Compare',
+    title: 'Icon, name, publisher: each checked on its own.',
     description:
       'The name, logo, publisher and description are each checked against yours, separately.',
     detail: 'Under the hood: text and image similarity',
+    visual: <AppComparePanel />,
   },
   {
-    title: 'Review',
+    label: 'Review',
+    title: 'Partners stay off the list. Copycats get confirmed.',
     description: 'Your team confirms a copycat, or marks a partner’s app as allowed, once.',
     detail: 'Under the hood: partner allow-list',
+    visual: <AppReviewPanel />,
   },
   {
-    title: 'Respond',
+    label: 'Respond',
+    title: 'The evidence is saved. The complaint is drafted.',
     description:
       'We keep the evidence and draft a complaint to the store. A person approves and sends it.',
     detail: 'Under the hood: human approval, audit log',
+    visual: <AppRespondPanel />,
   },
 ];
 
@@ -142,10 +157,14 @@ export function AppIntelligencePage() {
     <>
       <SplitHero
         eyebrow="App Intelligence"
-        title="Find the apps pretending to be yours."
+        title={
+          <>
+            Find the apps pretending to be <em className="text-accent-soft">yours.</em>
+          </>
+        }
         description="Similo looks through app store listings for apps that copy your name, logo or company details, and tells your official partners apart from impersonators."
         secondaryCta={{ label: 'Read the playbook', to: '/resources/rogue-mobile-apps' }}
-        visual={<PhotoFrame {...PAGE_PHOTOS.app} priority sizes={HERO_SIZES} />}
+        visual={<AppScene />}
       />
 
       <Section>
@@ -164,21 +183,20 @@ export function AppIntelligencePage() {
               </p>
             </>
           }
-          media={
-            <FindingExample
-              kind="app"
-              name="ACME Wallet Pro"
-              facts={[
-                'Uses a logo like yours',
-                'Published by a different company',
-                'Name includes your brand',
-              ]}
-              level="high"
-              caption="Illustrative example: how one finding appears to your team. The app name is made up."
-            />
-          }
+          media={<StoreSearchLight />}
         />
       </Section>
+
+      <StoryBand
+        eyebrow="How it works"
+        title={
+          <>
+            From a store listing to a <em>reviewed</em> complaint.
+          </>
+        }
+        description="The same four steps for every app we find."
+        items={STORY_ITEMS}
+      />
 
       <Section tone="white">
         <SectionHeading
@@ -201,17 +219,6 @@ export function AppIntelligencePage() {
       </Section>
 
       <Section>
-        <SectionHeading
-          eyebrow="How it works"
-          title="From a store listing to a reviewed complaint."
-          description="The same four steps for every app we find."
-        />
-        <div className="mt-12">
-          <ProcessSteps steps={STEPS} />
-        </div>
-      </Section>
-
-      <Section tone="white">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
           <SectionHeading
             eyebrow="Where we look"
@@ -223,7 +230,7 @@ export function AppIntelligencePage() {
       </Section>
 
       <FaqBlock
-        tone="light"
+        tone="white"
         title="Questions, answered."
         description="What people usually ask before they start watching the app stores."
         items={FAQ}
@@ -232,7 +239,11 @@ export function AppIntelligencePage() {
 
       <CtaBand
         eyebrow="App review"
-        title="Know which apps are using your name."
+        title={
+          <>
+            Know which apps are using <em>your name.</em>
+          </>
+        }
         description="Tell us your official apps and the companies you publish under, and we’ll show you how copycats are found and reviewed."
         primary={{ label: 'Request an app review', to: '/contact' }}
         secondary={{ label: 'How the AI compares apps', to: '/technology' }}

@@ -40,7 +40,7 @@ export function AuditLogPage() {
           <p className="p-6 text-muted">Nothing recorded yet.</p>
         )}
         {events.length > 0 && (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" role="region" aria-label="Audit log table" tabIndex={0}>
             <table className="w-full text-left text-[14px]">
               <caption className="sr-only">Audit log, newest first</caption>
               <thead className="border-b border-line bg-cream text-[12.5px] text-muted">

@@ -41,7 +41,7 @@ const FAQ: AccordionItem[] = [
 /** Questions a non-expert actually asks, answered plainly. */
 export function HomeFaq() {
   return (
-    <Section tone="white">
+    <Section>
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
         <Reveal className="lg:sticky lg:top-28 lg:self-start">
           <Eyebrow>Questions</Eyebrow>

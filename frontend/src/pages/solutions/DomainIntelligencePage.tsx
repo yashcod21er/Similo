@@ -1,16 +1,15 @@
 import { Clock3, KeyRound, Mail, Spline } from 'lucide-react';
-import { PhotoFrame } from '@/components/marketing/PhotoFrame';
-import {
-  CtaBand,
-  FeatureCard,
-  ProcessSteps,
-  Section,
-  SplitHero,
-} from '@/components/marketing/sections';
+import { CtaBand, FeatureCard, Section, SplitHero } from '@/components/marketing/sections';
 import { SectionHeading } from '@/components/ui/layout';
-import { FindingExample } from './domain-app-parts';
-import { CardGrid, FaqBlock, SplitSection, Timeline } from './page-kit';
-import { HERO_SIZES, PAGE_PHOTOS } from './photos';
+import {
+  DomainComparePanel,
+  DomainDecisionPanel,
+  DomainEvidencePanel,
+  DomainScene,
+  DomainWatchPanel,
+  PageCompareVisual,
+} from '@/components/visuals/domain';
+import { CardGrid, FaqBlock, SplitSection, StoryBand, Timeline, type StoryItem } from './page-kit';
 
 const STORY = [
   {
@@ -61,30 +60,38 @@ const KINDS = [
   },
 ];
 
-const STEPS = [
+const STORY_ITEMS: StoryItem[] = [
   {
-    title: 'Watch',
+    label: 'Watch',
+    title: 'Every new website name, as it appears.',
     description:
       'We regularly check newly registered website names and security certificates from approved sources.',
     detail: 'Under the hood: zone files, Certificate Transparency logs',
+    visual: <DomainWatchPanel />,
   },
   {
-    title: 'Compare',
+    label: 'Compare',
+    title: 'Your name, letter by letter, and the page itself.',
     description:
       'Each name is compared with yours. We also look at the page itself, who registered the name and when, and what it is set up to do.',
     detail: 'Under the hood: edit distance, homoglyphs, RDAP, DNS records',
+    visual: <DomainComparePanel />,
   },
   {
-    title: 'Explain',
+    label: 'Explain',
+    title: 'A risk level, the reasons, and the proof.',
     description:
       'Anything suspicious gets a risk level and the reasons behind it, in plain words. Every capture is saved with its time and a fingerprint.',
     detail: 'Under the hood: reason codes, SHA-256 hashes',
+    visual: <DomainEvidencePanel />,
   },
   {
-    title: 'You decide',
+    label: 'You decide',
+    title: 'A person reviews it. Nothing happens without one.',
     description:
       'Your team reviews the evidence. Nothing is sent or taken down without a person approving it. A false alarm can be dismissed with a reason.',
     detail: 'Under the hood: human approval, audit log',
+    visual: <DomainDecisionPanel />,
   },
 ];
 
@@ -126,10 +133,14 @@ export function DomainIntelligencePage() {
     <>
       <SplitHero
         eyebrow="Domain Intelligence"
-        title="Spot fake websites before they fool anyone."
+        title={
+          <>
+            Spot fake websites <em className="text-accent-soft">before they fool anyone.</em>
+          </>
+        }
         description="Similo watches new website names for ones that look like yours, checks what each one is set up to do, and tells you in plain words why it looks risky."
         secondaryCta={{ label: 'Read the guide', to: '/resources/lookalike-domains-explained' }}
-        visual={<PhotoFrame {...PAGE_PHOTOS.domain} priority sizes={HERO_SIZES} />}
+        visual={<DomainScene />}
       />
 
       <Section>
@@ -144,21 +155,20 @@ export function DomainIntelligencePage() {
               <Timeline items={STORY} />
             </>
           }
-          media={
-            <FindingExample
-              kind="website"
-              name="acrne-login.com"
-              facts={[
-                'Looks like your brand name',
-                'Registered 2 days ago',
-                'Has a sign-in form like yours',
-              ]}
-              level="high"
-              caption="Illustrative example: how one finding appears to your team. The website name is made up."
-            />
-          }
+          media={<PageCompareVisual />}
         />
       </Section>
+
+      <StoryBand
+        eyebrow="How it works"
+        title={
+          <>
+            The same four steps for <em>every</em> website.
+          </>
+        }
+        description="Nothing reaches your team without evidence, and nothing is dismissed without a reason."
+        items={STORY_ITEMS}
+      />
 
       <Section tone="white">
         <SectionHeading
@@ -180,18 +190,8 @@ export function DomainIntelligencePage() {
         </CardGrid>
       </Section>
 
-      <Section>
-        <SectionHeading
-          eyebrow="How it works"
-          title="The same four steps for every website."
-          description="Nothing reaches your team without evidence, and nothing is dismissed without a reason."
-        />
-        <div className="mt-12">
-          <ProcessSteps steps={STEPS} />
-        </div>
-      </Section>
-
       <FaqBlock
+        tone="light"
         title="Questions, answered."
         description="The things people usually ask before they start watching their website names."
         items={FAQ}
@@ -203,7 +203,11 @@ export function DomainIntelligencePage() {
 
       <CtaBand
         eyebrow="Domain review"
-        title="See which websites are pretending to be you."
+        title={
+          <>
+            See which websites are <em>pretending</em> to be you.
+          </>
+        }
         description="Tell us your main website addresses and we’ll walk you through how lookalikes are found, explained and reviewed."
         primary={{ label: 'Request a domain review', to: '/contact' }}
         secondary={{ label: 'How the AI decides', to: '/technology' }}

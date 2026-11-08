@@ -25,7 +25,7 @@ const TEAMS: { icon: LucideIcon; team: string; text: string }[] = [
 /** Who it is for: the three teams that share the problem. */
 export function TeamsSection() {
   return (
-    <Section>
+    <Section tone="white">
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal>
           <PhotoFrame

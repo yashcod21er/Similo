@@ -2,7 +2,7 @@ import { cn } from '@/lib/cn';
 
 interface PhotoProps {
   /**
-   * Path without the size suffix, e.g. `/images/home/analyst-desk`.
+   * Path without the size suffix, e.g. `/images/core/document-review`.
    * Expects `<src>-800.webp` and `<src>-1600.webp` in `frontend/public`
    * (credits in docs/IMAGE-CREDITS.md).
    */

@@ -2,10 +2,9 @@ import type { ElementType, ReactNode } from 'react';
 import { cn } from '@/lib/cn';
 
 /**
- * The standard light card: white, 1 px border, small radius. The only hover
- * change is a slightly stronger border. (The name is historical: the v2
- * pointer spotlight is gone, and new code can use a plain element with the
- * same classes.)
+ * The standard light card (v4): white, hairline border, rounded-2xl and the
+ * layered `shadow-card`. On hover the border strengthens and the card lifts
+ * by 2 px (transform only; none with reduced motion). The name is historical.
  */
 export function SpotlightCard({
   as: Tag = 'article',
@@ -19,7 +18,7 @@ export function SpotlightCard({
   return (
     <Tag
       className={cn(
-        'group/spot relative overflow-hidden rounded-xl border border-line bg-white transition-colors duration-150 hover:border-line-strong',
+        'group/spot relative overflow-hidden rounded-2xl border border-line bg-white shadow-card transition-[border-color,transform] duration-300 ease-out hover:-translate-y-0.5 hover:border-line-strong motion-reduce:hover:translate-y-0',
         className,
       )}
     >

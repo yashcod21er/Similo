@@ -1,11 +1,14 @@
 /** "Asha Rao" → "AR" (avatar fallback). */
 export function initials(name: string): string {
+  // First letter or digit of the first two words, ignoring brackets and symbols:
+  // "Acme (sample data)" → "AS", "Olivia Owner" → "OO".
   return name
     .split(/\s+/)
+    .map((part) => part.match(/[\p{L}\p{N}]/u)?.[0] ?? '')
     .filter(Boolean)
     .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join('');
+    .join('')
+    .toUpperCase();
 }
 
 const date = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });

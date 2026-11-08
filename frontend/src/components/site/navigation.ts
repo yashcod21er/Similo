@@ -14,11 +14,15 @@ import {
  * editing one file. Descriptions are written in plain words on purpose.
  */
 
+/** Which small illustration the mega menu shows beside an item (see NavPreviews.tsx). */
+export type NavPreviewKind = 'domain' | 'app' | 'trademark' | 'evidence' | 'platform' | 'ai';
+
 export interface NavItem {
   label: string;
   to: string;
   description: string;
   icon: LucideIcon;
+  preview: NavPreviewKind;
 }
 
 /** Highlighted card shown on the right of a dropdown menu. */
@@ -28,12 +32,16 @@ export interface NavFeature {
   description: string;
   to: string;
   cta: string;
+  /** `checker` draws a small look-alike checker on a dark card; otherwise a plain light card. */
+  visual?: 'checker';
 }
 
 export interface NavMenu {
   label: string;
   items: NavItem[];
   featured?: NavFeature;
+  /** A wide mega menu spans the header; a narrow one hangs under its button. */
+  wide?: boolean;
 }
 
 export interface NavLinkEntry {
@@ -49,24 +57,28 @@ export const solutionItems: NavItem[] = [
     to: '/solutions/domain-intelligence',
     description: 'Fake websites that use your name or look like yours.',
     icon: Globe,
+    preview: 'domain',
   },
   {
     label: 'App Intelligence',
     to: '/solutions/app-intelligence',
     description: 'Copycat apps that borrow your name, logo or company.',
     icon: Smartphone,
+    preview: 'app',
   },
   {
     label: 'Trademark Intelligence',
     to: '/solutions/trademark-intelligence',
     description: 'New trademark filings that come too close to yours.',
     icon: Stamp,
+    preview: 'trademark',
   },
   {
     label: 'Investigation & Evidence',
     to: '/solutions/investigation-evidence',
     description: 'Collect proof, work as a team and decide what to do.',
     icon: FolderSearch,
+    preview: 'evidence',
   },
 ];
 
@@ -76,12 +88,14 @@ export const howItWorksItems: NavItem[] = [
     to: '/platform',
     description: 'How watching, checking and reviewing fit together.',
     icon: Layers,
+    preview: 'platform',
   },
   {
     label: 'The AI, explained',
     to: '/technology',
     description: 'What the AI compares, and how it shows its reasons.',
     icon: BrainCircuit,
+    preview: 'ai',
   },
 ];
 
@@ -89,12 +103,14 @@ export const primaryNav: NavEntry[] = [
   {
     label: 'Solutions',
     items: solutionItems,
+    wide: true,
     featured: {
       eyebrow: 'Try it now',
       title: 'Check your brand name',
       description: 'See how copycats could imitate it. Runs in your browser.',
       to: '/#check',
       cta: 'Open the checker',
+      visual: 'checker',
     },
   },
   {

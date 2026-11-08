@@ -2,8 +2,8 @@
 
 > **The mark is the _o_ of the wordmark, cut along its middle.** Slide the bottom half, an exact
 > copy, across until the two ends meet, and the letter becomes **∼**, the mathematical sign for
-> "is similar to". The original half stays white; the copy is crimson, the colour Similo uses for
-> risk.
+> "is similar to". The original half stays white; the copy is burnt orange, the colour Similo uses
+> for risk.
 
 That is the product in one shape: two things that look the same, and the one worth a second look.
 Every lockup also contains a small "spot the difference". The _o_ that ends the word is made of
@@ -13,9 +13,9 @@ the same two halves as the mark beside it, put back together at exactly the same
 
 | Need                                      | Use                                                                      |
 | ----------------------------------------- | ------------------------------------------------------------------------ |
-| Logo in the interface (header, footer)    | `<Logo />` on light, `<Logo tone="dark" />` on midnight                  |
+| Logo in the interface (header, footer)    | `<Logo />` on light, `<Logo tone="dark" />` on night                     |
 | App-icon tile                             | `<LogoMark className="size-8" />` (self-contained on light and dark)     |
-| Bare symbol in the current text colour    | `<LogoSymbol />`, or `<LogoSymbol accent />` for a crimson copy          |
+| Bare symbol in the current text colour    | `<LogoSymbol />`, or `<LogoSymbol accent />` for a burnt-orange copy     |
 | Wordmark that fills its container's width | `<LogoWordmark />` (for large decorative uses)                           |
 | Browser tab                               | `frontend/public/favicon.svg`, redrawn on a 16 px grid                   |
 | iOS home screen                           | `frontend/public/apple-touch-icon.png`, 180 × 180, full bleed            |
@@ -42,8 +42,11 @@ use `<LogoWordmark className="text-ink/[0.11] mask-fade-b" />` (`mask-fade-b` is
   Either way the meaning holds.
 - **The making.** The mark isn't a wave someone drew. It is our own letter, cut and moved, so the
   symbol and the wordmark are one design, not two.
-- **The colour.** Crimson means "pay attention" in the design system. In the mark it lands only
-  on the copy.
+- **The colour.** Burnt orange means "pay attention" in the design system. In the mark it lands
+  only on the copy.
+- **In motion.** The website's signature visual, `SimilarityWave` (see docs/DESIGN-SYSTEM.md),
+  tells the same story at large scale: flowing cream ribbons, each followed by a burnt-orange copy
+  that drifts slightly apart and back. It is drawn from the idea, never from the mark's outlines.
 
 ## What great marks have in common (research)
 
@@ -72,12 +75,13 @@ use `<LogoWordmark className="text-ink/[0.11] mask-fade-b" />` (`mask-fade-b` is
 - **Competitors.** Corsearch: a white "C" in a crimson-to-navy gradient tile. BrandShield: a mint
   shield with a "B". Red Points: a black six-armed asterisk. Bolster: a navy arch. Doppel: a lime
   circle split in two around a diamond. MarkMonitor: blue peaks. Netcraft: a teal "N". Similo
-  avoids letters in tiles, shields, gradients, split circles and asterisks. The nearest overlap is
-  Corsearch's crimson and navy, so our tile is flat navy and holds a symbol, not a letter.
+  avoids letters in tiles, shields, gradients, split circles and asterisks. Corsearch's crimson and
+  navy was the nearest overlap of the first palette; the current tile is flat near-black (night)
+  with a burnt-orange copy, and it holds a symbol, not a letter.
 
 ## Concepts explored
 
-Every concept was judged at 16, 24, 32, 64, 128 and 256 px on white, paper and midnight, in one
+Every concept was judged at 16, 24, 32, 64, 128 and 256 px on white, paper and midnight (the first palette), in one
 colour, and as a lockup. Small sizes were rendered at 1× so 16 px meant 16 real pixels.
 
 | Concept                                                                           | Verdict                                                                                                                                                      |
@@ -139,17 +143,21 @@ too faint at 16 px.
 
 ## Colour
 
-| Part                  | Colour                   | Contrast                         |
-| --------------------- | ------------------------ | -------------------------------- |
-| Tile                  | Midnight `#0B1020`       | 18.9:1 on white                  |
-| Original half         | White `#FFFFFF`          | 18.9:1 on the tile               |
-| Copy half             | Crimson `#D92F48`        | 4.0:1 on the tile (≥ 3:1)        |
-| Wordmark on light     | Ink `#111827`            | 17.7:1 on white, 16.6:1 on paper |
-| Wordmark on dark      | White                    | 18.9:1 on midnight               |
-| Tile edge on midnight | White at 15% (1 px ring) |                                  |
+Palette v4: cream, black and burnt orange. The files in `frontend/public/brand/` and
+`favicon.svg` use these values.
+
+| Part               | Colour                   | Contrast                         |
+| ------------------ | ------------------------ | -------------------------------- |
+| Tile               | Night `#12110f`          | 18.9:1 on white                  |
+| Original half      | White `#FFFFFF`          | 18.9:1 on the tile               |
+| Copy half          | Burnt orange `#c2500a`   | 4.0:1 on the tile (≥ 3:1)        |
+| Wordmark on light  | Ink `#15130f`            | 18.6:1 on white, 16.4:1 on cream |
+| Wordmark on dark   | White                    | 18.9:1 on night                  |
+| Tile edge on night | White at 15% (1 px ring) |                                  |
 
 - **One colour:** all Ink or all White, or a knocked-out tile (the ∼ cut out of a solid tile).
-- **No other colours.** Coral is for small accents on dark surfaces, not for the logo.
+- **No other colours.** The lighter orange (`accent-soft`, `#ee8a45`) is for text and lines on
+  dark surfaces, not for the logo.
 - **No purple or violet.**
 
 ## Do and don't
@@ -157,9 +165,9 @@ too faint at 16 px.
 **Do**
 
 - Use the components or the files in `/public/brand`.
-- Keep the copy crimson and the original white.
+- Keep the copy burnt orange and the original white.
 - Use the tile on photos and busy backgrounds.
-- Use `tone="dark"` on midnight.
+- Use `tone="dark"` on night.
 - Respect clear space and minimum sizes.
 
 **Don't**
@@ -171,7 +179,8 @@ too faint at 16 px.
 - Add shadows, outlines, gradients or new tile colours.
 - Re-type the wordmark in a font, or capitalise it.
 - Separate the two halves.
-- Use the ∼ as a decorative wave pattern.
+- Tile or repeat the ∼ itself as a decorative pattern. The `SimilarityWave` carries the idea in
+  motion; the mark stays a mark.
 
 ## Geist and the font licence
 

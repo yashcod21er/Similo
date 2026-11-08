@@ -3,16 +3,20 @@ import { SectionHeading } from '@/components/ui/layout';
 import { Reveal } from '@/components/ui/Reveal';
 import { LookalikeChecker } from './LookalikeChecker';
 
-/** The working brand checker, with the `#check` anchor that the header and hero link to. */
+/**
+ * The working brand checker: the page's interactive centrepiece, right after the hero, on
+ * the cream canvas. Keeps the `#check` anchor that the header and hero link to.
+ */
 export function CheckerSection() {
   return (
-    <Section tone="white" id="check">
+    <Section id="check">
       <SectionHeading
-        eyebrow="Brand checker"
+        align="split"
+        eyebrow="Try it now"
         title="See how a copycat could imitate your name."
-        description="Type your brand name. Similo builds the look-alike names that copycats really use and highlights what changed."
+        description="Type your brand name. Similo builds the look-alike names copycats really use and highlights exactly what changed. It works right here, without an account."
       />
-      <Reveal className="mt-10">
+      <Reveal className="mt-12 lg:mt-16">
         <LookalikeChecker />
       </Reveal>
     </Section>

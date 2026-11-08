@@ -1,330 +1,428 @@
-import {
-  AlertTriangle,
-  BadgeCheck,
-  CalendarClock,
-  Check,
-  Fingerprint,
-  KeyRound,
-  Lock,
-  Mail,
-  Type,
-  X,
-} from 'lucide-react';
-import { motion } from 'motion/react';
-import type { ReactNode } from 'react';
-import { ExampleTag } from '@/components/ui/layout';
+import { AlertTriangle, Check, Fingerprint, Globe } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useRef, type ReactNode } from 'react';
+import { AppWindow } from '@/components/motion';
 import { EASE_OUT } from '@/lib/motion';
 import { cn } from '@/lib/cn';
-import { ProductWindow } from './primitives';
+import {
+  Chip,
+  DecisionBar,
+  Fact,
+  MiniPage,
+  PaneLabel,
+  SceneFigure,
+  Show,
+  SignalBar,
+  type Level,
+} from './scene-kit';
+import { usePanelShown, useSceneStep, WINDOW_BODY } from './scene-hooks';
 
-/* -------------------------------------------------------------- Shared bits */
+/*
+ * Domain Intelligence scenes. Sample brand "Acme"; every name is made up.
+ * The hero scene loops: look-alike names arrive, one is flagged, its scores fill, its
+ * registration facts and page capture appear, a person decides. The same parts are
+ * reused alone as ScrollStory panels.
+ */
 
-/** Browser-style address bar, light-on-dark. */
-function AddressBar({
-  label,
-  children,
-  official = false,
-}: {
+const FLAGGED = 'acrne-login.com';
+
+interface FeedItem {
+  id: string;
+  name: string;
+  registered: string;
+  level: Level;
   label: string;
-  children: ReactNode;
-  official?: boolean;
+}
+
+/** In arrival order: the last one is the flagged name. */
+const FEED: FeedItem[] = [
+  {
+    id: 'recipes',
+    name: 'acme-recipes.blog',
+    registered: '3 days ago',
+    level: 'low',
+    label: 'Low',
+  },
+  { id: 'shop', name: 'acmes-shop.top', registered: '1 day ago', level: 'medium', label: 'Medium' },
+  { id: 'acmee', name: 'acmee.co', registered: '2 days ago', level: 'medium', label: 'Medium' },
+  { id: 'login', name: FLAGGED, registered: '2 days ago', level: 'high', label: 'High' },
+];
+
+/* ----------------------------------------------------------- Feed of names */
+
+function FeedRow({
+  item,
+  scored,
+  selected,
+}: {
+  item: FeedItem;
+  scored: boolean;
+  selected: boolean;
 }) {
   return (
-    <div
+    <motion.li
+      layout="position"
+      initial={{ opacity: 0, y: -14 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.45, ease: EASE_OUT }}
       className={cn(
-        'flex items-center gap-3 rounded-xl px-3.5 py-3 ring-1',
-        official ? 'bg-white/[0.04] ring-white/10' : 'bg-accent/[0.12] ring-accent/40',
+        'flex items-center gap-3 rounded-lg px-3 py-2.5 ring-1 transition-colors duration-500',
+        selected ? 'bg-accent/[0.14] ring-accent/60' : 'bg-white/[0.035] ring-white/[0.06]',
       )}
     >
-      <span className="w-16 shrink-0 text-[11.5px] text-white/50">{label}</span>
-      <span className="flex min-w-0 flex-1 items-center gap-2 font-mono text-[14px] sm:text-[15px]">
-        <Lock aria-hidden className="size-3.5 shrink-0 text-white/60" />
-        <span className="truncate">{children}</span>
-      </span>
-      {official ? (
-        <BadgeCheck aria-hidden className="size-4 shrink-0 text-emerald-400" />
-      ) : (
-        <AlertTriangle aria-hidden className="size-4 shrink-0 text-accent-soft" />
-      )}
-    </div>
-  );
-}
-
-const REASONS = [
-  { icon: Type, text: 'Looks like your name', note: 'r + n ≈ m' },
-  { icon: CalendarClock, text: 'Registered 2 days ago', note: 'brand new' },
-  { icon: Mail, text: 'Set up to send email', note: 'can send fake invoices' },
-  { icon: KeyRound, text: 'Has a sign-in page like yours', note: 'asks for passwords' },
-];
-
-/* ------------------------------------------------------------- Hero alert */
-
-/** Domain hero: what a visitor sees in the address bar, and why Similo flags it. */
-export function DomainAlertVisual() {
-  return (
-    <div className="relative mx-auto w-full max-w-lg">
-      <ProductWindow title="New alert · website">
-        <div className="p-5 sm:p-6">
-          <p className="text-[12.5px] text-white/55">What people see in their address bar</p>
-          <div className="mt-3 space-y-2">
-            <AddressBar label="Your site" official>
-              acme.com
-            </AddressBar>
-            <AddressBar label="Found">
-              ac
-              <motion.span
-                className="rounded bg-accent px-0.5 text-white"
-                initial={{ opacity: 0.4 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-              >
-                rn
-              </motion.span>
-              e-login.com
-            </AddressBar>
-          </div>
-        </div>
-
-        <div className="border-t border-white/10 p-5 sm:p-6">
-          <p className="text-[12.5px] text-white/55">Why it looks risky</p>
-          <ul className="mt-3.5 space-y-3">
-            {REASONS.map((reason, index) => (
-              <motion.li
-                key={reason.text}
-                initial={{ opacity: 0, x: -10 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, ease: EASE_OUT, delay: 0.5 + index * 0.12 }}
-                className="flex items-center gap-3"
-              >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.06] text-accent-soft ring-1 ring-white/10">
-                  <reason.icon aria-hidden className="size-4" />
-                </span>
-                <span className="min-w-0 flex-1 text-[14px] font-medium">{reason.text}</span>
-                <span className="hidden text-[12px] text-white/60 sm:inline">{reason.note}</span>
-              </motion.li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 bg-white/[0.02] px-5 py-4 sm:px-6">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 px-2.5 py-1 text-[12.5px] font-semibold text-accent-soft">
-            <AlertTriangle aria-hidden className="size-3.5" />
-            High risk · sent for review
-          </span>
-          <span className="font-mono text-[10.5px] text-white/60">
-            homoglyph · RDAP · MX · page capture
-          </span>
-        </div>
-      </ProductWindow>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------- Page comparison */
-
-function MockLoginPage({ url, suspicious }: { url: string; suspicious?: boolean }) {
-  return (
-    <div
-      className={cn(
-        'relative overflow-hidden rounded-2xl border bg-white text-ink',
-        suspicious
-          ? 'border-accent/50 shadow-[0_12px_40px_-12px_rgb(217_47_72/0.35)]'
-          : 'border-line shadow-soft',
-      )}
-    >
-      <div className="flex items-center gap-2 border-b border-line bg-cream px-3 py-2">
-        <span className="flex min-w-0 flex-1 items-center gap-1.5 rounded-full bg-white px-2.5 py-1 font-mono text-[10.5px] text-muted ring-1 ring-line">
-          <Lock aria-hidden className="size-3 shrink-0" />
-          <span className="truncate">{url}</span>
-        </span>
+      <Globe aria-hidden className="size-4 shrink-0 text-cream/50" />
+      <div className="min-w-0 flex-1">
+        <p className="truncate font-mono text-[12.5px] text-cream">{item.name}</p>
+        <p className="text-[11px] text-cream/60">Registered {item.registered}</p>
       </div>
-      <div className="p-5">
-        <div className="flex items-center gap-2">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-night text-xs font-semibold text-white">
-            A
-          </span>
-          <span className="text-sm font-semibold">ACME</span>
-        </div>
-        <p className="mt-4 text-[13px] font-semibold">Sign in to your account</p>
-        <div className="mt-3 space-y-2">
-          <div className="h-8 rounded-lg border border-line bg-cream" />
-          <div className="h-8 rounded-lg border border-line bg-cream" />
-          <div
-            className={cn(
-              'flex h-8 items-center justify-center rounded-lg text-[11px] font-medium text-white',
-              suspicious ? 'bg-accent' : 'bg-night',
-            )}
-          >
-            Sign in
-          </div>
-        </div>
-      </div>
-    </div>
+      <Chip level={scored ? item.level : 'neutral'}>{scored ? item.label : 'Checking'}</Chip>
+    </motion.li>
   );
 }
 
-const PAGE_FINDINGS = [
-  { label: 'Looks like your page', value: '94% alike', alert: false },
-  { label: 'Uses your wording', value: '88% the same', alert: false },
-  { label: 'Where passwords go', value: 'Another site', alert: true },
-];
-
-/** Official sign-in page next to a suspected copy, with plain findings. */
-export function PageCompareVisual() {
+/** Newly registered names arriving at the top. `count` rows are showing; `scored` of them have a result. */
+export function DomainFeed({
+  count,
+  scored,
+  selected,
+}: {
+  count: number;
+  scored: number;
+  selected: boolean;
+}) {
+  const visible = FEED.slice(0, count).reverse();
   return (
     <div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div>
-          <p className="mb-2 flex items-center gap-1.5 text-[13px] font-medium text-emerald-700">
-            <Check aria-hidden className="size-3.5" /> Your real page
-          </p>
-          <MockLoginPage url="portal.acme.com/login" />
-        </div>
-        <div>
-          <p className="mb-2 flex items-center gap-1.5 text-[13px] font-medium text-accent-ink">
-            <AlertTriangle aria-hidden className="size-3.5" /> The copy we found
-          </p>
-          <MockLoginPage url="acrne-login.com/secure" suspicious />
-        </div>
+      <PaneLabel>New registrations</PaneLabel>
+      <ul className="relative mt-2.5 space-y-2" style={{ minHeight: FEED.length * 52 - 8 }}>
+        <AnimatePresence initial={false}>
+          {visible.map((item) => {
+            const index = FEED.indexOf(item);
+            return (
+              <FeedRow
+                key={item.id}
+                item={item}
+                scored={index < scored}
+                selected={selected && item.name === FLAGGED}
+              />
+            );
+          })}
+        </AnimatePresence>
+      </ul>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------ Page capture */
+
+export function CaptureFrame({ shown }: { shown: boolean }) {
+  return (
+    <Show when={shown}>
+      <PaneLabel>Page capture</PaneLabel>
+      <div className="mt-2.5 rounded-lg bg-white/[0.035] p-2.5 ring-1 ring-white/[0.06]">
+        <MiniPage url={`${FLAGGED}/secure`} copy />
+        <p className="mt-2 flex items-center gap-1.5 font-mono text-[10.5px] text-cream/65">
+          <Fingerprint aria-hidden className="size-3 shrink-0 text-emerald-300" />
+          <span className="truncate">SHA-256 9f2c…a71e · saved 09:42</span>
+        </p>
       </div>
-      <dl className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
-        {PAGE_FINDINGS.map((finding, index) => (
-          <motion.div
-            key={finding.label}
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: EASE_OUT, delay: 0.2 + index * 0.1 }}
-            className={cn(
-              'rounded-xl px-4 py-3 ring-1',
-              finding.alert ? 'bg-accent/[0.06] ring-accent/25' : 'bg-cream ring-line',
-            )}
-          >
-            <dt className="text-[12.5px] text-muted">{finding.label}</dt>
-            <dd
-              className={cn(
-                'mt-0.5 text-[17px] font-semibold tracking-[-0.02em]',
-                finding.alert && 'text-accent-ink',
-              )}
-            >
-              {finding.value}
-            </dd>
-          </motion.div>
-        ))}
+    </Show>
+  );
+}
+
+/* ------------------------------------------------------------------ Scores */
+
+/** The three named similarity scores. `shownCount` of them are filled in. */
+export function DomainScores({
+  shownCount,
+  notes = true,
+}: {
+  shownCount: number;
+  notes?: boolean;
+}) {
+  return (
+    <div className="space-y-3">
+      <SignalBar
+        label="Text similarity"
+        value={94}
+        shown={shownCount >= 1}
+        note={notes && '“rn” reads as “m”, and “login” is added'}
+      />
+      <SignalBar
+        label="Visual similarity"
+        value={88}
+        shown={shownCount >= 2}
+        delay={120}
+        note={notes && 'Sign-in page layout and logo match yours'}
+      />
+      <SignalBar
+        label="Meaning similarity"
+        value={61}
+        shown={shownCount >= 3}
+        delay={240}
+        note={notes && '“login” suggests an account page'}
+      />
+    </div>
+  );
+}
+
+/* --------------------------------------------------------- Registration facts */
+
+export function RdapFacts({ shown }: { shown: boolean }) {
+  return (
+    <div>
+      <PaneLabel aside={<span className="font-mono text-[10.5px] text-cream/60">RDAP</span>}>
+        Registration facts
+      </PaneLabel>
+      <dl className="mt-1.5 divide-y divide-white/[0.06]">
+        <Fact label="Registered" value="2 days ago" shown={shown} flag />
+        <Fact label="Registrar" value="Example Registrar, Inc." shown={shown} delay={90} />
+        <Fact label="Owner" value="Hidden by a privacy service" shown={shown} delay={180} />
+        <Fact
+          label="Email set up (MX)"
+          value="Yes, switched on day 1"
+          shown={shown}
+          delay={270}
+          flag
+        />
       </dl>
     </div>
   );
 }
 
-/* ------------------------------------------------------ Registration facts */
+/* -------------------------------------------------------------- Hero scene */
 
-const REGISTRATION = [
-  { label: 'Registered', value: '2 days ago' },
-  { label: 'Owner', value: 'Hidden by a privacy service' },
-  { label: 'Registered through', value: 'Example Registrar, Inc.' },
-];
+const STEP_COUNT = 11;
 
-/** Who registered a name and when, in plain words. */
-export function RegistrationFacts() {
+/** The Domain page's hero scene. */
+export function DomainScene() {
+  const { ref, step } = useSceneStep(STEP_COUNT, 1100);
+  const count = Math.min(step + 1, FEED.length);
+  const scored = Math.min(Math.max(step, 0), FEED.length);
+  const selected = step >= 4;
+  const scores = step >= 4 ? Math.min(step - 3, 3) : 0;
+  const stage = step >= 9 ? 2 : step >= 8 ? 1 : 0;
+
   return (
-    <dl className="divide-y divide-line rounded-2xl bg-cream ring-1 ring-line">
-      {REGISTRATION.map((fact) => (
-        <div key={fact.label} className="flex items-baseline justify-between gap-4 px-4 py-3">
-          <dt className="text-[13px] text-muted">{fact.label}</dt>
-          <dd className="truncate text-right text-[14px] font-medium">{fact.value}</dd>
-        </div>
-      ))}
-    </dl>
-  );
-}
-
-/* ---------------------------------------------------------- Setup timeline */
-
-const SETUP = [
-  { when: 'Day 0', event: 'Name registered', alert: false },
-  { when: 'Day 0', event: 'Security certificate issued', alert: false },
-  { when: 'Day 1', event: 'Email switched on', alert: false },
-  { when: 'Day 2', event: 'Sign-in form appears', alert: true },
-];
-
-/** How a lookalike name gets ready for use, step by step. */
-export function SetupTimeline() {
-  return (
-    <ol className="relative space-y-3.5 pl-5">
-      <span aria-hidden className="absolute top-1.5 bottom-1.5 left-[5px] w-px bg-line" />
-      {SETUP.map((step, index) => (
-        <motion.li
-          key={step.event}
-          initial={{ opacity: 0, x: -8 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45, ease: EASE_OUT, delay: index * 0.1 }}
-          className="relative flex items-baseline justify-between gap-3"
+    <SceneFigure label="Illustrative example: a look-alike website name arrives in a feed of new registrations, is flagged with separate text, visual and meaning scores, its registration facts and a page capture are saved, and a person reviews it.">
+      <AppWindow tone="dark" title="Domains" url="app.similo.example/domains">
+        <div
+          ref={ref}
+          className={cn(
+            WINDOW_BODY,
+            'grid grid-cols-1 gap-x-5 gap-y-5 p-4 @lg:grid-cols-[1fr_1.05fr] @lg:p-5',
+          )}
         >
-          <span
-            aria-hidden
-            className={cn(
-              'absolute top-1.5 -left-5 size-[11px] rounded-full ring-4 ring-white',
-              step.alert ? 'bg-accent' : 'bg-line-strong',
-            )}
+          <div className="space-y-5">
+            <DomainFeed count={count} scored={scored} selected={selected} />
+            <div className="hidden @lg:block">
+              <CaptureFrame shown={step >= 5} />
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="grid">
+              <Show
+                when={!selected}
+                y={0}
+                className="col-start-1 row-start-1 self-start rounded-lg border border-dashed border-white/15 px-3 py-3 text-[12px] leading-snug text-cream/65"
+              >
+                Scoring the newest names. When one stands out, its scores and evidence appear here.
+              </Show>
+              <Show when={selected} className="col-start-1 row-start-1">
+                <PaneLabel aside={<Chip level="high">High priority</Chip>}>
+                  Selected alert
+                </PaneLabel>
+                <p className="mt-2 truncate font-mono text-[15px] font-medium text-cream">
+                  {FLAGGED}
+                </p>
+                <p className="mt-0.5 text-[11.5px] text-cream/60">
+                  Looks like acme.com, your website
+                </p>
+              </Show>
+            </div>
+            <div>
+              <PaneLabel>Scores, 0 to 100</PaneLabel>
+              <div className="mt-2.5">
+                <DomainScores shownCount={scores} />
+              </div>
+            </div>
+            <RdapFacts shown={step >= 7} />
+            <DecisionBar stage={stage} />
+          </div>
+        </div>
+      </AppWindow>
+    </SceneFigure>
+  );
+}
+
+/* ----------------------------------------------------------- Story panels */
+
+function StoryWindow({
+  title,
+  url,
+  children,
+}: {
+  title: string;
+  url: string;
+  children: ReactNode;
+}) {
+  return (
+    <AppWindow tone="dark" title={title} url={url}>
+      <div className={cn(WINDOW_BODY, 'p-4 @lg:p-5')}>{children}</div>
+    </AppWindow>
+  );
+}
+
+/** Step 1: the feed of new registrations. */
+export function DomainWatchPanel() {
+  const ref = useRef<HTMLDivElement>(null);
+  const shown = usePanelShown(ref);
+  return (
+    <SceneFigure label="Illustrative example: a feed of newly registered website names, each one being checked.">
+      <div ref={ref}>
+        <StoryWindow title="Domains" url="app.similo.example/domains">
+          <DomainFeed
+            count={shown ? FEED.length : 1}
+            scored={shown ? FEED.length : 0}
+            selected={false}
           />
-          <span className={cn('text-[14px] font-medium', step.alert && 'text-accent-ink')}>
-            {step.event}
-          </span>
-          <span className="shrink-0 font-mono text-[11.5px] text-muted">{step.when}</span>
-        </motion.li>
-      ))}
-    </ol>
-  );
-}
-
-/* ------------------------------------------------------------ Proof + dismiss */
-
-/** A saved capture with its fingerprint. */
-export function EvidenceChip() {
-  return (
-    <div className="flex items-center gap-3 rounded-2xl bg-cream px-4 py-3 ring-1 ring-line">
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white text-accent-ink ring-1 ring-line">
-        <Fingerprint aria-hidden className="size-4" />
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-[13.5px] font-medium">page-capture.png · 11:16</p>
-        <p className="truncate font-mono text-[11px] text-muted">fingerprint 9f2c4e1b…a71e</p>
+          <div className="mt-4 grid grid-cols-1 gap-2 border-t border-white/[0.07] pt-4 text-[11.5px] text-cream/65 sm:grid-cols-2">
+            <p>Sources: registry files and certificate logs your workspace is approved for.</p>
+            <p>Your own sites and partners are on an allow-list and never alerted.</p>
+          </div>
+        </StoryWindow>
       </div>
-      <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11.5px] font-medium text-emerald-700 ring-1 ring-emerald-200">
-        <Check aria-hidden className="size-3" /> Unchanged
-      </span>
-    </div>
+    </SceneFigure>
   );
 }
 
-/** A finding dismissed with a reason, so it does not come back. */
-export function DismissedChip() {
+/** Step 2: the name compared with yours, and the three scores. */
+export function DomainComparePanel() {
+  const ref = useRef<HTMLDivElement>(null);
+  const shown = usePanelShown(ref);
   return (
-    <div className="rounded-2xl bg-cream px-4 py-3 ring-1 ring-line">
-      <div className="flex items-center justify-between gap-3">
-        <p className="truncate font-mono text-[13px] text-muted line-through decoration-line-strong">
-          acme-recipes.blog
-        </p>
-        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[11.5px] font-medium text-muted ring-1 ring-line">
-          <X aria-hidden className="size-3" /> Dismissed
-        </span>
+    <SceneFigure label="Illustrative example: the look-alike name compared letter by letter with the real one, with text, visual and meaning scores.">
+      <div ref={ref}>
+        <StoryWindow title="Compare" url="app.similo.example/domains/compare">
+          <div className="space-y-2 font-mono text-[15px]">
+            <p className="flex items-center justify-between rounded-lg bg-white/[0.035] px-3 py-2.5 ring-1 ring-white/[0.06]">
+              <span className="text-cream">acme.com</span>
+              <span className="font-sans text-[11px] text-cream/60">Your website</span>
+            </p>
+            <p className="flex items-center justify-between rounded-lg bg-accent/[0.12] px-3 py-2.5 ring-1 ring-accent/50">
+              <span className="text-cream">
+                ac<mark className="rounded bg-accent px-0.5 text-white">rn</mark>e
+                <mark className="rounded bg-accent/40 px-0.5 text-cream">-login</mark>.com
+              </span>
+              <span className="font-sans text-[11px] text-accent-soft">Found</span>
+            </p>
+          </div>
+          <div className="mt-5">
+            <PaneLabel>Scores, 0 to 100</PaneLabel>
+            <div className="mt-3">
+              <DomainScores shownCount={shown ? 3 : 0} />
+            </div>
+          </div>
+        </StoryWindow>
       </div>
-      <p className="mt-1.5 text-[13px] text-ink/80">
-        “Unrelated cooking blog.” — won’t return unless it changes
-      </p>
-    </div>
+    </SceneFigure>
   );
 }
 
-/** Light-surface heading row for a bento tile that holds sample data. */
-export function SampleHeader({ children }: { children: ReactNode }) {
+/** Step 3: the reasons, the registration facts and the saved page capture. */
+export function DomainEvidencePanel() {
+  const ref = useRef<HTMLDivElement>(null);
+  const shown = usePanelShown(ref);
   return (
-    <div className="mb-5 flex items-center justify-between gap-3">
-      <p className="text-[13px] font-medium text-muted">{children}</p>
-      <ExampleTag tone="light" />
-    </div>
+    <SceneFigure label="Illustrative example: the saved page capture with its fingerprint, and the registration facts for the flagged name.">
+      <div ref={ref}>
+        <StoryWindow title="Evidence" url="app.similo.example/domains/acrne-login">
+          <div className="grid grid-cols-1 gap-5 @lg:grid-cols-[1fr_1fr]">
+            <CaptureFrame shown={shown} />
+            <RdapFacts shown={shown} />
+          </div>
+          <ul className="mt-4 space-y-1.5 border-t border-white/[0.07] pt-4 text-[12px] text-cream/80">
+            {[
+              'Looks like your name: “rn” reads as “m”',
+              'Registered 2 days ago, email already on',
+              'Has a sign-in form that copies yours',
+            ].map((reason, index) => (
+              <Show
+                key={reason}
+                as="li"
+                when={shown}
+                delay={300 + index * 110}
+                y={5}
+                className="flex gap-2"
+              >
+                <Check aria-hidden className="mt-0.5 size-3.5 shrink-0 text-accent-soft" />
+                {reason}
+              </Show>
+            ))}
+          </ul>
+        </StoryWindow>
+      </div>
+    </SceneFigure>
+  );
+}
+
+/** Step 4: a person decides. */
+export function DomainDecisionPanel() {
+  const ref = useRef<HTMLDivElement>(null);
+  const shown = usePanelShown(ref);
+  return (
+    <SceneFigure label="Illustrative example: a reviewer approves a takedown request draft, or dismisses the alert with a reason.">
+      <div ref={ref}>
+        <StoryWindow title="Review" url="app.similo.example/domains/acrne-login/review">
+          <p className="truncate font-mono text-[15px] font-medium text-cream">{FLAGGED}</p>
+          <div className="mt-4">
+            <DecisionBar stage={shown ? 2 : 1} />
+          </div>
+          <div className="mt-4 grid grid-cols-1 gap-3 @lg:grid-cols-2">
+            <div className="rounded-lg bg-white/[0.035] p-3 ring-1 ring-white/[0.06]">
+              <p className="text-[12px] font-medium text-cream">Draft takedown request</p>
+              <p className="mt-1 text-[11.5px] leading-snug text-cream/65">
+                Written from the saved evidence. A person edits it, approves it and sends it.
+              </p>
+            </div>
+            <div className="rounded-lg bg-white/[0.035] p-3 ring-1 ring-white/[0.06]">
+              <p className="text-[12px] font-medium text-cream">Or dismiss it</p>
+              <p className="mt-1 text-[11.5px] leading-snug text-cream/65">
+                A false alarm is closed with a reason, so it does not keep coming back.
+              </p>
+            </div>
+          </div>
+        </StoryWindow>
+      </div>
+    </SceneFigure>
+  );
+}
+
+/* --------------------------------------------------- Real page vs the copy */
+
+/** The real sign-in page next to the copy, on a light band. */
+export function PageCompareVisual() {
+  return (
+    <SceneFigure
+      tone="light"
+      label="Illustrative example: your real sign-in page next to a look-alike copy that is almost identical."
+      caption="Illustrative example: both pages are drawn for this page, with made-up names."
+    >
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <p className="mb-2 flex items-center gap-1.5 text-[13px] font-medium text-emerald-800">
+            <Check aria-hidden className="size-3.5" /> Your real page
+          </p>
+          <MiniPage url="portal.acme.com/login" className="shadow-card ring-ink/15" />
+        </div>
+        <div>
+          <p className="mb-2 flex items-center gap-1.5 text-[13px] font-medium text-accent-ink">
+            <AlertTriangle aria-hidden className="size-3.5" /> The copy we found
+          </p>
+          <MiniPage url="acrne-login.com/secure" copy className="shadow-card" />
+        </div>
+      </div>
+    </SceneFigure>
   );
 }

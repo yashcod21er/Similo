@@ -38,17 +38,17 @@ export function Accordion({
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => setOpenIndex(isOpen ? null : index)}
-                className="group flex w-full items-center justify-between gap-6 py-5 text-left text-[1.0625rem] font-medium tracking-[-0.015em]"
+                className="group flex w-full items-center justify-between gap-6 py-6 text-left text-[1.0625rem] font-medium tracking-[-0.015em] sm:text-[1.125rem]"
               >
                 {item.question}
                 <span
                   aria-hidden
                   className={cn(
-                    'flex size-6 shrink-0 items-center justify-center text-muted transition-[color,transform] duration-200 group-hover:text-ink',
-                    isOpen && 'rotate-45 text-ink',
+                    'flex size-8 shrink-0 items-center justify-center rounded-full text-muted ring-1 ring-line-strong transition-[color,background-color,transform] duration-300 ease-out group-hover:text-ink',
+                    isOpen && 'rotate-45 bg-night text-cream ring-night group-hover:text-cream',
                   )}
                 >
-                  <Plus className="size-5" />
+                  <Plus className="size-4" />
                 </span>
               </button>
             </h3>
@@ -64,7 +64,7 @@ export function Accordion({
                   transition={{ duration: 0.35, ease: EASE_OUT }}
                   className="overflow-hidden"
                 >
-                  <p className="max-w-3xl pr-10 pb-6 leading-relaxed text-muted">{item.answer}</p>
+                  <p className="max-w-3xl pr-12 pb-7 leading-relaxed text-muted">{item.answer}</p>
                 </motion.div>
               )}
             </AnimatePresence>

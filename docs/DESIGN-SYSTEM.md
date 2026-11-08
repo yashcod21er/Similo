@@ -1,141 +1,226 @@
-# Similo design system v3: "Calm"
+# Similo design system v4: cream, black and burnt orange
 
-The public website's visual language. v1 copied the usual brand-protection template. v2 ("Clarity")
-was lighter but still read as AI-generated: glowing gradients, dot grids, orbiting badges, a serif
-italic word in every headline, many animated mock-ups and a card on every idea.
+The public website's visual language. v1 copied the usual brand-protection template and decorated
+it (glows, orbiting badges, fake terminals, dot grids). v3 ("Calm") was credible but, in the
+owner's words, "decent but not high level: no motion, no visuals, just a simple website".
 
-v3 is a calm, credible enterprise site in the spirit of Stripe, Atlassian, Cloudflare and Vanta:
-real photography of real work, generous white space, confident type, a clear grid, few but
-meaningful visuals and honest copy.
+v4 keeps v3's honesty and plain words and adds what Stripe, Linear, Vanta and Wiz have in common:
+**a signature visual, the product as the star, motion that explains, a light/dark rhythm, scroll
+storytelling, depth and craft, and proof**. Every visual is specific to Similo's real job: finding
+look-alikes and explaining them.
 
 ## Principles
 
-1. **Plain words first.** Every heading and card must make sense to someone who has never heard of
-   RDAP or OCR. Technical terms go in a secondary line ("Under the hood: ...", "Built with: ...") or
-   on the How it works page.
-2. **One idea per section, one message per page.** If two sections say the same thing, delete one.
-   A page has about six to eight sections, not twelve.
-3. **Photos show people; the product shows itself.** Real photographs carry the mood. Product
-   visuals are rare (at most one per page), flat and always labelled. Real screenshots are better
-   than illustrations when the product page exists.
-4. **Quiet colour.** Pages are white and paper. Crimson means "pay attention": the main call to
-   action, small accents, risk. It never fills large areas or glows.
-5. **Honest by construction.** No invented customers, metrics, certifications or testimonials.
-   Sample data carries `ExampleTag` or a caption that says "sample data". Interactive demos say what
-   they really do.
+1. **The product is the star.** Heroes show a high-fidelity product scene built in code (an alert
+   arriving, named signals filling, reasons appearing, a person deciding). Stock photos never go in
+   a hero.
+2. **Motion must explain something.** A finding arrives, a score fills, a reason appears, a step
+   advances. No decoration that moves for its own sake.
+3. **Plain words first.** Every heading and card makes sense to someone who has never heard of RDAP
+   or OCR. Technical terms go in a secondary line ("Under the hood: ...").
+4. **Rhythm, not sameness.** Full-width dark (night) bands alternate with cream and white ones;
+   sections differ in weight and layout.
+5. **Honest by construction.** No invented customers, logos, testimonials, statistics, accuracy
+   figures or certifications. Sample data says so (`ExampleTag`, "Illustrative example"). Proof
+   comes from cited public research (`ResearchProof`), the open "how we score" section and the live
+   brand checker.
 
-## What v3 removed (do not bring these back)
+## Never (v1 failures that stay banned)
 
-Glowing gradients, blurred blobs, dot or grid textures, radial masks, hero orbits and animated
-canvases, spotlight and hover-glow cards, gradient borders, ping or pulse animations (except the live
-status indicator), marquees of source names or logos, chapter numbers ("01 / 02"), mono uppercase
-letter-spaced labels, a serif italic word in every headline, auto-typing terminals, and stacks of
-mock UI cards.
+Glowing blobs, neon, blue or purple gradients, dot or grid textures, orbiting badges, ping or pulse
+decoration (the live status dot is the one exception), marquees of logos or source names,
+auto-typing "terminals", invented metrics, a serif word in every headline, real companies in
+product scenes.
 
-## Tokens (`frontend/src/styles/index.css`)
+## Palette (`frontend/src/styles/index.css`)
 
-| Role      | Token                                          | Notes                                            |
-| --------- | ---------------------------------------------- | ------------------------------------------------ |
-| Canvas    | `bg-white`, `bg-paper`                         | Alternate sections; never textures               |
-| Text      | `text-ink`, `text-muted`                       | `muted` is 6.4:1 on white (AA)                   |
-| Lines     | `border-line`, `border-line-strong`            | Cards use `line`; inputs use `line-strong`       |
-| Signal    | `crimson`, `crimson-dark`, `coral` (on dark)   | Call to action, small accents, risk              |
-| Dark band | `bg-midnight`                                  | **One per page**: the closing `CtaBand`          |
-| Fills     | `bg-card`                                      | Chips, tracks, image placeholders                |
-| Shadows   | `shadow-soft`, `shadow-lifted`, `shadow-stage` | Floating layers only (menus, dialogs). No cards. |
-| Fonts     | `font-sans` (Geist), `font-mono` (Geist Mono)  | Mono for domains and data only                   |
-| Forbidden | purple, violet, indigo, fuchsia                | Removed from the theme                           |
+| Token                     | Hex                   | Use                                                                  |
+| ------------------------- | --------------------- | -------------------------------------------------------------------- |
+| `cream`                   | `#f6f0e6`             | Page canvas (light bands); `body` background                         |
+| `cream-deep`              | `#eae1d3`             | Quiet fills: chips, tracks, back sheets, image placeholders          |
+| `white`                   | `#ffffff`             | Cards and white bands on cream                                       |
+| `ink`                     | `#15130f`             | Text on light (16.4:1 on cream)                                      |
+| `muted`                   | `#5e564c`             | Secondary text on light (6.3:1 on cream)                             |
+| `night`                   | `#12110f`             | Dark bands, heroes, product windows, footer                          |
+| `night-raised`            | `#24211d`             | Raised surfaces on dark (cards, title bars, floating panels)         |
+| `accent`                  | `#c2500a`             | Burnt orange: primary buttons (white text 4.7:1), signature, icons   |
+| `accent-ink`              | `#9e3f00`             | Small orange text on cream (5.8:1); primary button hover             |
+| `accent-soft`             | `#ee8a45`             | Orange text and lines on dark (6.9:1 on night)                       |
+| `line` / `line-strong`    | `#e0d6c6` / `#c9bba5` | Hairlines on light / borders that must stay visible (inputs)         |
+| purple, violet, indigo, … | removed               | The palettes are deleted from the theme, so the classes do not exist |
 
-**Type scale** (fluid; do not add responsive overrides): `text-display` (the hero `h1`, up to
-60 px), `text-headline` (section titles, up to 44 px), `text-title` (card and row titles),
-`text-lead` (intro paragraphs). Body text is the default size.
+- **On dark** use `text-cream`; body text at least `text-cream/70`, small captions at least
+  `text-cream/65`. Orange text on dark is `text-accent-soft`, never `text-accent`.
+- **Gradients** only inside the palette and only for one element: night → night-raised for a
+  surface, accent → accent-soft for a score bar or the signature. Never a blue or neon gradient.
 
-**Serif accent.** `<em>` inside an `h1` renders in Instrument Serif italic; inside `h2` or `h3` it is
-plain. v3 pages do not use it at all. If a hero ever needs it, use it once.
+## Type
 
-**Eyebrow** (small label above a title): `text-[13px] font-medium text-crimson-dark`, sentence case.
-No numbers, no uppercase.
+- Geist for UI and headings, Geist Mono for domains and data.
+- Scale (fluid, no responsive overrides): `text-display` (hero `h1`), `text-statement` (big
+  statements on dark bands and closing CTAs), `text-headline` (section titles), `text-title`
+  (cards), `text-lead` (intros). Keep a wide gap between headings and body text.
+- **Serif accent.** Instrument Serif italic is a deliberate editorial accent, **at most one phrase
+  per band**: an `<em>` inside an `h1` is serif automatically; in an `h2` add the `serif-em` class
+  to opt in (dark bands and the closing `CtaBand` only). Otherwise `<em>` in `h2`/`h3` is plain.
+- **Eyebrow:** `Eyebrow` (12.5 px, medium, uppercase with open tracking, a short orange rule in
+  front). Orange-ink on light, accent-soft on dark.
 
-## Layout
+## Rhythm (every long page)
 
-- `Container` (max width 1280 px, 16 px phone gutter). Section padding `py-20 lg:py-28`
-  (`Section` does this for you).
-- Backgrounds alternate: hero white, then paper, white, paper, ... Finish with the one midnight
-  `CtaBand`. White sections carry a hairline above and below.
-- Prefer left-aligned text beside a photo: `grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16`,
-  alternating sides down the page. Centre only a short section intro.
-- Lists are rows separated by hairlines (`divide-y divide-line border-y border-line`) with a
-  `size-5 text-crimson` icon, not grids of cards. Use a card grid only when the items are truly
-  parallel (for example four product modules).
-- Cards: `rounded-xl border border-line bg-white p-6`, hover only `hover:border-line-strong`.
+Dark hero (night, with the signature wave and a product scene) → cream band → white band → dark
+band (scroll story or product moment) → cream → … → dark `CtaBand` → dark footer. Never two bands
+of the same weight in a row without a change of tone or layout.
+
+The home page follows it exactly:
+
+| Band  | Section                                                           | File                                   |
+| ----- | ----------------------------------------------------------------- | -------------------------------------- |
+| night | Hero: wave + animated alert scene in an `AppWindow`               | `pages/home/HomeHero.tsx`, `HeroScene` |
+| cream | The live brand checker (`#check`), the interactive centrepiece    | `CheckerSection`, `LookalikeChecker`   |
+| night | Watch → Explain → Decide, a `ScrollStory`                         | `WorkflowStory.tsx`                    |
+| white | The problem: what copycats look like                              | `ProblemSection.tsx`                   |
+| night | The problem in numbers: cited public research                     | `components/marketing/ResearchProof`   |
+| cream | How we score, in the open (three named signals, a person decides) | `ScoringSection.tsx`                   |
+| white | Who it is for (a photo of people)                                 | `TeamsSection.tsx`                     |
+| cream | Questions                                                         | `HomeFaq.tsx`                          |
+| night | Closing call to action, then the dark footer                      | `CtaBand`                              |
+
+## Depth and craft
+
+- **Shadows** (warm, layered): `shadow-card` (cards on cream), `shadow-window` (product windows and
+  big tools on light), `shadow-window-dark` (windows and floating panels on night). Older
+  `shadow-soft`, `shadow-lifted`, `shadow-stage` remain for menus and dialogs.
+- **Radii:** cards and windows `rounded-2xl`, big tools `rounded-[1.75rem]`, buttons and chips
+  `rounded-full`.
+- **Layering:** one floating card overlapping a window edge, a second sheet behind a tool
+  (`LookalikeChecker`), a 1 px top highlight on dark windows. One layer of depth per visual, not
+  stacks of cards.
+
+## Motion rules
+
+- Only `transform` and `opacity` animate (plus canvas). Durations 200–700 ms, ease-out; staggered
+  reveals (≈ 45–180 ms apart).
+- Every animation respects `prefers-reduced-motion`: loops stop on their finished state, the canvas
+  draws one still frame, fades are removed (`motion-reduce:transition-none`,
+  `motion-reduce:animate-none`). `MotionConfig reducedMotion="user"` covers `motion/react`.
+- Anything that loops pauses off-screen and in a hidden tab.
+- Entrance: `Reveal`, `RevealGroup`/`RevealItem` (a small fade and rise). Keyframes for product
+  scenes: `animate-scene-in` (fade + 10 px rise), `animate-scene-pop` (fade + scale from 0.94).
+- Hover: colour changes; cards may lift 2 px (`SpotlightCard`). Buttons nudge down 1 px when pressed.
+
+## Shared building blocks (`frontend/src/components/motion/`)
+
+Import from `@/components/motion` or the files. The APIs are stable; other pages depend on them.
+
+### `SimilarityWave` — the signature
+
+```tsx
+<section className="relative isolate overflow-hidden bg-night">
+  <SimilarityWave tone="dark" density="full" className="-z-10" />…
+</section>
+```
+
+`tone: 'dark' | 'light'`, `density?: 'calm' | 'full'`, `className?`. A canvas of flowing ribbons
+taken from the logo's idea: each original ribbon (cream on night, ink on cream) has a burnt-orange
+copy that drifts slightly apart and comes back together. It fills its nearest positioned parent
+(`absolute inset-0`); add a gradient overlay on the copy side so text stays calm. Use `full` in a
+home-style hero, `calm` in inner heroes, CTA bands and research bands. One per band at most.
+Technical: `requestAnimationFrame`, DPR capped at 2, paused off-screen (IntersectionObserver) and in
+hidden tabs, one still frame with reduced motion, `aria-hidden`, redraws on resize, no layout shift.
+`data-running="true|false"` on the wrapper is for visual QA.
+
+### `AppWindow` — a frame for product scenes
+
+```tsx
+<AppWindow tone="dark" url="app.similo.example/alerts" title="Illustrative example">
+  …scene…
+</AppWindow>
+```
+
+`tone: 'light' | 'dark'`, `url?`, `title?`, `className?`, `children`. Title bar (three quiet dots,
+an address pill, a title on the right), hairline ring, `rounded-2xl`, layered shadow. Use the
+fictional `similo.example` domain. On a dark band a light window gives the strongest contrast.
+
+### `ScrollStory` — pinned visual, scrolling steps
+
+```tsx
+<ScrollStory tone="dark" steps={[{ id, label, title, body, visual }, …]} />
+```
+
+Large screens: steps scroll on the left (the active one gets an orange rule), the visual on the
+right is sticky and cross-fades to the active step (IntersectionObserver on a band across the middle
+of the viewport). Phones: each step shows its own visual under its text. All text is in the DOM in
+reading order; visuals of inactive steps are `aria-hidden` and `inert` (scenes can watch that
+attribute to play when their step becomes active, see `pages/home/useStoryActive.ts`). Reduced
+motion: no fades. It brings no section padding; put it in a `Container` on a band.
+
+### `CountUp` — real numbers only
+
+```tsx
+<CountUp value={77} suffix="%" /> // also: decimals, prefix
+```
+
+Counts up once when it scrolls into view. The final value is always in the DOM (`sr-only`) for
+screen readers and search engines; with reduced motion the final value shows at once. Only for real,
+sourced figures.
+
+### `useLoop` — loop a product scene
+
+```tsx
+const ref = useRef<HTMLDivElement>(null);
+const step = useLoop(8, 1500, ref); // 0 … 7, every 1.5 s
+```
+
+Returns the current step. Pauses in a hidden tab and, when given the optional `ref`, while that
+element is off-screen. With reduced motion it returns the last step (the finished scene) and never
+advances. Show things with `step >= n` and keep their space reserved (opacity/transform only), so
+nothing shifts.
+
+Also exported: `usePrefersReducedMotion`, `usePageVisible`, `useInView`.
+
+## Product scenes (the star)
+
+High-fidelity UI built in code, never images: a look-alike domain alert (`acme-login.com`), a
+similarity breakdown as **separate named signals** (Name, Visual, Page content — never one
+unlabelled number), reasons in plain words, evidence (a captured page next to yours, the
+registration record), and a reviewer decision ("Needs review → Approved for takedown request").
+Use the fictional brand **Acme** and obviously fictional names; caption "Illustrative example".
+Never show real companies. The scene's root gets `role="img"` and an `aria-label` that tells the
+whole story when the scene is purely visual.
+
+Home-scene parts live in `pages/home/scene-parts.tsx` (`Appear`, `SignalMeter`, `MiniSignIn`,
+`StatusChip`); the Solutions pages use `components/visuals/`.
 
 ## Components
 
-| Component                                                                        | File                                  | Use for                                                                                 |
-| -------------------------------------------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------- |
-| `Button`, `ButtonLink`                                                           | `components/ui/Button.tsx`            | Flat `rounded-lg`. `primary` (crimson) once per screen; `outline` secondary             |
-| `Container`, `Eyebrow`, `SectionHeading`                                         | `components/ui/layout.tsx`            | Page width, small label, section intro (`index` props are accepted, ignored)            |
-| `Stage`                                                                          | `components/ui/layout.tsx`            | A dark panel for a product visual. Rare; counts as the page's dark band                 |
-| `ExampleTag`                                                                     | `components/ui/layout.tsx`            | Required on any visual with sample data ("Illustrative example")                        |
-| `Photo`                                                                          | `components/ui/Photo.tsx`             | The `<img>`: local WebP, `srcSet` 800/1600, lazy unless `priority`                      |
-| `PhotoFrame`                                                                     | `components/marketing/PhotoFrame.tsx` | A photo in the standard frame (`rounded-2xl`, 1 px ring), optional caption              |
-| `SplitHero`                                                                      | `components/marketing/sections.tsx`   | Inner-page hero: text left, `PhotoFrame` or one visual right                            |
-| `Section` (`tone` light / white / dark), `CtaBand`                               | `components/marketing/sections.tsx`   | Bands of a page; `CtaBand` is the closing dark band                                     |
-| `ProcessSteps`, `FeatureCard`                                                    | `components/marketing/sections.tsx`   | Numbered steps with hairlines; a plain card                                             |
-| `SpotlightCard`                                                                  | `components/ui/SpotlightCard.tsx`     | The standard card (the name is historical; there is no spotlight any more)              |
-| `AlertCard`                                                                      | `components/visuals/AlertCard.tsx`    | One finding in plain words, with its risk level. Labelled as an example                 |
-| `ProductWindow` + primitives                                                     | `components/visuals/primitives.tsx`   | Dark product mock-ups used on the Solutions pages                                       |
-| `Accordion`                                                                      | `components/ui/Accordion.tsx`         | FAQs                                                                                    |
-| `Reveal`, `RevealGroup`/`RevealItem`                                             | `components/ui/Reveal.tsx`            | The only entrance animation: a small fade                                               |
-| `SiteHeader`, `SiteFooter`, `CommandMenu`, `navigation.ts`                       | `components/site/`                    | Navigation, search (Ctrl+K), live status. Links live in `navigation.ts`                 |
-| `CardGrid`, `SplitSection`, `RuledList`, `Timeline`, `FaqBlock`, `ProductFigure` | `pages/solutions/page-kit.tsx`        | Building blocks shared by the Solutions, Resources, About and Contact pages             |
-| `PAGE_PHOTOS`, `HERO_SIZES`                                                      | `pages/solutions/photos.ts`           | Paths, sizes and `alt` text of the inner-page photos (credits: `docs/IMAGE-CREDITS.md`) |
-
-**"Under the hood" pattern.** After a plain explanation, one quiet line:
-`<p className="mt-3 text-[13px] text-muted">Under the hood: edit distance, homoglyph tables</p>`
-
-## Page anatomy
-
-1. **Hero:** one sentence about what this does for you, one plain paragraph, one primary action
-   ("Request a demo"), one secondary action, one real photo. Nothing animates on load.
-2. **The problem or the value**, in plain words, with a photo.
-3. **How it helps:** three or four steps (`ProcessSteps`).
-4. **Detail:** what you get, who it is for, or the checks, as rows rather than cards.
-5. **FAQ:** the four to six real questions a non-expert asks.
-6. **`CtaBand`** (the only midnight band).
-
-Home order: hero, the problem, brand checker (a working tool), how it helps, what you get, who it is
-for, FAQ, closing call to action.
+| Component                                          | File                                           | Notes (v4)                                                                                                                          |
+| -------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `Button`, `ButtonLink`, `buttonClasses`            | `components/ui/Button.tsx`, `button-styles.ts` | Pills. `primary` (burnt orange, white text) once per screen; `outline` on light, `outline-dark` on night; `dark`, `light`, `ghost`  |
+| `Container`, `Eyebrow`, `SectionHeading`, `Pill`   | `components/ui/layout.tsx`                     | `SectionHeading` `align="split"` puts the title left and the intro right                                                            |
+| `Stage`, `ExampleTag`                              | `components/ui/layout.tsx`                     | A night panel for a visual on a light band; the sample-data label                                                                   |
+| `Photo`, `PhotoFrame`                              | `ui/Photo.tsx`, `marketing/PhotoFrame.tsx`     | Local WebP 800/1600; frame `rounded-2xl` + `shadow-card`                                                                            |
+| `SplitHero`                                        | `components/marketing/sections.tsx`            | Inner-page hero. Dark by default with the calm wave; `tone="light"` for a cream start. Put a product scene in `visual`, not a photo |
+| `Section` (`light` cream / `white` / `dark` night) | `components/marketing/sections.tsx`            | Bands; padding `py-20 lg:py-32`                                                                                                     |
+| `CtaBand`                                          | `components/marketing/sections.tsx`            | Closing dark band with the calm wave; `<em>` in the title is serif                                                                  |
+| `ProcessSteps`, `FeatureCard`                      | `components/marketing/sections.tsx`            | Numbered steps; a card with an icon tile                                                                                            |
+| `ResearchProof`                                    | `components/marketing/ResearchProof.tsx`       | Dark band of cited public figures (owned by the "frame" work; data in `content/research.ts`)                                        |
+| `SpotlightCard`                                    | `components/ui/SpotlightCard.tsx`              | The standard card: white, hairline, `shadow-card`, 2 px lift on hover                                                               |
+| `Accordion`                                        | `components/ui/Accordion.tsx`                  | FAQs; the open item's icon turns night                                                                                              |
+| `Reveal`, `RevealGroup`/`RevealItem`               | `components/ui/Reveal.tsx`                     | Entrance fade and rise                                                                                                              |
 
 ## Photography
 
-- **Sources:** Unsplash or Pexels only, never Unsplash+ or premium. Credit every photo in
-  [IMAGE-CREDITS.md](./IMAGE-CREDITS.md).
-- **Subjects:** people doing real work: a team reviewing documents, an analyst at a laptop, someone
-  paying on a phone, a close look at papers on a table. Natural, diverse, not staged-looking.
-- **Avoid:** hooded hackers, padlocks, binary code, glowing globes, robots, readable company
-  names or logos, real websites on screens, children.
-- **Files:** `frontend/public/images/<area>/<name>-800.webp` and `-1600.webp` (1600 px wide,
-  quality about 78, under 220 KB; 800 px under 90 KB).
-- **Frame:** `PhotoFrame`: `rounded-2xl`, 1 px `ring-ink/5`, aspect `4/3`, `3/2` or `16/9`. No heavy
-  shadow, tilt, 3D, or UI laid over a photo.
-- **Use:** not every section needs a photo. One per section at most, usually every second section.
-  Hero photos use `priority`; everything else loads lazily. Describe the photo in `alt`; use `alt=""`
-  only for purely decorative photos (the sign-in side panel).
+Photos only where people matter: Who it is for, About, Contact and Resources covers. Never in a hero.
+Sources, file sizes and credits: [IMAGE-CREDITS.md](./IMAGE-CREDITS.md). Avoid hooded hackers,
+padlocks, binary code, glowing globes, robots, readable logos, real websites on screens, children.
+Frame with `PhotoFrame`; describe the photo in `alt`.
 
-## Motion
-
-- Entrance: `Reveal` and `RevealGroup` only (a small fade and rise, from `@/lib/motion`).
-  `MotionConfig reducedMotion="user"` removes the movement for visitors who ask for it.
-- Hover: colour or border changes only. No lifts, no glow.
-- Nothing loops except the live status indicator in the footer (and it stops with reduced motion).
-  No marquees, typing terminals or canvases.
-
-## Accessibility checklist (every page)
+## Accessibility and quality checklist (every page)
 
 - One `h1`; headings in order; landmarks come from `SiteLayout`.
-- Interactive elements are real `button`/`a` elements with visible focus (crimson outline, global).
-- Text contrast is at least AA. Never put `text-muted` on `bg-card`; use `text-ink`.
-- Photos have useful `alt` text. Decorative elements are `aria-hidden`.
-- Works at 390 px wide with no horizontal scroll, and with reduced motion.
-- Run axe (wcag2a, wcag2aa) on every page you change.
+- Real `button`/`a` elements with a visible focus outline (burnt orange, global).
+- Text contrast AA, including dimmed or animated states (axe checks opacity).
+- Decorative canvases and drawings are `aria-hidden`; product scenes have a text alternative.
+- Playwright (Edge) at 1440 × 900 and 390 × 844: no horizontal overflow, axe wcag2a/2aa clean, no
+  console errors, a `prefers-reduced-motion` run, and the canvas idle when off-screen.

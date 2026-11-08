@@ -2,8 +2,8 @@ import { Photo } from '@/components/ui/Photo';
 import { cn } from '@/lib/cn';
 
 /**
- * A real photograph in the standard frame: rounded corners, a 1 px ring, no
- * shadow, no overlays. Pass the same props as `Photo`, plus an optional
+ * A real photograph in the standard frame (v4): rounded-2xl corners, a hairline
+ * ring and the soft layered card shadow; no overlays, no filters. Pass the same props as `Photo`, plus an optional
  * `ratio` class (default 4:3) and an optional caption.
  */
 export function PhotoFrame({
@@ -32,7 +32,12 @@ export function PhotoFrame({
 }) {
   return (
     <figure className={className}>
-      <div className={cn('overflow-hidden rounded-2xl bg-cream-deep ring-1 ring-ink/5', ratio)}>
+      <div
+        className={cn(
+          'overflow-hidden rounded-2xl bg-cream-deep shadow-card ring-1 ring-ink/[0.06]',
+          ratio,
+        )}
+      >
         <Photo
           src={src}
           alt={alt}

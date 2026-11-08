@@ -1,50 +1,58 @@
 import {
   BarChart3,
-  FileCode2,
-  FileImage,
   FolderKanban,
-  Globe,
   History,
   MessagesSquare,
   NotebookPen,
   PenLine,
 } from 'lucide-react';
-import { PhotoFrame } from '@/components/marketing/PhotoFrame';
+import { CtaBand, FeatureCard, Section, SplitHero } from '@/components/marketing/sections';
+import { Eyebrow, SectionHeading } from '@/components/ui/layout';
+import { Reveal } from '@/components/ui/Reveal';
+import { AssistantScene } from '@/components/visuals/assistant';
 import {
-  CtaBand,
-  FeatureCard,
-  ProcessSteps,
-  Section,
-  SplitHero,
-} from '@/components/marketing/sections';
-import { ExampleTag, SectionHeading } from '@/components/ui/layout';
-import { CardGrid, FaqBlock, ProductFigure, RuledList, SplitSection } from './page-kit';
-import { HERO_SIZES, PAGE_PHOTOS } from './photos';
+  CaseDecidePanel,
+  CaseOpenPanel,
+  CaseTeamPanel,
+  EvidenceFilesPanel,
+  EvidenceScene,
+  FingerprintDemo,
+  VanishingPage,
+} from '@/components/visuals/evidence';
+import { CardGrid, FaqBlock, RuledList, SplitSection, StoryBand, type StoryItem } from './page-kit';
 
-const STEPS = [
+const STORY_ITEMS: StoryItem[] = [
   {
-    title: 'Open a case',
+    label: 'Open a case',
+    title: 'Related alerts, grouped into one case.',
     description:
       'Group related alerts, say five fake sites from the same scammer, into one investigation with an owner and a priority.',
     detail: 'Under the hood: linked findings, status, assignee',
+    visual: <CaseOpenPanel />,
   },
   {
-    title: 'Save the evidence',
+    label: 'Save the evidence',
+    title: 'Every file saved with its time and a fingerprint.',
     description:
       'Screenshots, page copies and registration records are saved together with where and when they were captured.',
     detail: 'Under the hood: SHA-256 fingerprint per file',
+    visual: <EvidenceFilesPanel />,
   },
   {
-    title: 'Work it together',
+    label: 'Work it together',
+    title: 'One timeline the whole team can see.',
     description:
       'Notes, assignments and every change appear on one timeline that the whole team can see.',
     detail: 'Under the hood: role-based access, audit log',
+    visual: <CaseTeamPanel />,
   },
   {
-    title: 'Decide and act',
+    label: 'Decide and act',
+    title: 'A drafted letter, approved by a person.',
     description:
       'AI drafts the takedown request from the case evidence. A person edits it, approves it and sends it. Nothing is sent automatically.',
     detail: 'Under the hood: drafts grounded in the case, human approval',
+    visual: <CaseDecidePanel />,
   },
 ];
 
@@ -129,71 +137,22 @@ const FAQ = [
   },
 ];
 
-const EVIDENCE_FILES = [
-  {
-    icon: FileImage,
-    name: 'Screenshot of the sign-in page',
-    file: 'page-capture.png',
-    hash: '9f2c…a71e',
-  },
-  {
-    icon: Globe,
-    name: 'Who registered the website',
-    file: 'registration-record.json',
-    hash: '41bd…0c93',
-  },
-  { icon: FileCode2, name: 'Copy of the page code', file: 'page-source.html', hash: 'e07a…5b2d' },
-];
-
-/** A light, static example of one case with its saved evidence. */
-function CaseFileExample() {
-  return (
-    <ProductFigure caption="Illustrative example: a case with its saved evidence. The names and fingerprints are made up.">
-      <div className="rounded-2xl border border-line bg-white p-5 sm:p-6">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="font-semibold tracking-[-0.01em]">Fake sign-in pages</p>
-            <p className="mt-1 text-[13px] text-muted">3 alerts linked</p>
-          </div>
-          <ExampleTag tone="light" />
-        </div>
-        <p className="mt-6 text-[13px] font-medium text-muted">Saved evidence</p>
-        <ul className="mt-3 divide-y divide-line border-y border-line">
-          {EVIDENCE_FILES.map((item) => (
-            <li key={item.file} className="flex items-center gap-3 py-3">
-              <item.icon aria-hidden className="size-5 shrink-0 text-accent" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[14px]">{item.name}</p>
-                <p className="truncate font-mono text-[12px] text-muted">{item.file}</p>
-              </div>
-              <p className="shrink-0 text-right text-[12px] text-muted">
-                Fingerprint
-                <span className="block font-mono text-ink">{item.hash}</span>
-              </p>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-5 text-[13px] leading-relaxed text-muted">
-          Analyst note: the sign-in form sends passwords to another server. Escalated to the legal
-          reviewer.
-        </p>
-      </div>
-    </ProductFigure>
-  );
-}
-
 export function InvestigationEvidencePage() {
   return (
     <>
       <SplitHero
         eyebrow="Investigation & Evidence"
-        title="Turn alerts into cases you can prove."
+        title={
+          <>
+            Turn alerts into cases <em className="text-accent-soft">you can prove.</em>
+          </>
+        }
         description="Gather screenshots and records in one place, keep them safe from tampering and work the case as a team. AI can draft the takedown letter, and a person always reviews and sends it."
         secondaryCta={{
           label: 'How evidence is kept safe',
           to: '/resources/evidence-chain-of-custody',
         }}
-        visual={<PhotoFrame {...PAGE_PHOTOS.evidence} priority sizes={HERO_SIZES} />}
+        visual={<EvidenceScene />}
       />
 
       <Section>
@@ -211,33 +170,45 @@ export function InvestigationEvidencePage() {
               </p>
             </>
           }
-          media={<CaseFileExample />}
+          media={<VanishingPage />}
         />
       </Section>
 
+      <StoryBand
+        eyebrow="How it works"
+        title={
+          <>
+            From first alert to a decision <em>you can stand behind.</em>
+          </>
+        }
+        description="Four steps, the same every time, so nothing important depends on someone remembering to save a screenshot."
+        items={STORY_ITEMS}
+      />
+
       <Section tone="white">
-        <SectionHeading
-          eyebrow="How it works"
-          title="From first alert to a decision you can stand behind."
-          description="Four steps, the same every time, so nothing important depends on someone remembering to save a screenshot."
+        <SplitSection
+          flip
+          text={
+            <>
+              <SectionHeading
+                eyebrow="Evidence you can trust"
+                title="Proof that can’t be quietly changed."
+                description="When a file is saved, Similo calculates its fingerprint: a long code worked out from the file’s exact contents. Change even one character or pixel and the fingerprint changes completely."
+              />
+              <div className="mt-8">
+                <RuledList items={TRUST} />
+              </div>
+            </>
+          }
+          media={
+            <Reveal>
+              <FingerprintDemo />
+            </Reveal>
+          }
         />
-        <div className="mt-12">
-          <ProcessSteps steps={STEPS} />
-        </div>
       </Section>
 
       <Section>
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
-          <SectionHeading
-            eyebrow="Evidence you can trust"
-            title="Proof that can’t be quietly changed."
-            description="When a file is saved, Similo calculates its fingerprint: a long code worked out from the file’s exact contents. Change even one character or pixel and the fingerprint changes completely."
-          />
-          <RuledList items={TRUST} />
-        </div>
-      </Section>
-
-      <Section tone="white">
         <SectionHeading
           eyebrow="The case workspace"
           title="Everything about a case, in one place."
@@ -255,6 +226,25 @@ export function InvestigationEvidencePage() {
         </CardGrid>
       </Section>
 
+      <Section tone="white">
+        <SplitSection
+          text={
+            <Reveal>
+              <Eyebrow>The assistant</Eyebrow>
+              <h2 className="text-headline mt-3 font-semibold text-balance">
+                Ask about the case. Get an answer with its sources.
+              </h2>
+              <p className="text-lead mt-4 text-pretty text-muted">
+                The assistant reads only your organisation’s records. Every claim points to the
+                alert, file or document it came from, and when the records don’t say, it tells you
+                so instead of guessing.
+              </p>
+            </Reveal>
+          }
+          media={<AssistantScene tone="light" />}
+        />
+      </Section>
+
       <FaqBlock
         tone="light"
         title="Investigations, answered."
@@ -268,7 +258,11 @@ export function InvestigationEvidencePage() {
 
       <CtaBand
         eyebrow="Investigations"
-        title="Build cases with evidence that holds up."
+        title={
+          <>
+            Build cases with evidence that <em>holds up.</em>
+          </>
+        }
         description="See how an alert becomes an investigation, with saved evidence and a reviewed draft at the end."
         secondary={{ label: 'See how it works', to: '/platform' }}
       />

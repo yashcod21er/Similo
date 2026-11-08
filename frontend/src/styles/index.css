@@ -4,7 +4,7 @@
 @import '@fontsource/instrument-serif/latin-400-italic.css';
 
 /*
- * Similo design tokens (design system v3, "Calm").
+ * Similo design tokens (design system v4: cream + black + burnt orange).
  * See docs/DESIGN-SYSTEM.md for how they are meant to be used.
  * Tailwind turns each token into utilities, e.g. `bg-night`, `text-ink`,
  * `border-line`.
@@ -43,8 +43,45 @@
   --shadow-lifted: 0 1px 2px rgb(11 16 32 / 0.05), 0 12px 32px -12px rgb(11 16 32 / 0.16);
   --shadow-stage: 0 16px 48px -16px rgb(11 16 32 / 0.28);
 
+  /* v4 depth: layered, warm shadows for product windows and raised cards.
+     Several soft layers read as real depth; one hard shadow reads as a template. */
+  --shadow-card:
+    0 1px 1px rgb(21 19 15 / 0.03), 0 2px 4px -1px rgb(21 19 15 / 0.04),
+    0 12px 24px -12px rgb(21 19 15 / 0.1);
+  --shadow-window:
+    0 1px 1px rgb(21 19 15 / 0.03), 0 4px 8px -2px rgb(21 19 15 / 0.05),
+    0 24px 48px -16px rgb(21 19 15 / 0.16), 0 60px 100px -40px rgb(21 19 15 / 0.22);
+  --shadow-window-dark:
+    0 1px 1px rgb(0 0 0 / 0.2), 0 8px 16px -4px rgb(0 0 0 / 0.35),
+    0 32px 64px -16px rgb(0 0 0 / 0.55), 0 80px 140px -40px rgb(0 0 0 / 0.6);
+
   /* Motion: the only looping animation left is the live status indicator. */
   --animate-ping-slow: ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+  /* v4: enter animations for product-scene items (transform + opacity only). */
+  --animate-scene-in: scene-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-scene-pop: scene-pop 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes scene-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes scene-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
 
 /* Type scale. Each step pairs size, line height and tracking. */
@@ -52,6 +89,25 @@
   font-size: clamp(2.375rem, 1.45rem + 3vw, 3.75rem);
   line-height: 1.04;
   letter-spacing: -0.035em;
+}
+
+/* v4: big statements on dark bands and closing CTAs, a clear step above headline. */
+@utility text-statement {
+  font-size: clamp(2.125rem, 1.3rem + 2.9vw, 3.5rem);
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+}
+
+/* Opt-in serif accent for a section statement on a dark band (h2 em is plain otherwise).
+   At most one serif phrase per band (docs/DESIGN-SYSTEM.md). */
+@utility serif-em {
+  & em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    padding-right: 0.04em;
+  }
 }
 
 @utility text-headline {
@@ -100,7 +156,7 @@
     padding-right: 0.04em;
   }
 
-  :is(h2, h3) em {
+  :is(h2, h3):not(.serif-em) em {
     font-style: normal;
   }
 

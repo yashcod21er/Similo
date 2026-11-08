@@ -14,7 +14,7 @@ import {
 } from './schema';
 
 const inputClass =
-  'mt-2 block w-full rounded-lg border border-line-strong bg-white px-4 py-3 text-[15px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-muted/70 hover:border-ink/30 focus:border-accent focus:ring-2 focus:ring-accent/20 aria-invalid:border-accent aria-invalid:ring-2 aria-invalid:ring-accent/15';
+  'mt-2 block w-full rounded-xl border border-line-strong bg-white px-4 py-3 text-[15px] text-ink shadow-[inset_0_1px_2px_rgb(21_19_15/0.05)] outline-none transition-[border-color,box-shadow] placeholder:text-muted/70 hover:border-ink/30 focus:border-accent focus:ring-4 focus:ring-accent/15 aria-invalid:border-accent aria-invalid:ring-4 aria-invalid:ring-accent/10';
 
 function Field({
   label,
@@ -97,7 +97,9 @@ export function DemoRequestForm() {
   if (mutation.isSuccess) {
     return (
       <div role="status" className="px-6 py-14 sm:px-8">
-        <CheckCircle2 aria-hidden className="size-8 text-emerald-600" />
+        <span className="flex size-12 items-center justify-center rounded-full bg-emerald-50 ring-1 ring-emerald-200">
+          <CheckCircle2 aria-hidden className="size-6 text-emerald-700" />
+        </span>
         <h2 className="text-title mt-5 font-semibold">
           Thank you, {getValues('fullName').split(' ')[0]}.
         </h2>
@@ -185,7 +187,7 @@ export function DemoRequestForm() {
           {INTEREST_OPTIONS.map((option) => (
             <label
               key={option.value}
-              className="flex cursor-pointer items-center gap-3 rounded-lg border border-line-strong bg-white px-4 py-3 text-[14.5px] transition-[border-color,background-color] hover:border-ink/30 has-checked:border-accent has-checked:bg-accent/[0.04] has-focus-visible:ring-2 has-focus-visible:ring-accent/20"
+              className="flex cursor-pointer items-center gap-3 rounded-xl border border-line-strong bg-white px-4 py-3 text-[14.5px] transition-[border-color,background-color] hover:border-ink/30 has-checked:border-accent has-checked:bg-accent/[0.05] has-focus-visible:ring-4 has-focus-visible:ring-accent/15"
             >
               <input
                 type="checkbox"
@@ -232,7 +234,7 @@ export function DemoRequestForm() {
       </div>
 
       <div>
-        <label className="flex items-start gap-3 rounded-lg bg-cream p-4 text-[14px] leading-relaxed text-muted ring-1 ring-line">
+        <label className="flex items-start gap-3 rounded-xl bg-cream p-4 text-[14px] leading-relaxed text-muted ring-1 ring-line">
           <input
             type="checkbox"
             className="mt-0.5 size-4 shrink-0 accent-accent"
@@ -256,7 +258,7 @@ export function DemoRequestForm() {
       {serverError && (
         <div
           role="alert"
-          className="flex gap-3 rounded-lg border border-accent/30 bg-accent/[0.05] p-4 text-[14px]"
+          className="flex gap-3 rounded-xl border border-accent/30 bg-accent/[0.05] p-4 text-[14px]"
         >
           <AlertTriangle aria-hidden className="mt-0.5 size-4 shrink-0 text-accent-ink" />
           <div>

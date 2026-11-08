@@ -4,6 +4,10 @@ Every photograph on the Similo website is free to use under the
 [Unsplash License](https://unsplash.com/license): commercial use without asking permission and
 without attribution. We credit the photographers anyway. No Unsplash+ (paid) photos are used.
 
+Since website v4, photos appear only where people matter (Who it is for, About, Contact,
+Resources covers, a few supporting sections) and never in a hero. Photos that are no longer used
+are deleted from the repository together with their row here.
+
 Files live in `frontend/public/images/<area>/` as WebP in two widths (`<name>-800.webp` and
 `<name>-1600.webp`) and are shown with the `Photo` or `PhotoFrame` component.
 
@@ -20,16 +24,11 @@ Files live in `frontend/public/images/<area>/` as WebP in two widths (`<name>-80
 
 Files are in `frontend/public/images/core/`.
 
-| File (`-800.webp` and `-1600.webp`) | Photographer                                        | Source                                              | Licence                                                 | Used on                                |
-| ----------------------------------- | --------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------- | -------------------------------------- |
-| `team-review`                       | [Andreea Avramescu](https://unsplash.com/@minakko)  | [Unsplash](https://unsplash.com/photos/wR56AUlEsE4) | [Unsplash License](https://unsplash.com/license) (free) | Home, hero                             |
-| `online-payment`                    | [Vitaly Gariev](https://unsplash.com/@silverkblack) | [Unsplash](https://unsplash.com/photos/1JnN9QhmTGU) | Unsplash License (free)                                 | Home, "The problem"                    |
-| `document-review`                   | [Vitaly Gariev](https://unsplash.com/@silverkblack) | [Unsplash](https://unsplash.com/photos/CqKpj9LqvUM) | Unsplash License (free)                                 | Home, "Who it is for" (cropped)        |
-| `colleagues-laptop`                 | [Vitaly Gariev](https://unsplash.com/@silverkblack) | [Unsplash](https://unsplash.com/photos/1zHJk06hAqw) | Unsplash License (free)                                 | Platform, hero                         |
-| `documents-table`                   | [Van Tay Media](https://unsplash.com/@vantaymedia)  | [Unsplash](https://unsplash.com/photos/TFFn3BYLc5s) | Unsplash License (free)                                 | Platform, "Principles" (cropped)       |
-| `analyst-desk`                      | [Mina Rad](https://unsplash.com/@miinrad)           | [Unsplash](https://unsplash.com/photos/eR3W3BouGL4) | Unsplash License (free)                                 | How it works, hero (cropped)           |
-| `analyst-report`                    | [Vitaly Gariev](https://unsplash.com/@silverkblack) | [Unsplash](https://unsplash.com/photos/Vvn0OD0IxBM) | Unsplash License (free)                                 | How it works, "People decide"          |
-| `window-laptop`                     | [Julio Lopez](https://unsplash.com/@juliolopez)     | [Unsplash](https://unsplash.com/photos/f1x6BURlxmc) | Unsplash License (free)                                 | Sign-in and sign-up pages (side panel) |
+| File (`-800.webp` and `-1600.webp`) | Photographer                                        | Source                                              | Licence                 | Used on                          |
+| ----------------------------------- | --------------------------------------------------- | --------------------------------------------------- | ----------------------- | -------------------------------- |
+| `document-review`                   | [Vitaly Gariev](https://unsplash.com/@silverkblack) | [Unsplash](https://unsplash.com/photos/CqKpj9LqvUM) | Unsplash License (free) | Home, "Who it is for" (cropped)  |
+| `documents-table`                   | [Van Tay Media](https://unsplash.com/@vantaymedia)  | [Unsplash](https://unsplash.com/photos/TFFn3BYLc5s) | Unsplash License (free) | Platform, "Principles" (cropped) |
+| `analyst-report`                    | [Vitaly Gariev](https://unsplash.com/@silverkblack) | [Unsplash](https://unsplash.com/photos/Vvn0OD0IxBM) | Unsplash License (free) | How it works, "People decide"    |
 
 Crops only: no colour changes, no overlays. The photos show people at work and contain no readable
 company names or logos.
@@ -41,11 +40,7 @@ was checked and none is Unsplash+. Cropped to 4:3 or 3:2 only.
 
 | File (`-800.webp` and `-1600.webp`) | Photographer                        | Source                                              | Used on                                         |
 | ----------------------------------- | ----------------------------------- | --------------------------------------------------- | ----------------------------------------------- |
-| `domain-office`                     | litoon dev                          | [Unsplash](https://unsplash.com/photos/NOZETh4j2FE) | Domain Intelligence, hero                       |
-| `app-phone`                         | Marco Palumbo                       | [Unsplash](https://unsplash.com/photos/t8OuU12Wt7o) | App Intelligence, hero                          |
-| `trademark-documents`               | Olena Kholina                       | [Unsplash](https://unsplash.com/photos/MhqUBTxQ3Hw) | Trademark Intelligence, hero                    |
-| `evidence-review`                   | Vitaly Gariev                       | [Unsplash](https://unsplash.com/photos/FXVt6t0tkmI) | Investigation & Evidence, hero                  |
-| `about-team`                        | AllGo - An App For Plus Size People | [Unsplash](https://unsplash.com/photos/HZb58QCj8go) | About, hero                                     |
+| `about-team`                        | AllGo - An App For Plus Size People | [Unsplash](https://unsplash.com/photos/HZb58QCj8go) | About, "Why we exist"                           |
 | `contact-meeting`                   | Vitaly Gariev                       | [Unsplash](https://unsplash.com/photos/y7xUr3aDLXc) | Contact (large screens)                         |
 | `cover-lookalike`                   | Vitaly Gariev                       | [Unsplash](https://unsplash.com/photos/Lhg2NfwYd-w) | Resources: "Lookalike domains, explained"       |
 | `cover-registration`                | Bibhash (Polygon.Cafe) Banerjee     | [Unsplash](https://unsplash.com/photos/li6MjNxlS_U) | Resources: "What RDAP tells you…"               |

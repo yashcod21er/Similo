@@ -1,7 +1,8 @@
 import type { PhotoData } from './page-kit';
 
 /*
- * Photos used on the solution, about and contact pages.
+ * Photos used on the about and contact pages. The Solutions pages show product scenes, not
+ * photos (v4): domain-office, app-phone, trademark-documents and evidence-review are unused.
  * Files live in frontend/public/images/pages as <name>-800.webp and <name>-1600.webp.
  * Credits are in docs/IMAGE-CREDITS.md.
  */
@@ -25,22 +26,6 @@ const threeByTwo = (name: string, alt: string): PhotoData => ({
 });
 
 export const PAGE_PHOTOS = {
-  domain: fourByThree(
-    'domain-office',
-    'A man at an office desk looking at a laptop screen that shows a table of data.',
-  ),
-  app: fourByThree(
-    'app-phone',
-    'A finger tapping a smartphone lying on a café table next to a red coffee cup.',
-  ),
-  trademark: fourByThree(
-    'trademark-documents',
-    'Two people at a table going through a printed form with a pen, a phone and a tablet beside it.',
-  ),
-  evidence: fourByThree(
-    'evidence-review',
-    'Two colleagues at a desk looking at a laptop together, with a chalkboard of diagrams behind them.',
-  ),
   about: fourByThree(
     'about-team',
     'Two colleagues looking at a laptop together in a bright open office, with a third person standing behind them.',

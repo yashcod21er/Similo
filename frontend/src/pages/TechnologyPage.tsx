@@ -17,8 +17,17 @@ import { PhotoFrame } from '@/components/marketing/PhotoFrame';
 import { CtaBand, Section, SplitHero } from '@/components/marketing/sections';
 import { Eyebrow, SectionHeading } from '@/components/ui/layout';
 import { Reveal } from '@/components/ui/Reveal';
+import {
+  HowComparePanel,
+  HowDecidePanel,
+  HowExplainPanel,
+  HowScorePanel,
+  HowSourcesPanel,
+} from '@/components/visuals/how';
+import { ScoreScene } from '@/components/visuals/score';
 import { FaqBlock } from './platform-faq';
-import { ScoreBreakdown } from './technology-visuals';
+import { StoryBand, type StoryItem } from './solutions/page-kit';
+import { HowWeScore } from './technology-visuals';
 
 /* ----------------------------------------------------------------- Data */
 
@@ -178,6 +187,49 @@ const FAQ = [
   },
 ];
 
+const STORY_ITEMS: StoryItem[] = [
+  {
+    label: 'Collect',
+    title: 'Only from sources that are really switched on.',
+    description:
+      'Similo collects newly registered websites, app store listings and trademark filings from approved sources. A source that is not set up is never shown as active.',
+    detail: 'Under the hood: scheduled collectors, de-duplication',
+    visual: <HowSourcesPanel />,
+  },
+  {
+    label: 'Compare',
+    title: 'A separate check for names, logos and documents.',
+    description:
+      'Each new name, logo and page is compared with your brand: how it is spelled, how it sounds and how it looks. Every check gives its own score.',
+    detail: 'Under the hood: edit distance, perceptual hashes, embeddings, OCR',
+    visual: <HowComparePanel />,
+  },
+  {
+    label: 'Score',
+    title: 'Four named scores, weighted in the open.',
+    description:
+      'The scores are weighted and added into a priority. You can see the weights and change them.',
+    detail: 'Under the hood: configurable weights, versioned rules',
+    visual: <HowScorePanel />,
+  },
+  {
+    label: 'Explain',
+    title: 'The reasons, in plain words.',
+    description:
+      'Every alert lists why it was raised, with a code stored beside each reason so it can always be checked later.',
+    detail: 'Under the hood: reason codes stored with every alert',
+    visual: <HowExplainPanel />,
+  },
+  {
+    label: 'You decide',
+    title: 'A person always decides.',
+    description:
+      'Your team reviews the evidence and chooses what happens. Scores support decisions. They are not legal findings.',
+    detail: 'Under the hood: roles, approvals, audit log',
+    visual: <HowDecidePanel />,
+  },
+];
+
 /* ---------------------------------------------------------------- Page */
 
 export function TechnologyPage() {
@@ -185,25 +237,42 @@ export function TechnologyPage() {
     <>
       <SplitHero
         eyebrow="How it works"
-        title="AI that shows its working."
+        title={
+          <>
+            AI that <em className="text-accent-soft">shows its working.</em>
+          </>
+        }
         description="Similo uses separate, focused checks for names, images and documents, then adds up what they find in the open. Every alert can be traced back to the evidence behind it."
         secondaryCta={{
           label: 'Why explainability matters',
           to: '/resources/explainable-risk-scores',
         }}
-        visual={
-          <PhotoFrame
-            src="/images/core/analyst-desk"
-            alt="A man typing on a laptop at a wooden desk in a bare concrete room"
-            width={1600}
-            height={1200}
-            sizes="(min-width: 1280px) 600px, (min-width: 1024px) 45vw, 100vw"
-            priority
-          />
-        }
+        visual={<ScoreScene />}
       />
 
-      <Section>
+      <Section id="how-we-score">
+        <SectionHeading
+          eyebrow="How we score"
+          title="Every score shows its parts."
+          description="A high priority is never just a number. It is four separate scores, each one explained, with the weights written down, so your team can see why something was flagged and disagree if they want to."
+        />
+        <div className="mt-12">
+          <HowWeScore />
+        </div>
+      </Section>
+
+      <StoryBand
+        eyebrow="From finding to decision"
+        title={
+          <>
+            Five steps, and <em>a person</em> at the end.
+          </>
+        }
+        description="This is what happens to every website, app and trademark filing Similo looks at."
+        items={STORY_ITEMS}
+      />
+
+      <Section tone="white">
         <SectionHeading
           eyebrow="The checks"
           title="Six checks, each with one job."
@@ -237,24 +306,6 @@ export function TechnologyPage() {
               </article>
             </Reveal>
           ))}
-        </div>
-      </Section>
-
-      <Section tone="white">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <Reveal>
-            <Eyebrow>The score</Eyebrow>
-            <h2 className="text-headline mt-3 font-semibold text-balance">
-              Every score shows its parts.
-            </h2>
-            <p className="text-lead mt-4 text-pretty text-muted">
-              A high score is never just a number. It is a short list of reasons, each with its
-              weight, so your team can see why something was flagged and disagree if they want to.
-            </p>
-          </Reveal>
-          <Reveal delay={0.05} className="min-w-0">
-            <ScoreBreakdown />
-          </Reveal>
         </div>
       </Section>
 
@@ -313,7 +364,11 @@ export function TechnologyPage() {
       </Section>
 
       <CtaBand
-        title="See the reasons behind every alert."
+        title={
+          <>
+            See the reasons behind <em>every alert.</em>
+          </>
+        }
         description="We will walk through a real scoring breakdown and show how your team would review it."
         secondary={{ label: 'The platform', to: '/platform' }}
       />

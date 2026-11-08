@@ -1,11 +1,15 @@
-import { ArrowRight, Check, Globe, Smartphone, Stamp } from 'lucide-react';
+import { ArrowRight, Eye, ListChecks, Lock, UserCheck, type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router';
 import { PhotoFrame } from '@/components/marketing/PhotoFrame';
+import { ResearchProof } from '@/components/marketing/ResearchProof';
 import { CtaBand, ProcessSteps, Section, SplitHero } from '@/components/marketing/sections';
+import { AppWindow } from '@/components/motion';
 import { solutionItems } from '@/components/site/navigation';
-import { Eyebrow, ExampleTag, SectionHeading } from '@/components/ui/layout';
+import { Eyebrow, SectionHeading } from '@/components/ui/layout';
+import { Photo } from '@/components/ui/Photo';
 import { Reveal } from '@/components/ui/Reveal';
-import { cn } from '@/lib/cn';
+import { ModuleThumb, type ModuleKind } from '@/components/visuals/modules';
+import { PlatformScene } from '@/components/visuals/platform';
 import { FaqBlock } from './platform-faq';
 
 /* ------------------------------------------------------------------ Data */
@@ -37,53 +41,40 @@ const STEPS = [
   },
 ];
 
-const LIST_POINTS = [
-  'The most urgent alerts are at the top',
-  'Reasons are written in plain words',
-  'Evidence and notes stay with each alert',
-];
-
-const QUEUE = [
+const SETUP_NOTES = [
+  { title: 'Other spellings', text: 'Keywords and nicknames to watch for, such as common typos.' },
+  { title: 'Your own websites and logos', text: 'So Similo never flags what is really yours.' },
   {
-    icon: Globe,
-    kind: 'Website',
-    name: 'acme-login.com',
-    why: 'Looks like your brand, has a login form',
-    level: 'High risk',
-    levelClass: 'bg-accent/10 text-accent-ink',
-  },
-  {
-    icon: Smartphone,
-    kind: 'App',
-    name: 'Acme Pro',
-    why: 'Uses a logo like yours, different publisher',
-    level: 'Medium risk',
-    levelClass: 'bg-amber-100 text-amber-800',
-  },
-  {
-    icon: Stamp,
-    kind: 'Trademark',
-    name: 'ACMEE',
-    why: 'Sounds like your mark, same product class',
-    level: 'Needs review',
-    levelClass: 'bg-cream-deep text-ink',
+    title: 'Registered trademarks',
+    text: 'The marks and product classes a lookalike is compared with.',
   },
 ];
 
-const PRINCIPLES = [
+const MODULE_KIND: Record<string, ModuleKind> = {
+  '/solutions/domain-intelligence': 'domain',
+  '/solutions/app-intelligence': 'app',
+  '/solutions/trademark-intelligence': 'trademark',
+  '/solutions/investigation-evidence': 'investigation',
+};
+
+const PRINCIPLES: { icon: LucideIcon; title: string; text: string }[] = [
   {
+    icon: Eye,
     title: 'Every alert explains itself',
     text: 'Risk levels are broken into named reasons you can read and check. No black boxes.',
   },
   {
+    icon: UserCheck,
     title: 'People make the decisions',
     text: 'The AI sorts and drafts. Your analysts and legal reviewers decide and approve.',
   },
   {
+    icon: ListChecks,
     title: 'Honest about what we see',
     text: 'Each source and its limits are written down. Sources that are not set up are never shown as active.',
   },
   {
+    icon: Lock,
     title: 'Your data stays yours',
     text: 'Every search and every AI answer is limited to your organisation and checked against your role.',
   },
@@ -117,51 +108,78 @@ const FAQ = [
   },
 ];
 
-/* ---------------------------------------------------------------- Visual */
+/* ---------------------------------------------------------------- Pieces */
 
-/** The page's one illustrative product visual: a light alert list with sample data. */
-function AlertListExample() {
+/** The real dashboard screenshot in a cropped window, with two layers behind it for depth. */
+function DashboardFrame() {
   return (
-    <figure>
-      <div className="overflow-hidden rounded-xl border border-line bg-white">
-        <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-4">
-          <div>
-            <p className="text-[15px] font-semibold">Alerts</p>
-            <p className="text-[13px] text-muted">Sorted by risk, all sources</p>
-          </div>
-          <ExampleTag tone="light" />
-        </div>
-        <ul className="divide-y divide-line">
-          {QUEUE.map((row) => (
-            <li key={row.name} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-4">
-              <row.icon aria-hidden className="size-5 shrink-0 text-accent" />
-              <div className="min-w-0 flex-1 basis-40">
-                <p className="flex items-baseline gap-2">
-                  <span className="truncate font-mono text-[15px] font-medium">{row.name}</span>
-                  <span className="shrink-0 text-[13px] text-muted">{row.kind}</span>
-                </p>
-                <p className="mt-0.5 text-[13px] text-muted">{row.why}</p>
-              </div>
-              <span
-                className={cn(
-                  'shrink-0 rounded-md px-2.5 py-1 text-[12.5px] font-semibold',
-                  row.levelClass,
-                )}
+    <figure className="mt-14 lg:mt-20">
+      <Reveal>
+        <div className="relative mx-auto max-w-5xl [mask-image:linear-gradient(to_bottom,black_62%,transparent)]">
+          <div className="relative pt-9">
+            <div
+              aria-hidden
+              className="absolute inset-x-14 top-0 h-24 rounded-t-2xl bg-cream/[0.05] ring-1 ring-cream/10"
+            />
+            <div
+              aria-hidden
+              className="absolute inset-x-7 top-4 h-24 rounded-t-2xl bg-cream/[0.08] ring-1 ring-cream/[0.12]"
+            />
+            <div className="relative max-h-[31rem] overflow-hidden rounded-t-2xl shadow-[0_-24px_80px_-24px_rgb(0_0_0/0.7)]">
+              <AppWindow
+                tone="light"
+                title="Brands"
+                url="app.similo.example/brands/northwind-coffee"
+                className="rounded-b-none"
               >
-                {row.level}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <p className="border-t border-line bg-cream px-5 py-3 text-[13px] text-muted">
-          Nothing is sent or taken down without a person’s approval.
-        </p>
-      </div>
-      <figcaption className="mt-3 text-[13px] text-muted">
-        Illustrative example with sample names. It shows how alerts from every source sit in one
-        list.
+                <Photo
+                  src="/images/product/dashboard-brand-overview"
+                  alt="The Similo dashboard showing a sample brand, Northwind Coffee, with its name, description and keywords, and tabs for domains, logos, trademarks and monitoring"
+                  width={1600}
+                  height={1000}
+                  sizes="(min-width: 1280px) 1024px, 100vw"
+                  className="h-auto"
+                />
+              </AppWindow>
+            </div>
+          </div>
+        </div>
+      </Reveal>
+      <figcaption className="mx-auto mt-4 max-w-5xl text-[13px] text-cream/65">
+        A real screenshot of the Similo dashboard, cropped. The organisation and brand are sample
+        data.
       </figcaption>
     </figure>
+  );
+}
+
+function ModuleCard({ item }: { item: (typeof solutionItems)[number] }) {
+  const kind = MODULE_KIND[item.to];
+  return (
+    <Link
+      to={item.to}
+      className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-line transition-shadow duration-200 hover:shadow-window"
+    >
+      {kind && (
+        <div className="bg-night p-5 pt-6">
+          <ModuleThumb kind={kind} />
+        </div>
+      )}
+      <div className="flex flex-1 flex-col p-6">
+        <span className="flex items-center gap-3 text-[1.0625rem] font-semibold">
+          <item.icon aria-hidden className="size-5 shrink-0 text-accent" />
+          {item.label}
+        </span>
+        <span className="mt-2 leading-relaxed text-muted">{item.description}</span>
+        <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-[15px] font-medium text-accent-ink">
+          Learn more
+          <ArrowRight
+            aria-hidden
+            className="size-4 transition-transform group-hover:translate-x-0.5"
+          />
+        </span>
+      </div>
+    </Link>
   );
 }
 
@@ -172,20 +190,14 @@ export function PlatformPage() {
     <>
       <SplitHero
         eyebrow="The platform"
-        title="One place to find, review and act on copycats."
+        title={
+          <>
+            One place to find, review and <em className="text-accent-soft">act on copycats.</em>
+          </>
+        }
         description="Similo looks for websites, apps and trademarks that copy your brand, explains why each one looks risky, and gives your team one place to decide what to do."
         secondaryCta={{ label: 'How the AI works', to: '/technology' }}
-        visual={
-          <PhotoFrame
-            src="/images/core/colleagues-laptop"
-            alt="Two colleagues looking at a laptop together in an office"
-            width={1600}
-            height={1067}
-            ratio="aspect-[3/2]"
-            sizes="(min-width: 1280px) 600px, (min-width: 1024px) 45vw, 100vw"
-            priority
-          />
-        }
+        visual={<PlatformScene />}
       />
 
       <Section>
@@ -199,85 +211,48 @@ export function PlatformPage() {
         </div>
       </Section>
 
-      <Section tone="white">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <Reveal>
-            <Eyebrow>One list</Eyebrow>
-            <h2 className="text-headline mt-3 font-semibold text-balance">
-              Every alert in one place.
-            </h2>
-            <p className="text-lead mt-4 text-pretty text-muted">
-              Website, app and trademark alerts land in the same list, sorted by risk. Each one says
-              why it was flagged, so the right person can pick it up without starting from scratch.
-            </p>
-            <ul className="mt-8 space-y-3">
-              {LIST_POINTS.map((item) => (
-                <li key={item} className="flex items-center gap-3 font-medium">
-                  <Check aria-hidden className="size-5 shrink-0 text-accent" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-          <Reveal delay={0.05}>
-            <AlertListExample />
-          </Reveal>
-        </div>
+      <Section tone="dark">
+        <Reveal className="max-w-3xl">
+          <Eyebrow tone="dark">The real product</Eyebrow>
+          <h2 className="text-statement serif-em mt-5 font-semibold text-balance text-cream">
+            Start by telling Similo what to <em>protect.</em>
+          </h2>
+          <p className="text-lead mt-5 max-w-2xl text-pretty text-cream/75">
+            Add each brand with its other spellings, official websites, logos and registered
+            trademarks. This is what Similo compares everything against, so it never flags your own
+            sites.
+          </p>
+        </Reveal>
+        <DashboardFrame />
+        <ul className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-x-8 gap-y-6 border-t border-cream/15 pt-8 sm:grid-cols-3">
+          {SETUP_NOTES.map((note, index) => (
+            <li key={note.title}>
+              <p className="font-mono text-[12.5px] text-accent-soft">0{index + 1}</p>
+              <p className="mt-2 font-semibold text-cream">{note.title}</p>
+              <p className="mt-1 leading-relaxed text-cream/70">{note.text}</p>
+            </li>
+          ))}
+        </ul>
       </Section>
 
       <Section>
-        <SectionHeading
-          eyebrow="The real product"
-          title="Start by telling Similo what to protect."
-          description="Add each brand with its other spellings, official websites, logos and registered trademarks. This is what Similo compares everything against, so it never flags your own sites."
-        />
-        <Reveal className="mt-10">
-          <PhotoFrame
-            src="/images/product/dashboard-brand-overview"
-            alt="The Similo dashboard showing a sample brand, Northwind Coffee, with its name, description and keywords, and tabs for domains, logos, trademarks and monitoring"
-            width={1600}
-            height={1000}
-            ratio="aspect-[16/10]"
-            sizes="(min-width: 1280px) 1200px, 100vw"
-            caption="A real screenshot of the Similo dashboard. The organisation and brand are sample data."
-          />
-        </Reveal>
-      </Section>
-
-      <Section tone="white">
         <SectionHeading
           eyebrow="What’s inside"
           title="Four modules, one workflow."
           description="Each module looks at a different place where copycats appear. They all feed the same alert list and the same investigation workspace."
         />
-        <Reveal className="mt-10">
-          <ul className="divide-y divide-line border-y border-line">
+        <Reveal className="mt-12">
+          <ul className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:gap-6">
             {solutionItems.map((item) => (
               <li key={item.to}>
-                <Link
-                  to={item.to}
-                  className="group grid grid-cols-1 gap-1 py-5 sm:grid-cols-[1fr_1.4fr_auto] sm:items-center sm:gap-8"
-                >
-                  <span className="flex items-center gap-3 text-[1.0625rem] font-semibold">
-                    <item.icon aria-hidden className="size-5 shrink-0 text-accent" />
-                    {item.label}
-                  </span>
-                  <span className="text-muted sm:pl-0">{item.description}</span>
-                  <span className="mt-2 inline-flex items-center gap-1.5 text-[15px] font-medium text-accent-ink sm:mt-0">
-                    Learn more
-                    <ArrowRight
-                      aria-hidden
-                      className="size-4 transition-transform group-hover:translate-x-0.5"
-                    />
-                  </span>
-                </Link>
+                <ModuleCard item={item} />
               </li>
             ))}
           </ul>
         </Reveal>
       </Section>
 
-      <Section>
+      <Section tone="white">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
             <PhotoFrame
@@ -299,9 +274,12 @@ export function PlatformPage() {
             </p>
             <ul className="mt-8 divide-y divide-line border-y border-line">
               {PRINCIPLES.map((principle) => (
-                <li key={principle.title} className="py-5">
-                  <h3 className="font-semibold">{principle.title}</h3>
-                  <p className="mt-1 leading-relaxed text-muted">{principle.text}</p>
+                <li key={principle.title} className="flex gap-4 py-5">
+                  <principle.icon aria-hidden className="mt-0.5 size-5 shrink-0 text-accent" />
+                  <div>
+                    <h3 className="font-semibold">{principle.title}</h3>
+                    <p className="mt-1 leading-relaxed text-muted">{principle.text}</p>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -309,7 +287,9 @@ export function PlatformPage() {
         </div>
       </Section>
 
-      <Section tone="white">
+      <ResearchProof />
+
+      <Section>
         <FaqBlock
           title="Questions people ask first."
           description="Still curious? The AI page goes into the technical detail."
@@ -318,7 +298,11 @@ export function PlatformPage() {
       </Section>
 
       <CtaBand
-        title="See the whole workflow in one demo."
+        title={
+          <>
+            See the whole workflow <em>in one demo.</em>
+          </>
+        }
         description="From adding your brand to approving a takedown draft, we will walk you through each step."
         secondary={{ label: 'How the AI works', to: '/technology' }}
       />

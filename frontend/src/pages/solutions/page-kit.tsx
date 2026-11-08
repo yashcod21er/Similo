@@ -2,8 +2,9 @@ import { ArrowRight } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { Section } from '@/components/marketing/sections';
+import { ScrollStory, type ScrollStoryStep } from '@/components/motion';
 import { Accordion, type AccordionItem } from '@/components/ui/Accordion';
-import { SectionHeading } from '@/components/ui/layout';
+import { Eyebrow, SectionHeading } from '@/components/ui/layout';
 import { Reveal } from '@/components/ui/Reveal';
 import { cn } from '@/lib/cn';
 
@@ -19,6 +20,64 @@ export interface PhotoData {
   alt: string;
   width: number;
   height: number;
+}
+
+/** One step of a page's scroll story: a short label, a statement, a plain paragraph and a visual. */
+export interface StoryItem {
+  label: string;
+  title: ReactNode;
+  description: string;
+  /** The quiet "Under the hood" line. */
+  detail?: string;
+  visual: ReactNode;
+}
+
+/**
+ * A dark band that tells the page's steps as a scroll story: the text scrolls on the left and
+ * a product panel on the right changes with each step (stacked inline on phones). The heading
+ * may hold one `<em>`, set in the serif accent.
+ */
+export function StoryBand({
+  id,
+  eyebrow,
+  title,
+  description,
+  items,
+}: {
+  id?: string;
+  eyebrow: string;
+  title: ReactNode;
+  description?: ReactNode;
+  items: StoryItem[];
+}) {
+  const steps: ScrollStoryStep[] = items.map((item, index) => ({
+    id: `step-${index + 1}`,
+    label: item.label,
+    title: item.title,
+    body: (
+      <>
+        <p>{item.description}</p>
+        {item.detail && <p className="mt-4 text-[13px] text-cream/60">{item.detail}</p>}
+      </>
+    ),
+    visual: item.visual,
+  }));
+  return (
+    <Section tone="dark" {...(id ? { id } : {})}>
+      <Reveal className="max-w-3xl">
+        <Eyebrow tone="dark">{eyebrow}</Eyebrow>
+        <h2 className="text-statement serif-em mt-5 font-semibold text-balance text-cream">
+          {title}
+        </h2>
+        {description && (
+          <p className="text-lead mt-5 max-w-xl text-pretty text-cream/75">{description}</p>
+        )}
+      </Reveal>
+      <div className="mt-14 lg:mt-20">
+        <ScrollStory steps={steps} tone="dark" />
+      </div>
+    </Section>
+  );
 }
 
 /** A responsive grid of cards that fades in as one block. */

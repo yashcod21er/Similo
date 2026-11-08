@@ -171,7 +171,7 @@ function CommandDialog({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 z-[60] flex items-start justify-center px-3 pt-[12vh]">
       <motion.div
         aria-hidden
-        className="absolute inset-0 bg-night/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-night/60 backdrop-blur-sm"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -186,7 +186,7 @@ function CommandDialog({ onClose }: { onClose: () => void }) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -8, scale: 0.98 }}
         transition={{ duration: 0.22, ease: EASE_OUT }}
-        className="relative w-full max-w-xl overflow-hidden rounded-xl bg-white shadow-stage ring-1 ring-line"
+        className="relative w-full max-w-xl overflow-hidden rounded-2xl bg-white shadow-window ring-1 ring-ink/[0.08]"
       >
         <div className="flex items-center gap-3 border-b border-line px-5">
           <Search aria-hidden className="size-5 shrink-0 text-muted" />

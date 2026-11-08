@@ -1,16 +1,15 @@
 import { AudioLines, BookOpenText, Layers3, Shapes } from 'lucide-react';
-import { PhotoFrame } from '@/components/marketing/PhotoFrame';
-import {
-  CtaBand,
-  FeatureCard,
-  ProcessSteps,
-  Section,
-  SplitHero,
-} from '@/components/marketing/sections';
+import { CtaBand, FeatureCard, Section, SplitHero } from '@/components/marketing/sections';
 import { SectionHeading } from '@/components/ui/layout';
-import { FindingExample } from './domain-app-parts';
-import { CardGrid, FaqBlock, SplitSection } from './page-kit';
-import { HERO_SIZES, PAGE_PHOTOS } from './photos';
+import {
+  OppositionWindows,
+  TmComparePanel,
+  TmDecidePanel,
+  TmReadPanel,
+  TmRecordPanel,
+  TrademarkScene,
+} from '@/components/visuals/trademark';
+import { CardGrid, FaqBlock, SplitSection, StoryBand, type StoryItem } from './page-kit';
 
 const RISKS = [
   'Miss the window, and a confusingly similar mark can be registered.',
@@ -18,30 +17,38 @@ const RISKS = [
   'Reading every journal by hand takes hours each week.',
 ];
 
-const STEPS = [
+const STORY_ITEMS: StoryItem[] = [
   {
-    title: 'Read every new journal',
+    label: 'Read',
+    title: 'Every new journal, read for you.',
     description:
       'Each new issue of an official trademark journal is read automatically, scanned pages included, and every entry keeps its page number.',
     detail: 'Under the hood: OCR with layout parsing',
+    visual: <TmReadPanel />,
   },
   {
-    title: 'Pull out the details',
+    label: 'Extract',
+    title: 'Each entry becomes a tidy record.',
     description:
       'The mark, the applicant, the kinds of products and the key dates are turned into a tidy record that can be compared.',
     detail: 'Under the hood: field extraction and normalisation',
+    visual: <TmRecordPanel />,
   },
   {
-    title: 'Compare with your marks',
+    label: 'Compare',
+    title: 'Sound, spelling and product class, one by one.',
     description:
       'New marks are checked against yours for spelling, sound, products and logo. Close ones are ranked by how little time is left.',
     detail: 'Under the hood: edit distance, phonetic keys, Nice classes',
+    visual: <TmComparePanel />,
   },
   {
-    title: 'Your team decides',
+    label: 'You decide',
+    title: 'A professional reviews it before the deadline.',
     description:
       'A professional reviews each match before the deadline. AI can draft opposition notes for them to edit. Nothing is filed for you.',
     detail: 'Under the hood: human approval required',
+    visual: <TmDecidePanel />,
   },
 ];
 
@@ -110,10 +117,14 @@ export function TrademarkIntelligencePage() {
     <>
       <SplitHero
         eyebrow="Trademark Intelligence"
-        title="Catch lookalike trademarks in time to object."
+        title={
+          <>
+            Catch lookalike trademarks <em className="text-accent-soft">in time to object.</em>
+          </>
+        }
         description="Every week, trademark offices publish new applications. If one is too close to yours, you only have a short window to object. Similo reads those journals for you and flags the ones worth a closer look."
         secondaryCta={{ label: 'Read the watch guide', to: '/resources/trademark-watch-basics' }}
-        visual={<PhotoFrame {...PAGE_PHOTOS.trademark} priority sizes={HERO_SIZES} />}
+        visual={<TrademarkScene />}
       />
 
       <Section>
@@ -128,44 +139,29 @@ export function TrademarkIntelligencePage() {
               <ul className="mt-8 space-y-3">
                 {RISKS.map((risk) => (
                   <li key={risk} className="flex gap-3 leading-relaxed text-ink/85">
-                    <span
-                      aria-hidden
-                      className="mt-2.5 size-1.5 shrink-0 rounded-full bg-accent"
-                    />
+                    <span aria-hidden className="mt-2.5 size-1.5 shrink-0 rounded-full bg-accent" />
                     {risk}
                   </li>
                 ))}
               </ul>
             </>
           }
-          media={
-            <FindingExample
-              kind="trademark"
-              name="ACMEE"
-              facts={[
-                'Sounds like your trademark “ACME”',
-                'Filed for the same kind of products (class 9)',
-                '18 days left to object',
-              ]}
-              level="high"
-              caption="Illustrative example: how one filing appears to your team. The mark and the deadline are made up."
-            />
-          }
+          media={<OppositionWindows />}
         />
       </Section>
+
+      <StoryBand
+        eyebrow="How it works"
+        title={
+          <>
+            From new filing to your decision, <em>in four steps.</em>
+          </>
+        }
+        description="Similo does the slow first pass, so your team spends its time on judgement instead of reading."
+        items={STORY_ITEMS}
+      />
 
       <Section tone="white">
-        <SectionHeading
-          eyebrow="How it works"
-          title="From new filing to your decision in four steps."
-          description="Similo does the slow first pass, so your team spends its time on judgement instead of reading."
-        />
-        <div className="mt-12">
-          <ProcessSteps steps={STEPS} />
-        </div>
-      </Section>
-
-      <Section>
         <SectionHeading
           eyebrow="What we compare"
           title="Four ways a mark can be too close."
@@ -186,6 +182,7 @@ export function TrademarkIntelligencePage() {
       </Section>
 
       <FaqBlock
+        tone="light"
         title="Trademark watch, answered."
         description="New to oppositions? Start here."
         items={FAQ}
@@ -194,7 +191,11 @@ export function TrademarkIntelligencePage() {
 
       <CtaBand
         eyebrow="Trademark watch"
-        title="Never miss a deadline to object."
+        title={
+          <>
+            Never miss a <em>deadline</em> to object.
+          </>
+        }
         description="Tell us the marks and countries you care about, and we will show you how a watch would work for them."
         primary={{ label: 'Book a trademark briefing', to: '/contact' }}
         secondary={{ label: 'Read the watch guide', to: '/resources/trademark-watch-basics' }}
