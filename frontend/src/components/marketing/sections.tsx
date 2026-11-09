@@ -6,6 +6,7 @@ import { ButtonLink } from '@/components/ui/Button';
 import { Container, Eyebrow } from '@/components/ui/layout';
 import { LogoSymbol } from '@/components/ui/Logo';
 import { Reveal, RevealGroup, RevealItem } from '@/components/ui/Reveal';
+import { RegMarks } from '@/components/ui/specimen';
 import { SpotlightCard } from '@/components/ui/SpotlightCard';
 import { cn } from '@/lib/cn';
 
@@ -29,10 +30,10 @@ interface HeroProps {
 }
 
 /**
- * Hero for inner pages: copy left, one product visual right. Dark by default (v4 rhythm:
- * every long page opens on night with the signature wave). Nothing animates on load
- * except the wave, so the headline is readable immediately. An `<em>` in the title is set
- * in Instrument Serif italic (one phrase at most).
+ * Hero for inner pages: copy left, one product visual right. Dark by default (every long page
+ * opens on night with the signature wave). Nothing animates on load except the wave, so the
+ * headline is readable immediately. An `<em>` in the title is the page's one serif italic
+ * phrase (Instrument Serif, burnt orange); use it once per page and nowhere else.
  */
 export function SplitHero({
   eyebrow,
@@ -64,7 +65,7 @@ export function SplitHero({
           <Eyebrow tone={tone}>{eyebrow}</Eyebrow>
           <h1
             className={cn(
-              'text-display mt-5 font-semibold text-balance',
+              'text-display serif-em-accent mt-6 font-semibold text-balance',
               dark ? 'text-cream' : 'text-ink',
             )}
           >
@@ -72,7 +73,7 @@ export function SplitHero({
           </h1>
           <p
             className={cn(
-              'text-lead mt-5 max-w-xl text-pretty',
+              'text-lead mt-6 max-w-xl text-pretty',
               dark ? 'text-cream/75' : 'text-muted',
             )}
           >
@@ -101,10 +102,10 @@ export function SplitHero({
             >
               {highlights.map((item) => (
                 <div key={item.label}>
-                  <dt className={cn('text-[13px]', dark ? 'text-cream/65' : 'text-muted')}>
+                  <dt className={cn('text-micro', dark ? 'text-cream/65' : 'text-muted')}>
                     {item.label}
                   </dt>
-                  <dd className="mt-1 text-sm font-semibold">{item.value}</dd>
+                  <dd className="mt-1.5 text-sm font-semibold">{item.value}</dd>
                 </div>
               ))}
             </dl>
@@ -118,9 +119,18 @@ export function SplitHero({
 
 /* --------------------------------------------------------------- Section */
 
+export type SectionTone = 'cream' | 'white' | 'night' | 'orange' | 'light' | 'dark';
+
+const scaffoldTone = {
+  cream: { line: 'border-ink/[0.1]', marks: 'light' },
+  white: { line: 'border-ink/[0.1]', marks: 'light' },
+  night: { line: 'border-cream/[0.1]', marks: 'dark' },
+  orange: { line: 'border-white/30', marks: 'orange' },
+} as const;
+
 /**
- * One band of a page. v4 rhythm: dark hero → `light` (cream) → `white` → `dark` (night,
- * a scroll story or product moment) → … → dark CTA. Never two bands of the same weight in
+ * One band of a page. Rhythm: dark hero → cream → white → night (a scroll story or product
+ * moment) → … → one full-bleed orange band → dark CTA. Never two bands of the same weight in
  * a row without a change of tone or layout.
  */
 export function Section({
@@ -128,23 +138,48 @@ export function Section({
   className,
   tone = 'light',
   id,
+  scaffold = false,
 }: {
   children: ReactNode;
   className?: string;
-  tone?: 'light' | 'white' | 'dark';
+  /**
+   * `cream`, `white`, `night`, `orange`. `light` (= cream) and `dark` (= night) still work.
+   * `orange` is the one full-bleed burnt-orange band of a page: text on it is white; cream is
+   * for text of 24 px and up only (cream on #c2500a is 4.1:1).
+   */
+  tone?: SectionTone;
   id?: string;
+  /** Hairline column lines at the container edges and `+` registration marks at the corners. */
+  scaffold?: boolean;
 }) {
+  const key = tone === 'light' ? 'cream' : tone === 'dark' ? 'night' : tone;
+  const look = scaffoldTone[key];
   return (
     <section
       id={id}
       className={cn(
         'scroll-mt-20 py-20 lg:py-32',
-        tone === 'white' && 'border-y border-line bg-white',
-        tone === 'dark' && 'bg-night text-cream',
+        scaffold && 'relative',
+        key === 'white' && 'border-y border-line bg-white',
+        key === 'night' && 'bg-night text-cream',
+        key === 'orange' && 'bg-accent text-white',
         className,
       )}
     >
-      <Container>{children}</Container>
+      {scaffold && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-1/2 w-full max-w-7xl -translate-x-1/2"
+        >
+          {/* The lines sit half-way between the page edge and the content. */}
+          <div className="absolute inset-y-0 right-2 left-2 sm:right-3 sm:left-3 lg:right-4 lg:left-4">
+            <div className={cn('absolute inset-y-0 left-0 border-l', look.line)} />
+            <div className={cn('absolute inset-y-0 right-0 border-r', look.line)} />
+            <RegMarks tone={look.marks} />
+          </div>
+        </div>
+      )}
+      <Container className={cn(scaffold && 'relative')}>{children}</Container>
     </section>
   );
 }
@@ -152,8 +187,10 @@ export function Section({
 /* ------------------------------------------------------------- CTA band */
 
 /**
- * Closing call to action: a dark band with the calm SimilarityWave behind it. Text left,
- * buttons right. An `<em>` in the title is set in Instrument Serif italic (one phrase).
+ * Closing call to action. `night` (default): a dark band with the calm SimilarityWave behind
+ * it. `orange`: the page's one full-bleed burnt-orange band (white text, a dark primary button).
+ * Text left, buttons right. An `<em>` in the title is plain unless the caller opts in with
+ * `serifAccent` (the serif italic phrase is for one place per page).
  */
 export function CtaBand({
   eyebrow = 'Get started',
@@ -161,41 +198,76 @@ export function CtaBand({
   description,
   primary = { label: 'Request a demo', to: '/contact' },
   secondary = { label: 'See how it works', to: '/platform' },
+  tone = 'night',
+  serifAccent = false,
 }: {
   eyebrow?: string;
   title: ReactNode;
   description: ReactNode;
   primary?: { label: string; to: string };
   secondary?: { label: string; to: string };
+  tone?: 'night' | 'orange';
+  serifAccent?: boolean;
 }) {
+  const orange = tone === 'orange';
   return (
-    <section className="relative isolate overflow-hidden border-b border-cream/10 bg-night text-cream">
-      <SimilarityWave tone="dark" density="calm" className="-z-10 opacity-80" />
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-linear-to-b from-night/40 via-night/70 to-night"
-      />
+    <section
+      className={cn(
+        'relative isolate overflow-hidden border-b',
+        orange ? 'border-white/20 bg-accent text-white' : 'border-cream/10 bg-night text-cream',
+      )}
+    >
+      {orange ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-1/2 -z-10 w-full max-w-7xl -translate-x-1/2"
+        >
+          <div className="absolute inset-y-0 right-2 left-2 sm:right-3 sm:left-3 lg:right-4 lg:left-4">
+            <div className="absolute inset-y-0 left-0 border-l border-white/30" />
+            <div className="absolute inset-y-0 right-0 border-r border-white/30" />
+          </div>
+        </div>
+      ) : (
+        <>
+          <SimilarityWave tone="dark" density="calm" className="-z-10 opacity-80" />
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-10 bg-linear-to-b from-night/40 via-night/70 to-night"
+          />
+        </>
+      )}
       <Container className="grid grid-cols-1 gap-10 py-20 lg:grid-cols-[1.5fr_1fr] lg:items-end lg:gap-16 lg:py-32">
         <div>
           <Reveal y={12}>
-            <Eyebrow tone="dark">{eyebrow}</Eyebrow>
+            <Eyebrow tone={orange ? 'orange' : 'dark'}>{eyebrow}</Eyebrow>
           </Reveal>
           <SplitReveal
             as="h2"
-            className="text-statement serif-em mt-5 max-w-3xl font-semibold text-balance text-cream"
+            className={cn(
+              'text-statement mt-6 max-w-3xl font-semibold text-balance',
+              orange ? 'text-white' : 'text-cream',
+              serifAccent && 'serif-em-accent',
+            )}
           >
             {title}
           </SplitReveal>
           <Reveal delay={0.25}>
-            <p className="text-lead mt-5 max-w-xl text-pretty text-cream/75">{description}</p>
+            <p
+              className={cn(
+                'text-lead mt-6 max-w-xl text-pretty',
+                orange ? 'text-white' : 'text-cream/75',
+              )}
+            >
+              {description}
+            </p>
           </Reveal>
         </div>
         <div className="flex flex-wrap gap-3 lg:justify-end lg:pb-2">
-          <ButtonLink to={primary.to} size="lg">
+          <ButtonLink to={primary.to} variant={orange ? 'dark' : 'primary'} size="lg">
             {primary.label}
             <ArrowRight aria-hidden className="size-4" />
           </ButtonLink>
-          <ButtonLink to={secondary.to} variant="outline-dark" size="lg">
+          <ButtonLink to={secondary.to} variant={orange ? 'light' : 'outline-dark'} size="lg">
             {secondary.label}
           </ButtonLink>
         </div>
@@ -235,22 +307,17 @@ export function ProcessSteps({
       {steps.map((step, index) => (
         <RevealItem key={step.title}>
           <div className={cn('border-t pt-5', dark ? 'border-cream/20' : 'border-line-strong')}>
-            <p
-              className={cn(
-                'font-mono text-[12.5px] font-medium',
-                dark ? 'text-accent-soft' : 'text-accent-ink',
-              )}
-            >
-              Step {index + 1}
+            <p className={cn('text-micro', dark ? 'text-accent-soft' : 'text-accent-ink')}>
+              Step {String(index + 1).padStart(2, '0')}
             </p>
-            <h3 className={cn('text-title mt-2 font-semibold', dark && 'text-cream')}>
+            <h3 className={cn('text-title mt-3 font-semibold', dark && 'text-cream')}>
               {step.title}
             </h3>
             <p className={cn('mt-2.5 leading-relaxed', dark ? 'text-cream/70' : 'text-muted')}>
               {step.description}
             </p>
             {step.detail && (
-              <p className={cn('mt-3 text-[13px]', dark ? 'text-cream/65' : 'text-muted')}>
+              <p className={cn('text-micro mt-4', dark ? 'text-cream/65' : 'text-muted')}>
                 {step.detail}
               </p>
             )}
@@ -280,13 +347,13 @@ export function FeatureCard({
   return (
     <SpotlightCard className={cn('flex h-full flex-col p-6 lg:p-7', className)}>
       {/* Signature detail: the logo's ∼ in the corner, turning orange and sliding on hover. */}
-      <LogoSymbol className="pointer-events-none absolute top-7 right-6 h-3.5 w-auto text-line-strong transition-[color,transform] duration-500 ease-out group-hover/spot:translate-x-1 group-hover/spot:text-accent motion-reduce:transition-none" />
+      <LogoSymbol className="pointer-events-none absolute top-7 right-6 h-3.5 w-auto text-line-strong transition-[color,transform] duration-200 ease-out group-hover/spot:translate-x-1 group-hover/spot:text-accent motion-reduce:transition-none" />
       {icon && (
-        <span className="relative mb-6 inline-flex size-11 self-start items-center justify-center rounded-xl bg-night text-accent-soft shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_6px_16px_-6px_rgb(18_17_15/0.45)] transition-[background-color,color,transform] duration-300 group-hover/spot:bg-accent group-hover/spot:text-white motion-safe:group-hover/spot:-rotate-6 [&>svg]:size-5">
+        <span className="relative mb-6 inline-flex size-11 self-start items-center justify-center rounded-xl bg-night text-accent-soft transition-[background-color,color] duration-200 group-hover/spot:bg-accent group-hover/spot:text-white [&>svg]:size-5">
           {icon}
         </span>
       )}
-      <h3 className="relative text-[1.125rem] font-semibold tracking-[-0.02em]">{title}</h3>
+      <h3 className="text-title relative font-semibold">{title}</h3>
       <p className="relative mt-2.5 leading-relaxed text-muted">{description}</p>
       {children && (
         <div className="relative mt-auto pt-6">

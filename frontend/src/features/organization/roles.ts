@@ -31,8 +31,8 @@ export const PERMISSION_LABELS: Record<Permission, { label: string; soon?: boole
   'organization:delete': { label: 'Delete the organisation', soon: true },
   'brands:read': { label: 'See protected brands' },
   'brands:manage': { label: 'Add and edit protected brands' },
-  'findings:read': { label: 'See alerts about possible copycats', soon: true },
-  'findings:update': { label: 'Work on alerts', soon: true },
+  'findings:read': { label: 'See alerts about possible copycats' },
+  'findings:update': { label: 'Review and update alerts' },
   'investigations:manage': { label: 'Run investigations and collect evidence', soon: true },
   'drafts:review': { label: 'Review and approve legal drafts', soon: true },
 };

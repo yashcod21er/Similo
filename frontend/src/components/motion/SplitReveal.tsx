@@ -7,7 +7,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from 'react';
-import { EASE_OUT } from '@/lib/motion';
+import { EASE_OUT_EXPO, ENTRANCE_STAGGER } from './easing';
 import { usePrefersReducedMotion } from './hooks';
 import { plainText } from './plain-text';
 
@@ -41,7 +41,18 @@ const GROUP: Variants = { hidden: {}, visible: {} };
 
 const PIECE: Variants = {
   hidden: { y: '118%' },
-  visible: { y: '0%', transition: { duration: 0.85, ease: EASE_OUT } },
+  visible: { y: '0%', transition: { duration: 0.9, ease: EASE_OUT_EXPO } },
+};
+
+/** Blur-to-sharp variant: each piece also comes out of a soft blur. */
+const PIECE_BLUR: Variants = {
+  hidden: { y: '118%', opacity: 0, filter: 'blur(10px)' },
+  visible: {
+    y: '0%',
+    opacity: 1,
+    filter: 'blur(0px)',
+    transition: { duration: 0.9, ease: EASE_OUT_EXPO },
+  },
 };
 
 function countPieces(node: ReactNode, by: 'words' | 'letters'): number {
@@ -53,6 +64,7 @@ function countPieces(node: ReactNode, by: 'words' | 'letters'): number {
 
 interface WalkState {
   by: 'words' | 'letters';
+  blur: boolean;
   key: number;
 }
 
@@ -61,7 +73,7 @@ function piece(text: string, state: WalkState): ReactNode {
   state.key += 1;
   return (
     <span key={state.key} className={MASK}>
-      <motion.span variants={PIECE} className="inline-block">
+      <motion.span variants={state.blur ? PIECE_BLUR : PIECE} className="inline-block">
         {text}
       </motion.span>
     </span>
@@ -113,12 +125,15 @@ export function SplitReveal({
   children,
   as = 'h2',
   by = 'words',
+  blur = false,
   id,
   className,
 }: {
   children: ReactNode;
   as?: Tag;
   by?: 'words' | 'letters';
+  /** Words also come out of a soft blur (blur-to-sharp). For the biggest headlines. */
+  blur?: boolean;
   id?: string | undefined;
   className?: string | undefined;
 }) {
@@ -137,8 +152,8 @@ export function SplitReveal({
   const MotionTag = MOTION_TAGS[as];
   const count = Math.max(countPieces(children, by), 1);
   // A long heading must not take long to finish: the whole stagger lasts at most ~0.5 s.
-  const stagger = Math.min(by === 'words' ? 0.07 : 0.03, 0.5 / count);
-  const state: WalkState = { by, key: 0 };
+  const stagger = Math.min(by === 'words' ? ENTRANCE_STAGGER : 0.03, 0.5 / count);
+  const state: WalkState = { by, blur, key: 0 };
   const pieces = walk(children, state);
 
   return (

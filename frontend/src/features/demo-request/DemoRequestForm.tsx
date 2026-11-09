@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { AlertTriangle, ArrowRight, CheckCircle2, ChevronDown, Loader2 } from 'lucide-react';
+import { AlertTriangle, ArrowRight, ChevronDown, Loader2 } from 'lucide-react';
 import { useId, type ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
+import { StampSlam } from '@/components/scenes';
 import { Button } from '@/components/ui/Button';
 import { ApiError, apiRequest } from '@/lib/api-client';
 import { cn } from '@/lib/cn';
@@ -97,10 +98,8 @@ export function DemoRequestForm() {
   if (mutation.isSuccess) {
     return (
       <div role="status" className="px-6 py-14 sm:px-8">
-        <span className="flex size-12 items-center justify-center rounded-full bg-emerald-50 ring-1 ring-emerald-200">
-          <CheckCircle2 aria-hidden className="size-6 text-emerald-700" />
-        </span>
-        <h2 className="text-title mt-5 font-semibold">
+        <StampSlam text="Received" detail="We will reply by email" />
+        <h2 className="mt-8 text-[1.75rem] leading-[1.05] font-semibold tracking-[-0.04em]">
           Thank you, {getValues('fullName').split(' ')[0]}.
         </h2>
         <p className="mt-3 max-w-md leading-relaxed text-muted">

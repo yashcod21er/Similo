@@ -1,10 +1,11 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/geist';
 @import '@fontsource-variable/geist-mono';
+@import '@fontsource/instrument-serif/latin-400.css';
 @import '@fontsource/instrument-serif/latin-400-italic.css';
 
 /*
- * Similo design tokens (design system v4: cream + black + burnt orange).
+ * Similo design tokens (design system v6 "Spot the difference": cream + black + burnt orange).
  * See docs/DESIGN-SYSTEM.md for how they are meant to be used.
  * Tailwind turns each token into utilities, e.g. `bg-night`, `text-ink`,
  * `border-line`.
@@ -55,11 +56,21 @@
     0 1px 1px rgb(0 0 0 / 0.2), 0 8px 16px -4px rgb(0 0 0 / 0.35),
     0 32px 64px -16px rgb(0 0 0 / 0.55), 0 80px 140px -40px rgb(0 0 0 / 0.6);
 
+  /* v6 type tokens: display text is tight (tracking -0.045em, leading 1). */
+  --tracking-display: -0.045em;
+  --tracking-headline: -0.04em;
+  --leading-display: 1;
+
+  /* v6 motion tokens (mirrored in components/motion/easing.ts for motion/react).
+     Entrances 700-900 ms on the expo curve with 60-80 ms stagger; hovers 150-200 ms. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+
   /* Motion: the only looping animation left is the live status indicator. */
   --animate-ping-slow: ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
   /* v4: enter animations for product-scene items (transform + opacity only). */
-  --animate-scene-in: scene-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-scene-pop: scene-pop 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-scene-in: scene-in 700ms var(--ease-out-expo) both;
+  --animate-scene-pop: scene-pop 600ms var(--ease-out-expo) both;
 
   @keyframes scene-in {
     from {
@@ -84,62 +95,121 @@
   }
 }
 
-/* Type scale. Each step pairs size, line height and tracking. */
-/* The home hero's giant headline (bold and immersive). */
+/* v6: mono microtype for labels, numbers and captions (docs/DESIGN-SYSTEM.md). */
+@utility text-micro {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* v6 photo treatment: one tritone (night, burnt orange, cream) with grain, set by the SVG
+   filters in components/marketing/PhotoFilters.tsx. Without the filters the photo shows plain.
+   Halftone adds a printed dot screen (the frame's night shows between the dots). */
+.photo-duotone {
+  filter: url(#similo-duotone);
+}
+.photo-halftone {
+  filter: url(#similo-halftone);
+  -webkit-mask-image: radial-gradient(circle closest-side, #000 88%, transparent 100%);
+  mask-image: radial-gradient(circle closest-side, #000 88%, transparent 100%);
+  -webkit-mask-size: 4px 4px;
+  mask-size: 4px 4px;
+}
+
+/*
+ * Type scale (v6). Display text is tight: tracking -0.04 to -0.05em, leading about 1, and a
+ * big gap between steps (a headline is 3x body text, a display line 5x). Each utility pairs
+ * size, leading and tracking; add the weight (font-semibold) where you use it.
+ */
+/* The home hero's giant headline. */
 @utility text-mega {
-  font-size: clamp(3rem, 1rem + 5.6vw, 6.5rem);
+  font-size: clamp(3.25rem, 1rem + 6.4vw, 7.5rem);
   line-height: 0.95;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.05em;
 }
 
 /* Full-width statements that light up word by word. */
 @utility text-statement-xl {
-  font-size: clamp(2rem, 1rem + 3.4vw, 4.25rem);
-  line-height: 1.08;
-  letter-spacing: -0.035em;
-}
-
-@utility text-display {
-  font-size: clamp(2.375rem, 1.45rem + 3vw, 3.75rem);
+  font-size: clamp(2.25rem, 1rem + 3.8vw, 4.75rem);
   line-height: 1.04;
-  letter-spacing: -0.035em;
+  letter-spacing: var(--tracking-headline);
 }
 
-/* v4: big statements on dark bands and closing CTAs, a clear step above headline. */
+/* The h1 of an inner page. */
+@utility text-display {
+  font-size: clamp(2.75rem, 1.4rem + 4vw, 5rem);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+}
+
+/* Big statements on dark bands and closing CTAs, a clear step above headline. */
 @utility text-statement {
-  font-size: clamp(2.125rem, 1.3rem + 2.9vw, 3.5rem);
-  line-height: 1.06;
-  letter-spacing: -0.035em;
+  font-size: clamp(2.25rem, 1.1rem + 3.4vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: var(--tracking-headline);
 }
 
-/* Opt-in serif accent for a section statement on a dark band (h2 em is plain otherwise).
-   At most one serif phrase per band (docs/DESIGN-SYSTEM.md). */
+@utility text-headline {
+  font-size: clamp(2rem, 1.2rem + 2.6vw, 3.5rem);
+  line-height: 1.04;
+  letter-spacing: var(--tracking-headline);
+}
+
+@utility text-title {
+  font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+@utility text-lead {
+  font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+}
+
+/*
+ * Serif voice (Instrument Serif), always opt-in:
+ * - serif-em: the <em> inside this heading is serif italic (inherits colour).
+ * - serif-em-accent: the same in burnt orange (accent-ink on light, accent-soft on night).
+ *   Use it ONCE per page.
+ * - serif-display: the element itself is set in Instrument Serif regular, upright.
+ * An <em> in a heading is plain upright text without one of these.
+ */
 @utility serif-em {
   & em {
     font-family: var(--font-serif);
     font-style: italic;
     font-weight: 400;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
     padding-right: 0.04em;
   }
 }
 
-@utility text-headline {
-  font-size: clamp(1.875rem, 1.35rem + 1.8vw, 2.75rem);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+@utility serif-em-accent {
+  & em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    padding-right: 0.04em;
+    color: var(--color-accent-ink);
+  }
+  :where(.bg-night, .bg-night-raised) & em {
+    color: var(--color-accent-soft);
+  }
+  :where(.bg-accent) & em {
+    color: inherit;
+  }
 }
 
-@utility text-title {
-  font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
-  line-height: 1.25;
-  letter-spacing: -0.02em;
-}
-
-@utility text-lead {
-  font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
-  line-height: 1.6;
-  letter-spacing: -0.005em;
+@utility serif-display {
+  font-family: var(--font-serif);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: -0.025em;
 }
 
 @layer base {
@@ -159,18 +229,10 @@
     @apply bg-cream font-sans text-ink;
   }
 
-  /* The serif italic accent is allowed in a page's hero headline only (h1).
-     In section headings (h2, h3) <em> stays plain, so old markup can't bring
-     the "serif word in every headline" look back. */
-  h1 em {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    padding-right: 0.04em;
-  }
-
-  :is(h2, h3):not(.serif-em) em {
+  /* v6: the serif italic is opt-in (class serif-em or serif-em-accent on the heading).
+     Without it an <em> in a heading is plain upright text, so old markup can't bring the
+     "serif word in every headline" look back. */
+  :is(h1, h2, h3, h4):not(.serif-em, .serif-em-accent) em {
     font-style: normal;
   }
 
@@ -230,19 +292,6 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 220px 220px;
     animation: grain-shift 1s steps(1) infinite;
-  }
-
-  /* Custom cursor: the native one is hidden only while ours is active, and comes back for
-     text fields (where people need the I-beam). */
-  html.has-custom-cursor,
-  html.has-custom-cursor * {
-    cursor: none !important;
-  }
-  html.has-custom-cursor :is(input, textarea, [contenteditable='true']) {
-    cursor: text !important;
-  }
-  html.has-custom-cursor select {
-    cursor: default !important;
   }
 
   /* The night curtain of the intro and page transitions: a little taller than the screen,

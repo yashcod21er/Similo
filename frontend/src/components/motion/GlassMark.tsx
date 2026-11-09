@@ -1,27 +1,30 @@
 import { useEffect, useRef, type RefObject } from 'react';
 import * as THREE from 'three';
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { useInView, usePageVisible, usePrefersReducedMotion } from './hooks';
 import { canUseWebGL } from './webgl';
 import { MARK_COPY, MARK_ORIGINAL } from './mark-paths';
 
 /**
- * The home hero's signature object (WebGL, three.js): the logo's ∼ mark in 3D, dark luxury.
- * The original half is polished black lacquer; the copy half is smoked burnt-orange glass that
- * refracts the giant headline word behind it. Both pick up crisp highlights from a generated
- * studio environment (RoomEnvironment, no files) and a burnt-orange rim light. The halves drift
- * apart and snap back together (original vs copy), and the mark tilts toward the pointer.
+ * The home hero's signature object (WebGL, three.js): the logo's ∼ mark in 3D, lit like a jewel
+ * on a photographer's table (v6). The original half is clear crystal, the copy half is
+ * burnt-orange glass; both refract the giant headline word behind them. A generated studio
+ * (no image files) surrounds the mark with soft boxes: a big cream one above, a burnt-orange one
+ * at the side, a thin white strip and a warm floor bounce, so every bevel catches a crisp
+ * highlight and the glass reads bright, not black. The halves drift apart and snap back together
+ * (original vs copy), and the mark tilts toward the pointer.
  *
  * - Loaded lazily (only the home page downloads three.js).
  * - Pauses off-screen and in a hidden tab; one still frame with reduced motion.
- * - Phones get a lighter version: no glass refraction, fewer bevel segments, lower resolution.
+ * - Phones get a lighter version: no glass refraction (polished lacquer instead), fewer bevel
+ *   segments, lower resolution.
  * - If WebGL is unavailable it calls `onFail`, so the hero can show its 2D look.
  *
  * How the refraction works: the giant word is real DOM text under the canvas. The scene holds a
- * full-screen "backdrop" plane painted with the same word at the same pixels (read from the DOM).
- * The plane only writes colour while three renders its transmission pass, so it is invisible on
- * screen but the glass refracts it, and the glass hides the DOM text under its own silhouette.
+ * full-screen "backdrop" plane painted with the page colour and the same word at the same pixels
+ * (read from the DOM). The plane only writes colour while three renders its transmission pass, so
+ * it is invisible on screen but the glass refracts it, and the glass hides the DOM text under its
+ * own silhouette.
  */
 
 /** Width of the ∼ in tile units (x 4.5 → 27.5). */
@@ -29,6 +32,39 @@ const MARK_WIDTH = 23;
 const DEPTH = 2.6;
 const NIGHT = '#12110f';
 const FOV = 30;
+
+/**
+ * The photo studio the mark is lit by, baked into an environment map once (PMREM). A warm dark
+ * room, so the crystal keeps dark edges and reads as an object on any background, with emissive
+ * soft boxes brighter than white (HDR) for crisp highlights.
+ */
+function studioScene(): { scene: THREE.Scene; dispose: () => void } {
+  const scene = new THREE.Scene();
+  const disposables: { dispose: () => void }[] = [];
+  const room = new THREE.Mesh(
+    new THREE.SphereGeometry(20, 32, 16),
+    new THREE.MeshBasicMaterial({ color: '#2b2520', side: THREE.BackSide }),
+  );
+  scene.add(room);
+  disposables.push(room.geometry, room.material);
+
+  const box = (color: string, intensity: number, w: number, h: number, pos: THREE.Vector3Tuple) => {
+    const material = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(color).multiplyScalar(intensity),
+    });
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, h), material);
+    mesh.position.set(...pos);
+    mesh.lookAt(0, 0, 0);
+    scene.add(mesh);
+    disposables.push(mesh.geometry, material);
+  };
+  box('#fff3e3', 7, 14, 3.5, [0, 11, 4]); // the long cream soft box above and in front
+  box('#ff7a26', 7, 6, 12, [-12, 1, 3]); // burnt-orange soft box, left
+  box('#ffffff', 14, 1.4, 12, [10, 2, 6]); // thin white strip, right (the sharp line)
+  box('#f6e2c8', 1.2, 22, 6, [0, -10, 2]); // warm floor bounce
+  box('#ffd2a8', 4, 8, 5, [4, 3, -12]); // back light, for the rim
+  return { scene, dispose: () => disposables.forEach((item) => item.dispose()) };
+}
 const CAMERA_Z = 10;
 const MARK_Z = 1.4;
 
@@ -74,13 +110,14 @@ function driftAt(seconds: number): number {
   return 0;
 }
 
-/** Paints what sits behind the glass: the night, the hero's glow and the giant word. */
+/** Paints what sits behind the glass: the page colour, the hero's glow and the giant word. */
 function paintBackdrop(
   canvas: HTMLCanvasElement,
   host: HTMLElement,
   anchor: HTMLElement,
   glow: HTMLElement | null,
   scale: number,
+  background: string,
 ): boolean {
   const box = host.getBoundingClientRect();
   const width = Math.max(1, Math.round(box.width * scale));
@@ -93,7 +130,7 @@ function paintBackdrop(
   const ctx = canvas.getContext('2d');
   if (!ctx) return resized;
   ctx.setTransform(scale, 0, 0, scale, 0, 0);
-  ctx.fillStyle = NIGHT;
+  ctx.fillStyle = background;
   ctx.fillRect(0, 0, box.width, box.height);
 
   if (glow) {
@@ -137,6 +174,7 @@ export default function GlassMark({
   anchorRef,
   glowRef,
   showAfterMs = 0,
+  background = NIGHT,
   onFail,
 }: {
   className?: string;
@@ -146,6 +184,8 @@ export default function GlassMark({
   glowRef?: RefObject<HTMLElement | null>;
   /** Wait this long before showing the mark (lets the headline finish its entrance). */
   showAfterMs?: number;
+  /** The colour of the band behind the mark (what the glass refracts). Night by default. */
+  background?: string;
   onFail?: () => void;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -182,7 +222,7 @@ export default function GlassMark({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, light ? 1.5 : 2));
     renderer.setClearColor(0x000000, 0);
     renderer.toneMapping = THREE.NeutralToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    renderer.toneMappingExposure = 1.3;
     renderer.transmissionResolutionScale = 0.75;
     const canvas = renderer.domElement;
     canvas.style.width = '100%';
@@ -194,23 +234,23 @@ export default function GlassMark({
     const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 100);
     camera.position.set(0, 0, CAMERA_Z);
 
-    // A generated studio environment for crisp reflections (no image files).
+    // The generated photo studio: soft boxes for crisp reflections (no image files).
     const pmrem = new THREE.PMREMGenerator(renderer);
-    const room = new RoomEnvironment();
-    const envTexture = pmrem.fromScene(room, 0.03).texture;
-    room.dispose();
+    const studio = studioScene();
+    const envTexture = pmrem.fromScene(studio.scene, 0.02).texture;
+    studio.dispose();
     pmrem.dispose();
     scene.environment = envTexture;
-    scene.environmentIntensity = 0.85;
+    scene.environmentIntensity = 1;
 
-    // Warm key light, burnt-orange rim from behind.
-    const key = new THREE.DirectionalLight('#ffe6cc', 1.4);
-    key.position.set(3, 4, 6);
-    const rim = new THREE.DirectionalLight('#ff6a1a', 5);
+    // A cream key light from the top soft box, a burnt-orange rim from behind.
+    const key = new THREE.DirectionalLight('#fff1de', 2.2);
+    key.position.set(2, 6, 5);
+    const rim = new THREE.DirectionalLight('#ff7a26', 4);
     rim.position.set(-5, 1.5, -4);
-    const under = new THREE.DirectionalLight('#c2500a', 1.6);
-    under.position.set(2, -5, 1);
-    scene.add(key, rim, under);
+    const fill = new THREE.DirectionalLight('#ffffff', 0.8);
+    fill.position.set(5, -1, 4);
+    scene.add(key, rim, fill);
 
     /* The mark: root (placement) → tilt (pointer, idle sway) → the two halves. */
     const root = new THREE.Group();
@@ -221,35 +261,50 @@ export default function GlassMark({
 
     const originalGeometry = halfGeometry(MARK_ORIGINAL, light);
     const copyGeometry = halfGeometry(MARK_COPY, light);
-    const originalMaterial = new THREE.MeshPhysicalMaterial({
-      color: '#0d0c0b',
-      metalness: 0.1,
-      roughness: 0.14,
-      clearcoat: 1,
-      clearcoatRoughness: 0.04,
-      specularIntensity: 1,
-      envMapIntensity: 1.4,
-    });
-    const copyMaterial = light
+    // The original: clear crystal with a faint warm tint. The copy: burnt-orange glass.
+    // Phones: polished lacquer in the same two colours (no transmission pass).
+    const originalMaterial = light
       ? new THREE.MeshPhysicalMaterial({
-          color: '#a8400a',
-          roughness: 0.18,
+          color: '#1a1714',
+          roughness: 0.12,
           clearcoat: 1,
-          clearcoatRoughness: 0.05,
-          envMapIntensity: 1.2,
+          clearcoatRoughness: 0.03,
+          envMapIntensity: 1.6,
         })
       : new THREE.MeshPhysicalMaterial({
-          color: '#ffb27a',
+          color: '#ffffff',
+          transmission: 1,
+          thickness: DEPTH * 0.9,
+          ior: 1.52,
+          roughness: 0.04,
+          dispersion: 0.35,
+          attenuationColor: new THREE.Color('#e9dccb'),
+          attenuationDistance: 3,
+          clearcoat: 1,
+          clearcoatRoughness: 0.02,
+          specularIntensity: 1,
+          envMapIntensity: 1.2,
+        });
+    const copyMaterial = light
+      ? new THREE.MeshPhysicalMaterial({
+          color: '#c2500a',
+          roughness: 0.14,
+          clearcoat: 1,
+          clearcoatRoughness: 0.04,
+          envMapIntensity: 1.4,
+        })
+      : new THREE.MeshPhysicalMaterial({
+          color: '#ffd2b0',
           transmission: 1,
           thickness: DEPTH,
           ior: 1.5,
-          roughness: 0.1,
-          attenuationColor: new THREE.Color('#c2500a'),
-          attenuationDistance: 0.55,
+          roughness: 0.06,
+          attenuationColor: new THREE.Color('#d2560c'),
+          attenuationDistance: 0.9,
           clearcoat: 1,
-          clearcoatRoughness: 0.03,
+          clearcoatRoughness: 0.02,
           specularIntensity: 1,
-          envMapIntensity: 1.3,
+          envMapIntensity: 1.5,
         });
     const original = new THREE.Mesh(originalGeometry, originalMaterial);
     const copy = new THREE.Mesh(copyGeometry, copyMaterial);
@@ -317,6 +372,7 @@ export default function GlassMark({
         anchor,
         glowRef?.current ?? null,
         Math.min(renderer.getPixelRatio(), 1.5),
+        background,
       );
       // The GPU copy has a fixed size: start a new one when the canvas changed size.
       if (resized) backdropTexture.dispose();
@@ -425,7 +481,7 @@ export default function GlassMark({
       renderer.dispose();
       canvas.remove();
     };
-  }, [anchorRef, glowRef, onFail, showAfterMs]);
+  }, [anchorRef, glowRef, onFail, showAfterMs, background]);
 
   useEffect(() => {
     stillRef.current = reduced;

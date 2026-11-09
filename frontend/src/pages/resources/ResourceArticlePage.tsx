@@ -2,14 +2,15 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { motion, useScroll, useSpring } from 'motion/react';
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { Link, useParams } from 'react-router';
-import { SimilarityWave } from '@/components/motion/SimilarityWave';
 import { PhotoFrame } from '@/components/marketing/PhotoFrame';
-import { CtaBand, Section } from '@/components/marketing/sections';
+import { Section } from '@/components/marketing/sections';
 import { ButtonLink } from '@/components/ui/Button';
-import { Container, Eyebrow } from '@/components/ui/layout';
+import { Container } from '@/components/ui/layout';
+import { CornerBrackets, MonoLabel } from '@/components/ui/specimen';
 import { findResource, RESOURCES } from '@/content/resources';
 import { cn } from '@/lib/cn';
 import { NotFoundPage } from '@/pages/NotFoundPage';
+import { OrangeBand } from '@/pages/solutions/page-kit';
 
 const COVER_SIZE = { width: 1600, height: 1067 } as const;
 
@@ -79,30 +80,25 @@ export function ResourceArticlePage() {
     <>
       <article ref={articleRef}>
         <ReadingProgress target={articleRef} />
-        <header className="relative isolate overflow-hidden bg-night text-cream">
-          <SimilarityWave tone="dark" density="calm" className="-z-10 opacity-50" />
-          <div
-            aria-hidden
-            className="absolute inset-0 -z-10 bg-linear-to-r from-night via-night/85 to-night/40"
-          />
-          <Container className="grid grid-cols-1 items-center gap-10 py-12 sm:py-16 lg:grid-cols-2 lg:gap-16 lg:py-24">
+        <header className="relative isolate overflow-hidden bg-cream">
+          <Container className="grid grid-cols-1 items-center gap-12 py-12 sm:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20 lg:py-24">
             <div>
               <Link
                 to="/resources"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-cream/75 transition-colors hover:text-cream"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-muted transition-colors hover:text-ink"
               >
                 <ArrowLeft aria-hidden className="size-4" /> All guides
               </Link>
-              <Eyebrow tone="dark" className="mt-8">
+              <MonoLabel className="mt-8 block">
                 {resource.category} · {resource.type}
-              </Eyebrow>
-              <h1 className="text-headline mt-5 font-semibold text-balance text-cream">
+              </MonoLabel>
+              <h1 className="mt-5 text-[clamp(2rem,1.2rem+3.2vw,4rem)] leading-[1.02] font-semibold tracking-[-0.045em] text-balance text-ink">
                 {resource.title}
               </h1>
-              <p className="text-lead mt-5 text-pretty text-cream/75">{resource.summary}</p>
-              <p className="mt-6 text-sm text-cream/70">{resource.readMinutes} min read</p>
+              <p className="text-lead mt-6 text-pretty text-muted">{resource.summary}</p>
+              <MonoLabel className="mt-7 block">{resource.readMinutes} min read</MonoLabel>
             </div>
-            <div className="min-w-0">
+            <div className="relative min-w-0">
               <PhotoFrame
                 {...resource.cover}
                 {...COVER_SIZE}
@@ -110,16 +106,17 @@ export function ResourceArticlePage() {
                 priority
                 sizes="(min-width: 1280px) 600px, (min-width: 1024px) 45vw, 100vw"
               />
+              <CornerBrackets className="-inset-3" />
             </div>
           </Container>
         </header>
 
-        <div className="bg-white">
+        <div className="border-t border-line-strong bg-white">
           <Container className="grid gap-12 py-12 sm:py-16 lg:grid-cols-[220px_minmax(0,1fr)_280px] lg:gap-14 lg:py-20">
             <nav aria-label="On this page" className="hidden lg:block">
               <div className="sticky top-28">
-                <p className="text-[13px] font-medium text-ink">On this page</p>
-                <ul className="mt-4 space-y-1 border-l border-line">
+                <MonoLabel>On this page</MonoLabel>
+                <ul className="mt-4 space-y-1 border-l border-line-strong">
                   {resource.sections.map((section) => {
                     const id = slugify(section.heading);
                     const current = active === id;
@@ -151,7 +148,9 @@ export function ResourceArticlePage() {
                   id={slugify(section.heading)}
                   className="scroll-mt-28 not-first:mt-14"
                 >
-                  <h2 className="text-headline font-semibold text-balance">{section.heading}</h2>
+                  <h2 className="text-[clamp(1.75rem,1.3rem+1.6vw,2.5rem)] leading-[1.08] font-semibold tracking-[-0.04em] text-balance">
+                    {section.heading}
+                  </h2>
                   {section.paragraphs.map((paragraph) => (
                     <p
                       key={paragraph.slice(0, 40)}
@@ -180,7 +179,7 @@ export function ResourceArticlePage() {
               ))}
               <ul
                 aria-label="Topics"
-                className="mt-16 flex flex-wrap gap-2 border-t border-line pt-6"
+                className="mt-16 flex flex-wrap gap-2 border-t border-line-strong pt-6"
               >
                 {resource.tags.map((tag) => (
                   <li
@@ -194,14 +193,9 @@ export function ResourceArticlePage() {
             </div>
 
             <aside>
-              <div className="relative isolate overflow-hidden rounded-2xl bg-night p-6 text-cream shadow-card lg:sticky lg:top-28">
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 [mask-image:linear-gradient(to_top,black,transparent)]"
-                >
-                  <SimilarityWave tone="dark" density="calm" className="opacity-60" />
-                </div>
-                <p className="text-[1.0625rem] font-semibold tracking-[-0.01em]">
+              <div className="relative rounded-lg bg-night p-6 text-cream lg:sticky lg:top-28">
+                <MonoLabel tone="dark">Next step</MonoLabel>
+                <p className="mt-3 text-[1.25rem] leading-snug font-semibold tracking-[-0.025em]">
                   See this in Similo
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-cream/75">
@@ -210,15 +204,16 @@ export function ResourceArticlePage() {
                 <ButtonLink to="/contact" size="sm" className="mt-5 w-full">
                   Request a demo
                 </ButtonLink>
-                <div className="h-16" aria-hidden />
               </div>
             </aside>
           </Container>
         </div>
       </article>
 
-      <Section>
-        <h2 className="text-headline font-semibold">Keep reading</h2>
+      <Section scaffold>
+        <h2 className="text-[clamp(2.125rem,1.1rem+3.6vw,4.5rem)] leading-[1] font-semibold tracking-[-0.045em]">
+          Keep reading
+        </h2>
         <ul className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
           {related.map((item) => (
             <li key={item.slug}>
@@ -230,7 +225,7 @@ export function ResourceArticlePage() {
                   sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 100vw"
                   className="transition-transform duration-300 ease-out group-hover:-translate-y-1 motion-reduce:group-hover:translate-y-0"
                 />
-                <p className="mt-5 text-[13px] font-medium text-accent-ink">{item.category}</p>
+                <MonoLabel className="mt-5 block text-accent-ink">{item.category}</MonoLabel>
                 <p className="mt-2 leading-snug font-semibold group-hover:underline group-hover:decoration-line-strong group-hover:underline-offset-4">
                   {item.title}
                 </p>
@@ -247,14 +242,11 @@ export function ResourceArticlePage() {
         </ul>
       </Section>
 
-      <CtaBand
-        eyebrow="Put it into practice"
-        title={
-          <>
-            From reading to <em className="text-accent-soft">watching.</em>
-          </>
-        }
+      <OrangeBand
+        label="Put it into practice"
+        title="From reading to watching."
         description="Similo applies these methods to your own brands, with every alert explained in plain words."
+        secondary={null}
       />
     </>
   );

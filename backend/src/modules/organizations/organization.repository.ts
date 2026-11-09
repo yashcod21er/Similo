@@ -28,6 +28,8 @@ export interface OrganizationRecord {
 export interface OrganizationRepository {
   create(data: { name: string; createdBy: string }, tx?: Tx): Promise<OrganizationRecord>;
   findById(id: string): Promise<OrganizationRecord | null>;
+  /** Used by the internal scheduled monitor; each tenant's brands are read separately by org id. */
+  listIdsForScheduledWork?(): Promise<string[]>;
   rename(id: string, name: string): Promise<void>;
 }
 
@@ -48,6 +50,12 @@ export const mongoOrganizationRepository: OrganizationRepository = {
   async findById(id) {
     const doc = await OrganizationModel.findById(id).lean<OrganizationDocument>();
     return doc ? toOrganization(doc) : null;
+  },
+  async listIdsForScheduledWork() {
+    const docs = await OrganizationModel.find({})
+      .select('_id')
+      .lean<Array<Pick<OrganizationDocument, '_id'>>>();
+    return docs.map(({ _id }) => toId(_id));
   },
   async rename(id, name) {
     await OrganizationModel.updateOne({ _id: id }, { $set: { name } });

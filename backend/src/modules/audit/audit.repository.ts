@@ -24,7 +24,8 @@ export type AuditAction =
   | 'brand.trademark_removed'
   | 'brand.logo_uploaded'
   | 'brand.logo_removed'
-  | 'brand.monitoring_updated';
+  | 'brand.monitoring_updated'
+  | 'finding.status_updated';
 
 export interface AuditActor {
   userId: string;
@@ -33,7 +34,7 @@ export interface AuditActor {
 }
 
 export interface AuditTarget {
-  type: 'user' | 'invite' | 'organization' | 'brand';
+  type: 'user' | 'invite' | 'organization' | 'brand' | 'finding';
   id: string;
   label: string;
 }

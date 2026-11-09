@@ -16,8 +16,17 @@ interface PhotoProps {
   sizes?: string;
   /** Above-the-fold photos load immediately; everything else loads lazily. */
   priority?: boolean;
+  /**
+   * v6 house look: `duotone` is night, burnt orange and cream with film grain; `halftone` is the
+   * same with a printed dot screen. Needs `PhotoFilters` (rendered once by `SiteLayout`); without
+   * it the photo simply shows plain. Default `none`, so a screenshot of the product stays honest;
+   * `PhotoFrame` (marketing pages) defaults to `duotone`.
+   */
+  treatment?: PhotoTreatment;
   className?: string;
 }
+
+export type PhotoTreatment = 'duotone' | 'halftone' | 'none';
 
 /** A real photograph, served as local WebP in two widths. */
 export function Photo({
@@ -27,6 +36,7 @@ export function Photo({
   height,
   sizes = '(min-width: 1024px) 50vw, 100vw',
   priority = false,
+  treatment = 'none',
   className,
 }: PhotoProps) {
   return (
@@ -40,7 +50,12 @@ export function Photo({
       loading={priority ? 'eager' : 'lazy'}
       fetchPriority={priority ? 'high' : 'auto'}
       decoding="async"
-      className={cn('h-full w-full object-cover', className)}
+      className={cn(
+        'h-full w-full object-cover',
+        treatment === 'duotone' && 'photo-duotone',
+        treatment === 'halftone' && 'photo-halftone',
+        className,
+      )}
     />
   );
 }

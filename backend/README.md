@@ -10,7 +10,8 @@ From the repository root:
 
 ```bash
 cp backend/.env.example backend/.env    # once (Windows: copy); then set MONGODB_URI. Never commit .env
-npm run dev:backend                     # run only the backend (npm run dev starts all three parts)
+npm run dev:backend                     # run only the API
+npm run dev:worker                      # run only the Phase 5 monitoring worker (needs Redis + MongoDB)
 npm test --workspace @similo/backend    # its tests (Vitest + Supertest)
 npm run seed:demo                       # sample organisation with one user per role
 ```
@@ -66,3 +67,17 @@ clean-up and `logo-sniff.ts`, which checks uploaded logos by their first bytes).
   and their type is decided by the file's bytes, never by its name.
 - The design is explained in [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md). Coding rules are
   in [docs/CONVENTIONS.md](../docs/CONVENTIONS.md).
+
+## Phase 5: domain monitoring
+
+Set `REDIS_URL` in `backend/.env` and run `npm run dev`; this starts the API and the separate
+worker. `DOMAIN_DISCOVERY_SOURCE=fixtures` is the development default and emits clearly labelled
+`.example` findings. Use `DOMAIN_DISCOVERY_SOURCE=crtsh` to search Certificate Transparency for
+recent names matching brand names, keywords and official domains. Production refuses fixture
+mode. `DOMAIN_SCAN_INTERVAL_HOURS` controls the scheduled sweep (1–168 hours; default 24).
+
+Analysts, Owners and Admins can queue a scan from a brand’s Monitoring tab. Findings appear at
+`/app/findings`; status changes are available to those same roles and written to the audit log.
+The worker uses the IANA RDAP bootstrap only to enrich discovered candidates. Certificate
+Transparency is incomplete and delayed, and a score is a name-similarity heuristic, so each
+finding is a lead for a person to review rather than a verdict.

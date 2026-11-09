@@ -190,12 +190,23 @@ export function ClassGrid({ shown }: { shown: boolean }) {
 const STEP_COUNT = 10;
 
 /** The Trademark page's hero scene. */
-export function TrademarkScene() {
+export function TrademarkScene({
+  tone = 'dark',
+  index,
+}: {
+  /** The band the scene sits on (sets the caption colour; the window stays dark). */
+  tone?: 'light' | 'dark';
+  index?: string;
+} = {}) {
   const { ref, step } = useSceneStep(STEP_COUNT, 1150);
   const signals = step >= 3 ? Math.min(step - 2, 3) : 0;
   const stage = step >= 8 ? 2 : step >= 7 ? 1 : 0;
   return (
-    <SceneFigure label="Illustrative example: a new entry in a trademark journal compared with your registered mark, with separate sounds-alike and looks-alike scores and a same-class check, and an opposition deadline counting down.">
+    <SceneFigure
+      tone={tone}
+      {...(index ? { index } : {})}
+      label="Illustrative example: a new entry in a trademark journal compared with your registered mark, with separate sounds-alike and looks-alike scores and a same-class check, and an opposition deadline counting down."
+    >
       <AppWindow tone="dark" title="Trademark watch" url="app.similo.example/trademarks">
         <div ref={ref} className={cn(WINDOW_BODY, 'space-y-4 p-4 @lg:p-5')}>
           <Show when={step >= 2} y={6}>

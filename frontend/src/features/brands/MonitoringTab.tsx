@@ -1,6 +1,9 @@
-import { Info } from 'lucide-react';
+import { Info, Radar } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/Button';
 import { FormAlert, SubmitButton } from '@/components/ui/form';
+import { useCan } from '@/features/auth/api';
+import { useRequestDomainScan } from '@/features/findings/api';
 import { formatDateTime } from '@/lib/format';
 import { useSaveMonitoring, type Brand, type MonitoringInput } from './api';
 import { SENSITIVITY_OPTIONS } from './rules';
@@ -18,9 +21,12 @@ function toValues(brand: Brand): MonitoringInput {
   };
 }
 
-/** What Similo should watch for and how closely. Stored now; used when monitoring starts. */
+/** What Similo should watch for and how closely. */
 export function MonitoringTab({ brand, canManage }: { brand: Brand; canManage: boolean }) {
   const save = useSaveMonitoring(brand.id);
+  const scan = useRequestDomainScan(brand.id);
+  const can = useCan();
+  const canScan = can('findings:update');
   const form = useForm<MonitoringInput>({ values: toValues(brand) });
   const { register, handleSubmit, reset } = form;
   const { isDirty } = form.formState;
@@ -36,9 +42,10 @@ export function MonitoringTab({ brand, canManage }: { brand: Brand; canManage: b
         <Info aria-hidden className="mt-0.5 size-5 shrink-0 text-ink" />
         <p>
           <strong className="font-semibold">
-            Saved settings are used when monitoring starts in Phase 5 — nothing is scanned yet.
+            Domain scans are available when the monitoring queue is configured. App and trademark
+            settings are saved for later phases.
           </strong>{' '}
-          You can change them whenever you like.
+          A scan checks the configured discovery source and adds possible matches to Findings.
         </p>
       </div>
 
@@ -60,7 +67,7 @@ export function MonitoringTab({ brand, canManage }: { brand: Brand; canManage: b
           <div className="grid gap-3">
             <Switch
               label="Lookalike websites"
-              description="Newly registered website addresses that look like this brand's name or domains."
+              description="Website names in Certificate Transparency data that look like this brand's name or domains. Coverage is incomplete and delayed."
               disabled={readOnly}
               {...register('domains')}
             />
@@ -130,6 +137,39 @@ export function MonitoringTab({ brand, canManage }: { brand: Brand; canManage: b
         )}
         {save.isError && <FormAlert>{save.error.message}</FormAlert>}
       </form>
+
+      <Card
+        title="Check this brand now"
+        description="Run an on-demand domain check. Matching domains appear in Findings for a person to review."
+      >
+        {canScan ? (
+          <div className="space-y-3">
+            <Button
+              variant="dark"
+              disabled={scan.isPending || brand.status !== 'active' || !brand.monitoring.domains}
+              onClick={() => scan.mutate()}
+            >
+              <Radar aria-hidden className="size-4" />
+              {scan.isPending ? 'Queueing scan…' : 'Scan this brand now'}
+            </Button>
+            {(brand.status !== 'active' || !brand.monitoring.domains) && (
+              <p className="text-[13.5px] text-muted">
+                Activate the brand and turn on domain monitoring to scan it.
+              </p>
+            )}
+            {scan.isSuccess && (
+              <FormAlert tone="success">
+                Scan queued. Findings will appear after the monitoring worker completes it.
+              </FormAlert>
+            )}
+            {scan.isError && <FormAlert>{scan.error.message}</FormAlert>}
+          </div>
+        ) : (
+          <p className="text-[14px] text-muted">
+            Your role can view findings but cannot start a scan.
+          </p>
+        )}
+      </Card>
     </div>
   );
 }

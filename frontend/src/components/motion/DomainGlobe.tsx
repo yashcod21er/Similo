@@ -11,12 +11,18 @@ import { canUseWebGL } from './webgl';
  * - Loaded lazily (only the home page downloads three.js).
  * - Pauses when off-screen or in a hidden tab; one still frame with reduced motion.
  * - If WebGL is unavailable it calls `onFail`, so the page can show a 2D fallback.
+ * - `tone="light"` (v6) draws it like an engraving for a cream band: ink points, burnt-orange
+ *   copycats and arcs, a cream core, normal blending instead of a glow.
  */
 
 const RADIUS = 1.6;
 const CREAM = new THREE.Color('#f6f0e6');
 const ORANGE = new THREE.Color('#ee8a45');
 const BRAND = new THREE.Color('#ffb070');
+const INK = new THREE.Color('#15130f');
+const ACCENT = new THREE.Color('#c2500a');
+/** The colour of a light band (`--color-cream`), so the core hides the far side. */
+const CREAM_BAND = 0xf6f0e6;
 
 const POINT_VERTEX = /* glsl */ `
   uniform float uTime;
@@ -100,9 +106,12 @@ function seeded(seed: number) {
 
 export default function DomainGlobe({
   className,
+  tone = 'dark',
   onFail,
 }: {
   className?: string;
+  /** `dark` glows on a night band (default); `light` is an ink engraving on cream. */
+  tone?: 'dark' | 'light';
   onFail?: () => void;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -133,6 +142,10 @@ export default function DomainGlobe({
     }
 
     const small = window.innerWidth < 768;
+    const light = tone === 'light';
+    const blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
+    const pointBase = light ? INK : CREAM;
+    const pointFlare = light ? ACCENT : ORANGE;
     const random = seeded(7);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, small ? 1.5 : 2));
     renderer.setClearColor(0x000000, 0);
@@ -171,18 +184,18 @@ export default function DomainGlobe({
       uniforms: {
         uTime: { value: 0 },
         uPixelRatio: { value: renderer.getPixelRatio() },
-        uCream: { value: CREAM },
-        uOrange: { value: ORANGE },
+        uCream: { value: pointBase },
+        uOrange: { value: pointFlare },
       },
       transparent: true,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      blending,
     });
     globe.add(new THREE.Points(pointGeometry, pointMaterial));
 
     /* A dark core hides the far side, so it reads as a solid globe. */
     const coreGeometry = new THREE.SphereGeometry(RADIUS * 0.985, 64, 64);
-    const coreMaterial = new THREE.MeshBasicMaterial({ color: 0x12110f });
+    const coreMaterial = new THREE.MeshBasicMaterial({ color: light ? CREAM_BAND : 0x12110f });
     const core = new THREE.Mesh(coreGeometry, coreMaterial);
     core.renderOrder = -1;
     globe.add(core);
@@ -197,21 +210,22 @@ export default function DomainGlobe({
       depthWrite: false,
       blending: THREE.AdditiveBlending,
     });
-    globe.add(new THREE.Mesh(rimGeometry, rimMaterial));
+    // The glowing atmosphere belongs to the night version only.
+    if (!light) globe.add(new THREE.Mesh(rimGeometry, rimMaterial));
 
     /* Your brand's point and the arcs that travel to each copycat. */
     const brand = new THREE.Vector3(0.55, 0.6, 1).normalize().multiplyScalar(RADIUS);
     const brandGeometry = new THREE.SphereGeometry(0.045, 24, 24);
-    const brandMaterial = new THREE.MeshBasicMaterial({ color: BRAND });
+    const brandMaterial = new THREE.MeshBasicMaterial({ color: light ? ACCENT : BRAND });
     const brandDot = new THREE.Mesh(brandGeometry, brandMaterial);
     brandDot.position.copy(brand);
     globe.add(brandDot);
     const haloGeometry = new THREE.SphereGeometry(0.13, 24, 24);
     const haloMaterial = new THREE.MeshBasicMaterial({
-      color: ORANGE,
+      color: light ? ACCENT : ORANGE,
       transparent: true,
-      opacity: 0.25,
-      blending: THREE.AdditiveBlending,
+      opacity: light ? 0.18 : 0.25,
+      blending,
       depthWrite: false,
     });
     const halo = new THREE.Mesh(haloGeometry, haloMaterial);
@@ -226,10 +240,10 @@ export default function DomainGlobe({
       const curve = new THREE.QuadraticBezierCurve3(brand, mid, end);
       const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(SEGMENTS));
       const material = new THREE.LineBasicMaterial({
-        color: ORANGE,
+        color: light ? ACCENT : ORANGE,
         transparent: true,
         opacity: 0,
-        blending: THREE.AdditiveBlending,
+        blending,
         depthWrite: false,
       });
       const line = new THREE.Line(geometry, material);
@@ -321,7 +335,7 @@ export default function DomainGlobe({
       renderer.dispose();
       renderer.domElement.remove();
     };
-  }, [onFail]);
+  }, [onFail, tone]);
 
   useEffect(() => {
     activeRef.current = !reduced && visible && inView;

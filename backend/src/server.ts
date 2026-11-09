@@ -21,8 +21,15 @@ import {
 import { createBrandService } from './modules/brands/brand.service.js';
 import { mongoDemoRequestRepository } from './modules/demo-requests/demo-request.repository.js';
 import { createDemoRequestService } from './modules/demo-requests/demo-request.service.js';
-import { createAiServiceCheck, createDatabaseCheck } from './modules/health/health.checks.js';
+import {
+  createAiServiceCheck,
+  createDatabaseCheck,
+  createMonitoringQueueCheck,
+} from './modules/health/health.checks.js';
 import { createHealthService } from './modules/health/health.service.js';
+import { mongoFindingRepository } from './modules/findings/finding.repository.js';
+import { createFindingService } from './modules/findings/finding.service.js';
+import { createMonitoringQueue } from './modules/monitoring/monitoring.queue.js';
 import {
   mongoInviteRepository,
   mongoMembershipRepository,
@@ -62,6 +69,9 @@ async function main(): Promise<void> {
     baseUrl: env.AI_SERVICE_URL,
     timeoutMs: env.AI_SERVICE_TIMEOUT_MS,
   });
+  const monitoringQueue = env.REDIS_URL ? createMonitoringQueue(env.REDIS_URL, logger) : null;
+  if (!monitoringQueue)
+    logger.warn('REDIS_URL is not set; manual and scheduled domain scans are disabled');
 
   const healthService = createHealthService([
     createDatabaseCheck({
@@ -71,6 +81,11 @@ async function main(): Promise<void> {
       logger,
     }),
     createAiServiceCheck({ client: aiServiceClient, logger }),
+    createMonitoringQueueCheck({
+      configured: Boolean(monitoringQueue),
+      ping: () => monitoringQueue?.ping() ?? Promise.resolve(),
+      logger,
+    }),
   ]);
 
   const demoRequestService = createDemoRequestService({
@@ -103,6 +118,10 @@ async function main(): Promise<void> {
     runInTransaction: runInMongoTransaction,
     now: () => new Date(),
   });
+  const findingService = createFindingService({
+    findings: mongoFindingRepository,
+    audit: auth.auditService,
+  });
 
   const app = createApp({
     env,
@@ -111,6 +130,8 @@ async function main(): Promise<void> {
     demoRequestService,
     auth,
     brandService,
+    findingService,
+    monitoringQueue,
     isDatabaseReady: isDatabaseConnected,
   });
 
@@ -132,14 +153,18 @@ async function main(): Promise<void> {
     process.exit(1);
   });
 
-  registerShutdownHandlers(server, logger);
+  registerShutdownHandlers(server, logger, monitoringQueue);
 }
 
 /**
  * Graceful shutdown: stop accepting new requests, let in-flight requests
  * finish, close the database connection, then exit.
  */
-function registerShutdownHandlers(server: Server, logger: Logger): void {
+function registerShutdownHandlers(
+  server: Server,
+  logger: Logger,
+  monitoringQueue: ReturnType<typeof createMonitoringQueue> | null,
+): void {
   let shuttingDown = false;
 
   const shutdown = (signal: string) => {
@@ -154,6 +179,9 @@ function registerShutdownHandlers(server: Server, logger: Logger): void {
     forceExit.unref();
 
     server.close(async () => {
+      await monitoringQueue
+        ?.close()
+        .catch((err) => logger.error({ err }, 'Error closing monitoring queue'));
       await disconnectFromDatabase().catch((err) => logger.error({ err }, 'Error closing MongoDB'));
       logger.info('Shutdown complete');
       process.exit(0);

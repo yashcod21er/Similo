@@ -65,8 +65,8 @@ export function OverviewPage() {
     },
     {
       title: 'Watch for lookalike websites',
-      detail: 'Similo will check newly registered website names against your brands.',
-      soon: 'Coming soon',
+      detail: 'Run a domain scan from a brand’s Monitoring tab, then review possible matches here.',
+      action: { to: '/app/findings', label: 'View findings' },
     },
   ];
 

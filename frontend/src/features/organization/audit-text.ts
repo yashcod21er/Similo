@@ -115,6 +115,8 @@ export function describeAuditEvent(event: AuditEvent): string {
       return `Removed ${file} from ${brand}`;
     case 'brand.monitoring_updated':
       return `Changed the monitoring settings of ${brand}`;
+    case 'finding.status_updated':
+      return `Updated ${named('domain', target)} for ${brand} to ${String(meta.to ?? 'a new status')}`;
     default:
       return event.action;
   }

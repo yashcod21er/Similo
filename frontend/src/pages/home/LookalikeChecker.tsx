@@ -1,6 +1,7 @@
 import { ArrowRight, Globe, Search, Smartphone, Stamp } from 'lucide-react';
 import { useDeferredValue, useId, useMemo, useState } from 'react';
 import { Link } from 'react-router';
+import { MonoLabel } from '@/components/ui/specimen';
 import { cn } from '@/lib/cn';
 import { diffParts, exampleImitations, generateLookalikes, type Technique } from '@/lib/lookalikes';
 
@@ -23,8 +24,8 @@ const SAMPLES = ['acme', 'contoso', 'fabrikam'];
  * Everything is calculated in the browser by `lib/lookalikes.ts`; nothing is
  * looked up or sent anywhere, and the panel says so.
  *
- * v4: a two-layer instrument — a dark input console on the left, a white result sheet on the
- * right — with layered shadows. Result rows re-enter (opacity + transform) when the name
+ * A two-part instrument: a dark input console on the left, a white result sheet on the right
+ * (v6: framed by the section's corner brackets instead of a second sheet). Result rows re-enter (opacity + transform) when the name
  * changes; with reduced motion they simply appear.
  */
 export function LookalikeChecker() {
@@ -46,12 +47,7 @@ export function LookalikeChecker() {
 
   return (
     <div className="relative">
-      {/* A second sheet behind the tool gives it physical depth. */}
-      <div
-        aria-hidden
-        className="absolute inset-x-6 -bottom-3 top-6 rounded-[1.75rem] bg-cream-deep ring-1 ring-line sm:inset-x-10 sm:-bottom-5"
-      />
-      <div className="relative grid grid-cols-1 overflow-hidden rounded-[1.75rem] bg-white shadow-window ring-1 ring-ink/[0.07] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.45fr)]">
+      <div className="relative grid grid-cols-1 overflow-hidden rounded-2xl bg-white shadow-window ring-1 ring-ink/[0.07] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.45fr)]">
         {/* ---------- Input console ---------- */}
         <div className="relative flex flex-col overflow-hidden bg-night p-6 text-cream sm:p-8 lg:p-10">
           <form role="search" onSubmit={(event) => event.preventDefault()}>
@@ -143,7 +139,7 @@ export function LookalikeChecker() {
               {results.length} ways someone could imitate{' '}
               <span className="font-mono text-accent-ink">{brand}.com</span>
             </p>
-            <span className="text-[12px] font-medium text-muted">Possible, not live results</span>
+            <MonoLabel>Possible, not live results</MonoLabel>
           </div>
           <p className="mt-2 text-[15px] text-muted">
             Each one is built the way copycats really do it. The changed part is highlighted.

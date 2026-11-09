@@ -1,7 +1,7 @@
 import { Accordion, type AccordionItem } from '@/components/ui/Accordion';
-import { SectionHeading } from '@/components/ui/layout';
 import { Reveal } from '@/components/ui/Reveal';
 import type { ReactNode } from 'react';
+import { SectionHead } from './solutions/page-kit';
 
 /**
  * FAQ block shared by the "How it works" pages: heading on the left (sticky on
@@ -19,7 +19,7 @@ export function FaqBlock({
   return (
     <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.9fr_1.4fr] lg:gap-20">
       <div className="lg:sticky lg:top-28 lg:self-start">
-        <SectionHeading eyebrow="Questions" title={title} description={description} />
+        <SectionHead label="Questions" title={title} description={description} />
       </div>
       <Reveal delay={0.05}>
         <Accordion items={items} defaultOpen={null} />

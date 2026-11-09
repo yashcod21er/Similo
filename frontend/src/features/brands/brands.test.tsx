@@ -769,7 +769,7 @@ describe('Monitoring tab', () => {
 
     expect(
       await screen.findByText(
-        'Saved settings are used when monitoring starts in Phase 5 — nothing is scanned yet.',
+        'Domain scans are available when the monitoring queue is configured. App and trademark settings are saved for later phases.',
       ),
     ).toBeInTheDocument();
     await userEvent.click(screen.getByRole('switch', { name: /Copycat apps/ }));

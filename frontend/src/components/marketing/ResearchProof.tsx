@@ -38,9 +38,9 @@ export function ResearchProof({ className }: { className?: string }) {
             <SplitReveal
               as="h2"
               id="research-heading"
-              className="text-statement serif-em mt-5 font-semibold text-balance text-cream"
+              className="text-statement mt-6 font-semibold text-balance text-cream"
             >
-              What the <em>research</em> says about copycats.
+              What the research says about copycats.
             </SplitReveal>
           </div>
           <Reveal delay={0.25}>
@@ -52,10 +52,13 @@ export function ResearchProof({ className }: { className?: string }) {
         </div>
 
         <RevealGroup className="mt-14 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4 lg:gap-x-0 lg:gap-y-0">
-          {RESEARCH_FIGURES.map((figure) => (
+          {RESEARCH_FIGURES.map((figure, index) => (
             <RevealItem key={figure.id} className="lg:px-7 lg:first:pl-0 lg:last:pr-0">
               <figure className="flex h-full flex-col border-t border-cream/20 pt-6 lg:border-t-0 lg:border-l lg:pt-1 lg:pl-7 lg:first:border-l-0 lg:first:pl-0">
-                <p className="text-[clamp(2.375rem,1.4rem+1.9vw,2.875rem)] leading-none font-semibold tracking-[-0.03em] text-cream">
+                <p aria-hidden className="text-micro mb-5 text-cream/65">
+                  Fig. {String(index + 1).padStart(2, '0')}
+                </p>
+                <p className="text-[clamp(2.75rem,1.6rem+2.4vw,3.75rem)] leading-none font-semibold tracking-[-0.045em] text-cream">
                   <CountUp
                     value={figure.value}
                     {...(figure.prefix ? { prefix: figure.prefix } : {})}

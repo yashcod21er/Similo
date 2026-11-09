@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Cursor } from '@/components/site/Cursor';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Preloader } from '@/components/site/Preloader';
 import { introDelay, introPlays, resetIntroForTests } from './intro';
 
@@ -19,10 +18,6 @@ function stubMedia(matching: string[]) {
 beforeEach(() => {
   window.sessionStorage.clear();
   resetIntroForTests();
-});
-
-afterEach(() => {
-  document.documentElement.classList.remove('has-custom-cursor');
 });
 
 describe('intro', () => {
@@ -45,28 +40,5 @@ describe('intro', () => {
     stubMedia([]);
     render(<Preloader />);
     expect(screen.getByTestId('intro')).toHaveAttribute('aria-hidden', 'true');
-  });
-});
-
-describe('Cursor', () => {
-  it('is not rendered on touch screens', () => {
-    stubMedia([]); // (pointer: fine) does not match
-    const { container } = render(<Cursor />);
-    expect(container).toBeEmptyDOMElement();
-    expect(document.documentElement).not.toHaveClass('has-custom-cursor');
-  });
-
-  it('is not rendered with reduced motion', () => {
-    stubMedia(['pointer: fine', 'reduce']);
-    const { container } = render(<Cursor />);
-    expect(container).toBeEmptyDOMElement();
-  });
-
-  it('hides the native cursor only while it is active', () => {
-    stubMedia(['pointer: fine']);
-    const { unmount } = render(<Cursor />);
-    expect(document.documentElement).toHaveClass('has-custom-cursor');
-    unmount();
-    expect(document.documentElement).not.toHaveClass('has-custom-cursor');
   });
 });

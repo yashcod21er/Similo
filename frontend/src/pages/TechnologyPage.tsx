@@ -1,39 +1,26 @@
-import {
-  Binary,
-  Database,
-  FileScan,
-  Gauge,
-  HardDrive,
-  Image as ImageIcon,
-  Layers,
-  type LucideIcon,
-  MessageSquareText,
-  Monitor,
-  Network,
-  Server,
-  Workflow,
-} from 'lucide-react';
 import { PhotoFrame } from '@/components/marketing/PhotoFrame';
-import { CtaBand, Section, SplitHero } from '@/components/marketing/sections';
-import { Eyebrow, SectionHeading } from '@/components/ui/layout';
-import { Reveal } from '@/components/ui/Reveal';
-import {
-  HowComparePanel,
-  HowDecidePanel,
-  HowExplainPanel,
-  HowScorePanel,
-  HowSourcesPanel,
-} from '@/components/visuals/how';
-import { ScoreScene } from '@/components/visuals/score';
+import { Section } from '@/components/marketing/sections';
+import { StampSlam } from '@/components/scenes';
+import { MonoLabel } from '@/components/ui/specimen';
+import { Reveal, RevealGroup, RevealItem } from '@/components/ui/Reveal';
+import { AssistantScene } from '@/components/visuals/assistant';
+import { NameLoupeExhibit } from '@/components/visuals/exhibits';
 import { FaqBlock } from './platform-faq';
-import { StoryBand, type StoryItem } from './solutions/page-kit';
+import {
+  FigNote,
+  OrangeBand,
+  PageHero,
+  SectionHead,
+  StepRows,
+  UnderTheHood,
+  type Step,
+} from './solutions/page-kit';
 import { HowWeScore } from './technology-visuals';
 
 /* ----------------------------------------------------------------- Data */
 
 interface Check {
   id: string;
-  icon: LucideIcon;
   name: string;
   title: string;
   plain: string;
@@ -44,7 +31,6 @@ interface Check {
 const CHECKS: Check[] = [
   {
     id: 'names',
-    icon: Binary,
     name: 'Names',
     title: 'Catches names that look or sound like yours.',
     plain:
@@ -59,7 +45,6 @@ const CHECKS: Check[] = [
   },
   {
     id: 'images',
-    icon: ImageIcon,
     name: 'Logos and icons',
     title: 'Spots copied logos and app icons.',
     plain:
@@ -73,7 +58,6 @@ const CHECKS: Check[] = [
   },
   {
     id: 'documents',
-    icon: FileScan,
     name: 'Documents',
     title: 'Reads trademark journals for you.',
     plain:
@@ -87,7 +71,6 @@ const CHECKS: Check[] = [
   },
   {
     id: 'registration',
-    icon: Network,
     name: 'Registration data',
     title: 'Finds out when a site was set up.',
     plain:
@@ -101,7 +84,6 @@ const CHECKS: Check[] = [
   },
   {
     id: 'score',
-    icon: Gauge,
     name: 'Risk score',
     title: 'Adds everything up in the open.',
     plain:
@@ -115,7 +97,6 @@ const CHECKS: Check[] = [
   },
   {
     id: 'assistant',
-    icon: MessageSquareText,
     name: 'Assistant',
     title: 'Answers questions with sources.',
     plain:
@@ -130,39 +111,21 @@ const CHECKS: Check[] = [
   },
 ];
 
-const STACK: { icon: LucideIcon; name: string; job: string; tech: string }[] = [
+const STACK: { name: string; job: string; tech: string }[] = [
+  { name: 'Web app', job: 'What your team uses every day', tech: 'React, TypeScript' },
+  { name: 'API', job: 'Checks permissions and serves data', tech: 'Node.js, Express' },
   {
-    icon: Monitor,
-    name: 'Web app',
-    job: 'What your team uses every day',
-    tech: 'React, TypeScript',
-  },
-  {
-    icon: Server,
-    name: 'API',
-    job: 'Checks permissions and serves data',
-    tech: 'Node.js, Express',
-  },
-  {
-    icon: Workflow,
     name: 'Background jobs',
     job: 'Runs long checks without slowing the app',
     tech: 'Redis, BullMQ',
   },
+  { name: 'AI service', job: 'Name, image and document checks', tech: 'Python, FastAPI' },
   {
-    icon: Layers,
-    name: 'AI service',
-    job: 'Name, image and document checks',
-    tech: 'Python, FastAPI',
-  },
-  {
-    icon: Database,
     name: 'Database and search',
     job: 'Records and the assistant’s search index',
     tech: 'MongoDB Atlas, Vector Search',
   },
   {
-    icon: HardDrive,
     name: 'Evidence storage',
     job: 'Screenshots and files, with fingerprints',
     tech: 'S3-compatible storage',
@@ -187,46 +150,31 @@ const FAQ = [
   },
 ];
 
-const STORY_ITEMS: StoryItem[] = [
+const STEPS: Step[] = [
   {
-    label: 'Collect',
-    title: 'Only from sources that are really switched on.',
-    description:
-      'Similo collects newly registered websites, app store listings and trademark filings from approved sources. A source that is not set up is never shown as active.',
-    detail: 'Under the hood: scheduled collectors, de-duplication',
-    visual: <HowSourcesPanel />,
+    title: 'Collect',
+    text: 'Similo collects newly registered websites, app store listings and trademark filings from approved sources. A source that is not set up is never shown as active.',
+    hood: 'Scheduled collectors, de-duplication.',
   },
   {
-    label: 'Compare',
-    title: 'A separate check for names, logos and documents.',
-    description:
-      'Each new name, logo and page is compared with your brand: how it is spelled, how it sounds and how it looks. Every check gives its own score.',
-    detail: 'Under the hood: edit distance, perceptual hashes, embeddings, OCR',
-    visual: <HowComparePanel />,
+    title: 'Compare',
+    text: 'Each new name, logo and page is compared with your brand: how it is spelled, how it sounds and how it looks. Every check gives its own score.',
+    hood: 'Edit distance, perceptual hashes, embeddings, OCR.',
   },
   {
-    label: 'Score',
-    title: 'Four named scores, weighted in the open.',
-    description:
-      'The scores are weighted and added into a priority. You can see the weights and change them.',
-    detail: 'Under the hood: configurable weights, versioned rules',
-    visual: <HowScorePanel />,
+    title: 'Score',
+    text: 'The scores are weighted and added into a priority. You can see the weights and change them.',
+    hood: 'Configurable weights, versioned rules.',
   },
   {
-    label: 'Explain',
-    title: 'The reasons, in plain words.',
-    description:
-      'Every alert lists why it was raised, with a code stored beside each reason so it can always be checked later.',
-    detail: 'Under the hood: reason codes stored with every alert',
-    visual: <HowExplainPanel />,
+    title: 'Explain',
+    text: 'Every alert lists why it was raised, with a code stored beside each reason so it can always be checked later.',
+    hood: 'Reason codes stored with every alert.',
   },
   {
-    label: 'You decide',
-    title: 'A person always decides.',
-    description:
-      'Your team reviews the evidence and chooses what happens. Scores support decisions. They are not legal findings.',
-    detail: 'Under the hood: roles, approvals, audit log',
-    visual: <HowDecidePanel />,
+    title: 'You decide',
+    text: 'Your team reviews the evidence and chooses what happens. Scores support decisions. They are not legal findings.',
+    hood: 'Roles, approvals, audit log.',
   },
 ];
 
@@ -235,83 +183,99 @@ const STORY_ITEMS: StoryItem[] = [
 export function TechnologyPage() {
   return (
     <>
-      <SplitHero
-        eyebrow="How it works"
+      <PageHero
+        tone="dark"
+        label="How it works"
         title={
           <>
-            AI that <em className="text-accent-soft">shows its working.</em>
+            AI that <em>shows its working.</em>
           </>
         }
-        description="Similo uses separate, focused checks for names, images and documents, then adds up what they find in the open. Every alert can be traced back to the evidence behind it."
-        secondaryCta={{
+        description="Separate checks for names, images and documents, added up in the open. Every alert traces back to its evidence."
+        secondary={{
           label: 'Why explainability matters',
           to: '/resources/explainable-risk-scores',
         }}
-        visual={<ScoreScene />}
+        visual={<NameLoupeExhibit tone="dark" />}
       />
 
-      <Section id="how-we-score">
-        <SectionHeading
-          eyebrow="How we score"
+      <Section scaffold tone="white" id="how-we-score">
+        <SectionHead
+          label="How we score"
           title="Every score shows its parts."
-          description="A high priority is never just a number. It is four separate scores, each one explained, with the weights written down, so your team can see why something was flagged and disagree if they want to."
+          description="A high priority is never just a number. It is four separate scores, each one explained, with the weights written down."
         />
-        <div className="mt-12">
+        <div className="mt-14 lg:mt-20">
           <HowWeScore />
         </div>
       </Section>
 
-      <StoryBand
-        eyebrow="From finding to decision"
-        title={
-          <>
-            Five steps, and <em>a person</em> at the end.
-          </>
-        }
-        description="This is what happens to every website, app and trademark filing Similo looks at."
-        items={STORY_ITEMS}
-      />
-
-      <Section tone="white">
-        <SectionHeading
-          eyebrow="The checks"
-          title="Six checks, each with one job."
-          description="Each part does one thing and shows its result. The plain explanation comes first, then the technical detail for anyone who wants it."
+      <Section scaffold>
+        <SectionHead
+          label="From finding to decision"
+          title="Five steps, and a person at the end."
+          description="This is what happens to every website, app and trademark filing Similo looks at."
         />
-        <div className="mt-12 border-b border-line">
-          {CHECKS.map((check) => (
-            <Reveal key={check.id}>
-              <article
-                id={check.id}
-                className="grid scroll-mt-24 grid-cols-1 gap-6 border-t border-line py-10 lg:grid-cols-[1fr_1.7fr] lg:gap-16"
-              >
-                <div>
-                  <p className="flex items-center gap-2 text-[13px] font-medium text-accent-ink">
-                    <check.icon aria-hidden className="size-5" />
-                    {check.name}
-                  </p>
-                  <h3 className="text-title mt-3 max-w-sm font-semibold text-balance">
-                    {check.title}
-                  </h3>
-                </div>
-                <div>
-                  <p className="leading-relaxed text-pretty text-muted">{check.plain}</p>
-                  <ul className="mt-5 space-y-2 border-l-2 border-line pl-4 text-[14.5px] leading-snug">
-                    {check.details.map((detail) => (
-                      <li key={detail}>{detail}</li>
-                    ))}
-                  </ul>
-                  <p className="mt-4 text-[13px] text-muted">Built with: {check.tools}</p>
-                </div>
-              </article>
-            </Reveal>
-          ))}
+        <div className="mt-14 lg:mt-20">
+          <StepRows steps={STEPS} />
         </div>
       </Section>
 
-      <Section>
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <Reveal className="lg:order-2">
+      <Section scaffold tone="white">
+        <SectionHead
+          label="The checks"
+          title="Six checks, each with one job."
+          description="The plain explanation comes first. The technical detail is one click away."
+        />
+        <RevealGroup className="mt-14 lg:mt-20">
+          <div className="border-b border-line-strong">
+            {CHECKS.map((check, index) => (
+              <RevealItem key={check.id}>
+                <article
+                  id={check.id}
+                  className="grid scroll-mt-24 grid-cols-1 gap-x-12 gap-y-5 border-t border-line-strong py-9 lg:grid-cols-[12rem_minmax(0,1fr)_minmax(0,1.25fr)]"
+                >
+                  <p className="flex items-start gap-2 pt-1.5">
+                    <span aria-hidden className="mt-[3px] size-1.5 shrink-0 bg-accent" />
+                    <MonoLabel>
+                      FIG. {String(index + 1).padStart(2, '0')} · {check.name}
+                    </MonoLabel>
+                  </p>
+                  <h3 className="max-w-sm text-[clamp(1.5rem,1.1rem+1.2vw,2.125rem)] leading-[1.08] font-semibold tracking-[-0.035em] text-balance">
+                    {check.title}
+                  </h3>
+                  <div>
+                    <p className="leading-relaxed text-pretty text-muted">{check.plain}</p>
+                    <UnderTheHood className="mt-3">
+                      {check.details.join('. ')}. Built with {check.tools}.
+                    </UnderTheHood>
+                  </div>
+                </article>
+              </RevealItem>
+            ))}
+          </div>
+        </RevealGroup>
+      </Section>
+
+      <Section scaffold tone="dark">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+          <div>
+            <SectionHead
+              tone="dark"
+              label="The assistant"
+              title="Ask why. Get the sources."
+              description="It answers only from your own records, numbers its sources, and says so when the records don’t hold the answer."
+            />
+          </div>
+          <Reveal className="min-w-0">
+            <AssistantScene tone="dark" />
+          </Reveal>
+        </div>
+      </Section>
+
+      <Section scaffold>
+        <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-20">
+          <Reveal className="relative lg:order-2">
             <PhotoFrame
               src="/images/core/analyst-report"
               alt="A woman reading a printed report at her desk, with a laptop open beside her"
@@ -320,56 +284,55 @@ export function TechnologyPage() {
               ratio="aspect-[3/2]"
             />
           </Reveal>
-          <Reveal delay={0.05} className="lg:order-1">
-            <Eyebrow>People decide</Eyebrow>
-            <h2 className="text-headline mt-3 font-semibold text-balance">
-              The AI sorts. Your team decides.
-            </h2>
-            <p className="text-lead mt-4 text-pretty text-muted">
-              The AI finds, compares and explains. Whether something infringes your rights is a
-              decision for qualified people, and Similo never takes enforcement action on its own.
+          <div className="lg:order-1">
+            <SectionHead
+              label="People decide"
+              title="The AI sorts. Your team decides."
+              description="Whether something infringes your rights is a decision for qualified people. Similo never takes enforcement action on its own."
+            />
+            <StampSlam text="Reviewed" detail="By a person" tone="night" className="mt-10" />
+            <FigNote className="mt-8">
               Scores support decisions. They are not legal findings.
-            </p>
-          </Reveal>
+            </FigNote>
+          </div>
         </div>
       </Section>
 
-      <Section tone="white">
-        <SectionHeading
-          eyebrow="What it’s built with"
+      <Section scaffold tone="white">
+        <SectionHead
+          label="What it’s built with"
           title="A modular stack, built to grow."
-          description="Long checks run in background workers, so the app stays fast while analysis happens. Each part can be scaled on its own."
+          description="Long checks run in background workers, so the app stays fast. Each part can be scaled on its own."
         />
-        <Reveal className="mt-10">
-          <ul className="divide-y divide-line border-y border-line">
-            {STACK.map((item) => (
+        <Reveal className="mt-12">
+          <ul className="divide-y divide-line-strong border-y border-line-strong">
+            {STACK.map((item, index) => (
               <li
                 key={item.name}
-                className="grid grid-cols-1 gap-1 py-4 sm:grid-cols-[1fr_1.6fr_1fr] sm:items-center sm:gap-8"
+                className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-4 gap-y-1 py-5 sm:grid-cols-[3rem_1fr_1.6fr_1fr] sm:items-center sm:gap-x-8"
               >
-                <span className="flex items-center gap-3 font-semibold">
-                  <item.icon aria-hidden className="size-5 shrink-0 text-accent" />
+                <MonoLabel>0{index + 1}</MonoLabel>
+                <span className="text-[1.125rem] font-semibold tracking-[-0.02em]">
                   {item.name}
                 </span>
-                <span className="text-muted">{item.job}</span>
-                <span className="font-mono text-[13px] text-muted sm:text-right">{item.tech}</span>
+                <span className="col-start-2 text-muted sm:col-start-auto">{item.job}</span>
+                <span className="col-start-2 font-mono text-[12.5px] text-muted sm:col-start-auto sm:text-right">
+                  {item.tech}
+                </span>
               </li>
             ))}
           </ul>
         </Reveal>
       </Section>
 
-      <Section>
+      <Section scaffold>
         <FaqBlock title="Straight answers about the AI." items={FAQ} />
       </Section>
 
-      <CtaBand
-        title={
-          <>
-            See the reasons behind <em>every alert.</em>
-          </>
-        }
-        description="We will walk through a real scoring breakdown and show how your team would review it."
+      <OrangeBand
+        label="Request a demo"
+        title="See the reasons behind every alert."
+        description="We will walk through a scoring breakdown and show how your team would review it."
         secondary={{ label: 'The platform', to: '/platform' }}
       />
     </>

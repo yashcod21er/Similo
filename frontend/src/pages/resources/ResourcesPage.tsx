@@ -1,24 +1,15 @@
-import {
-  ArrowRight,
-  Megaphone,
-  Scale,
-  Search,
-  ShieldCheck,
-  X,
-  type LucideIcon,
-} from 'lucide-react';
+import { ArrowRight, Search, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { HoverReveal, HoverRevealItem } from '@/components/motion/HoverReveal';
-import { SimilarityWave } from '@/components/motion/SimilarityWave';
 import { SplitReveal } from '@/components/motion/SplitReveal';
 import { useFinePointer } from '@/components/motion/useFinePointer';
 import { PhotoFrame } from '@/components/marketing/PhotoFrame';
-import { CtaBand, Section } from '@/components/marketing/sections';
-import { Container, Eyebrow, SectionHeading } from '@/components/ui/layout';
+import { Section } from '@/components/marketing/sections';
+import { Container } from '@/components/ui/layout';
 import { Photo } from '@/components/ui/Photo';
 import { Reveal } from '@/components/ui/Reveal';
-import { SpotlightCard } from '@/components/ui/SpotlightCard';
+import { CornerBrackets, MonoLabel } from '@/components/ui/specimen';
 import {
   findResource,
   RESOURCE_CATEGORIES,
@@ -27,27 +18,25 @@ import {
   type ResourceCategory,
 } from '@/content/resources';
 import { cn } from '@/lib/cn';
+import { H1_CLASS, OrangeBand, SectionHead } from '@/pages/solutions/page-kit';
 
 const FEATURED_SLUG = 'lookalike-domains-explained';
 const POPULAR = ['homoglyphs', 'RDAP', 'opposition', 'SHA-256'];
 const COVER_SIZE = { width: 1600, height: 1067 } as const;
 
 /** "Where to start", by the team a reader works in. Each slug is a guide that exists. */
-const START_PATHS: { icon: LucideIcon; team: string; slug: string; why: string }[] = [
+const START_PATHS: { team: string; slug: string; why: string }[] = [
   {
-    icon: ShieldCheck,
     team: 'Security team',
     slug: 'lookalike-domains-explained',
     why: 'Learn the tricks behind fake sign-in sites, so you can spot them early.',
   },
   {
-    icon: Scale,
     team: 'Legal team',
     slug: 'trademark-watch-basics',
     why: 'See how trademark journals work and how long you have to object.',
   },
   {
-    icon: Megaphone,
     team: 'Brand and marketing',
     slug: 'rogue-mobile-apps',
     why: 'Find out how copycat apps borrow your name, and what to collect.',
@@ -78,18 +67,18 @@ function ResourceRow({ resource, number }: { resource: Resource; number: string 
         <Link
           to={`/resources/${resource.slug}`}
           data-cursor="Read"
-          className="group/row grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-6 gap-y-3 border-t border-line-strong/70 py-7 transition-opacity duration-300 sm:py-8 lg:grid-cols-[3rem_minmax(0,1fr)_14rem] lg:gap-x-8 lg:py-10 motion-reduce:transition-none [@media(hover:hover)]:[ul:hover_&]:opacity-45 [@media(hover:hover)]:[ul:hover_&:hover]:opacity-100"
+          className="group/row grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-6 gap-y-3 border-t border-line-strong py-7 transition-opacity duration-300 sm:py-8 lg:grid-cols-[3.5rem_minmax(0,1fr)_14rem] lg:gap-x-8 lg:py-10 motion-reduce:transition-none [@media(hover:hover)]:[ul:hover_&]:opacity-45 [@media(hover:hover)]:[ul:hover_&:hover]:opacity-100"
         >
           {fine && (
-            <span className="hidden pt-2 font-mono text-[12.5px] text-muted tabular-nums lg:block">
+            <span className="text-micro hidden pt-2.5 text-muted tabular-nums lg:block">
               {number}
             </span>
           )}
           <div className={cn('min-w-0', fine ? 'lg:col-start-2' : 'lg:col-span-2')}>
-            <p className="text-[12.5px] font-medium tracking-[0.06em] text-accent-ink uppercase">
+            <MonoLabel className="text-accent-ink">
               {resource.category} · {resource.type}
-            </p>
-            <h3 className="mt-2.5 text-[clamp(1.375rem,1rem+1.3vw,2.25rem)] leading-[1.12] font-semibold tracking-[-0.03em] text-balance transition-transform duration-500 ease-out group-hover/row:translate-x-1.5 motion-reduce:transition-none motion-reduce:group-hover/row:translate-x-0">
+            </MonoLabel>
+            <h3 className="mt-3 text-[clamp(1.5rem,1rem+1.6vw,2.5rem)] leading-[1.06] font-semibold tracking-[-0.04em] text-balance transition-transform duration-500 ease-out group-hover/row:translate-x-1.5 motion-reduce:transition-none motion-reduce:group-hover/row:translate-x-0">
               {resource.title}
             </h3>
             <p className="mt-3 line-clamp-2 max-w-2xl leading-relaxed text-muted">
@@ -97,19 +86,20 @@ function ResourceRow({ resource, number }: { resource: Resource; number: string 
             </p>
           </div>
           {!fine && (
-            <div className="w-24 overflow-hidden rounded-xl bg-cream-deep ring-1 ring-ink/[0.06] sm:w-36">
+            <div className="w-24 overflow-hidden rounded-xl bg-night ring-1 ring-ink/[0.06] sm:w-36">
               <div className="aspect-[3/2]">
                 <Photo
                   {...resource.cover}
                   {...COVER_SIZE}
                   sizes="144px"
+                  treatment="duotone"
                   className="h-full w-full object-cover"
                 />
               </div>
             </div>
           )}
           <div className="col-span-2 flex items-center gap-4 lg:col-span-1 lg:col-start-3 lg:justify-end lg:pt-2">
-            <span className="text-[13px] text-muted">{resource.readMinutes} min read</span>
+            <MonoLabel>{resource.readMinutes} min read</MonoLabel>
             <ArrowRight
               aria-hidden
               className="size-5 text-accent-ink transition-transform duration-300 group-hover/row:translate-x-1 motion-reduce:transition-none"
@@ -121,40 +111,36 @@ function ResourceRow({ resource, number }: { resource: Resource; number: string 
   );
 }
 
-/** The guide to read first, set on a raised dark card inside the hero. */
+/** The guide to read first: its cover in corner brackets, labelled like an exhibit. */
 function FeaturedResource({ resource }: { resource: Resource }) {
   return (
-    <Link
-      to={`/resources/${resource.slug}`}
-      data-cursor="Read"
-      className="group block rounded-2xl bg-night-raised p-3 shadow-window-dark ring-1 ring-cream/10 transition-colors hover:ring-cream/25"
-    >
-      <PhotoFrame
-        {...resource.cover}
-        {...COVER_SIZE}
-        ratio="aspect-[3/2]"
-        imageClassName="transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-        priority
-        sizes="(min-width: 1280px) 560px, (min-width: 1024px) 45vw, 100vw"
-      />
-      <div className="px-3 pt-5 pb-3">
-        <p className="text-[12.5px] font-medium tracking-[0.06em] text-accent-soft uppercase">
-          Start here · {resource.type}
-        </p>
-        <h2 className="mt-2.5 text-[1.375rem] leading-snug font-semibold tracking-[-0.02em] text-balance text-cream">
-          {resource.title}
-        </h2>
-        <p className="mt-4 inline-flex items-center gap-2 text-[15px] font-medium text-cream">
-          Read the guide
-          <ArrowRight
-            aria-hidden
-            className="size-4 text-accent-soft transition-transform group-hover:translate-x-1"
-          />
-          <span className="text-[13px] font-normal text-cream/70">
-            · {resource.readMinutes} min read
-          </span>
-        </p>
+    <Link to={`/resources/${resource.slug}`} data-cursor="Read" className="group block">
+      <p className="mb-4 flex items-center gap-2">
+        <span aria-hidden className="size-1.5 bg-accent" />
+        <MonoLabel>Start here · {resource.type}</MonoLabel>
+      </p>
+      <div className="relative">
+        <PhotoFrame
+          {...resource.cover}
+          {...COVER_SIZE}
+          ratio="aspect-[3/2]"
+          imageClassName="transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          priority
+          sizes="(min-width: 1280px) 560px, (min-width: 1024px) 45vw, 100vw"
+        />
+        <CornerBrackets className="-inset-3" />
       </div>
+      <h2 className="mt-6 text-[1.5rem] leading-[1.1] font-semibold tracking-[-0.035em] text-balance">
+        {resource.title}
+      </h2>
+      <p className="mt-4 inline-flex items-center gap-2 text-[15px] font-medium text-accent-ink">
+        Read the guide
+        <ArrowRight
+          aria-hidden
+          className="size-4 transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
+        />
+        <MonoLabel className="ml-1">{resource.readMinutes} min read</MonoLabel>
+      </p>
     </Link>
   );
 }
@@ -177,19 +163,14 @@ export function ResourcesPage() {
 
   return (
     <>
-      <section className="relative isolate overflow-hidden bg-night text-cream">
-        <SimilarityWave tone="dark" density="calm" className="-z-10 opacity-60" />
-        <div
-          aria-hidden
-          className="absolute inset-0 -z-10 bg-linear-to-r from-night via-night/85 to-night/40"
-        />
-        <Container className="grid grid-cols-1 gap-12 py-16 sm:py-20 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-16 lg:py-28">
+      <section className="relative isolate overflow-hidden bg-cream">
+        <Container className="grid grid-cols-1 gap-14 py-16 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-20 lg:py-28">
           <div>
-            <Eyebrow tone="dark">Guides and explainers</Eyebrow>
-            <h1 className="text-display mt-5 font-semibold text-balance text-cream">
-              Learn how copycats <em className="text-accent-soft">work.</em>
+            <MonoLabel>Guides and explainers</MonoLabel>
+            <h1 className={cn(H1_CLASS, 'serif-em-accent mt-6 text-ink')}>
+              Learn how copycats <em>work.</em>
             </h1>
-            <p className="text-lead mt-6 max-w-xl text-pretty text-cream/75">
+            <p className="text-lead mt-7 max-w-md text-pretty text-muted">
               Clear, practical guides to fake websites, copycat apps, trademark watching and
               evidence, written for legal, security and brand teams.
             </p>
@@ -201,7 +182,7 @@ export function ResourcesPage() {
               <div className="relative">
                 <Search
                   aria-hidden
-                  className="absolute top-1/2 left-4 size-5 -translate-y-1/2 text-cream/65"
+                  className="absolute top-1/2 left-4 size-5 -translate-y-1/2 text-muted"
                 />
                 <input
                   id="resource-search"
@@ -209,27 +190,27 @@ export function ResourcesPage() {
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Search guides"
-                  className="h-13 w-full rounded-xl border border-cream/20 bg-cream/[0.07] pr-12 pl-12 text-base text-cream outline-none placeholder:text-cream/60 hover:border-cream/35 focus:border-accent-soft focus:ring-4 focus:ring-accent-soft/20"
+                  className="h-13 w-full rounded-xl border border-line-strong bg-white pr-12 pl-12 text-base text-ink outline-none placeholder:text-muted hover:border-ink/30 focus:border-accent focus:ring-4 focus:ring-accent/15"
                 />
                 {query && (
                   <button
                     type="button"
                     aria-label="Clear search"
                     onClick={() => setQuery('')}
-                    className="absolute top-1/2 right-2 -translate-y-1/2 rounded-md p-2 text-cream/70 hover:bg-cream/10 hover:text-cream"
+                    className="absolute top-1/2 right-2 -translate-y-1/2 rounded-md p-2 text-muted hover:bg-ink/5 hover:text-ink"
                   >
                     <X aria-hidden className="size-4" />
                   </button>
                 )}
               </div>
-              <p className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-cream/70">
+              <p className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted">
                 Popular:
                 {POPULAR.map((term) => (
                   <button
                     key={term}
                     type="button"
                     onClick={() => setQuery(term)}
-                    className="font-medium text-cream underline decoration-cream/35 underline-offset-4 hover:decoration-accent-soft"
+                    className="font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-accent"
                   >
                     {term}
                   </button>
@@ -242,9 +223,12 @@ export function ResourcesPage() {
         </Container>
       </section>
 
-      <Section>
+      <Section scaffold tone="white">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <SplitReveal as="h2" className="text-headline font-semibold">
+          <SplitReveal
+            as="h2"
+            className="text-[clamp(2.125rem,1.1rem+3.6vw,4.5rem)] leading-[1] font-semibold tracking-[-0.045em]"
+          >
             {isFiltering ? 'Matching guides' : 'All guides'}
           </SplitReveal>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by topic">
@@ -255,7 +239,7 @@ export function ResourcesPage() {
                 aria-pressed={category === item}
                 onClick={() => setCategory(item)}
                 className={cn(
-                  'rounded-full border px-3.5 py-1.5 text-[13.5px] font-medium transition-colors',
+                  'rounded-full border px-3.5 py-1.5 text-[13.5px] font-medium transition-colors duration-150',
                   category === item
                     ? 'border-ink bg-ink text-cream'
                     : 'border-line-strong bg-white text-ink/80 hover:border-ink/40',
@@ -266,12 +250,14 @@ export function ResourcesPage() {
             ))}
           </div>
         </div>
-        <p aria-live="polite" className="mt-4 text-[13px] text-muted">
-          {results.length} {results.length === 1 ? 'guide' : 'guides'}
+        <p aria-live="polite" className="mt-4">
+          <MonoLabel>
+            {results.length} {results.length === 1 ? 'guide' : 'guides'}
+          </MonoLabel>
         </p>
 
         {results.length === 0 ? (
-          <div className="mt-8 rounded-2xl border border-dashed border-line-strong bg-white p-10 text-center">
+          <div className="mt-8 rounded-lg border border-dashed border-line-strong bg-cream p-10 text-center">
             <p className="font-semibold">No guides match your search.</p>
             <p className="mt-2 text-muted">Try a different word or clear the filters.</p>
             <button
@@ -287,7 +273,7 @@ export function ResourcesPage() {
           </div>
         ) : (
           <HoverReveal>
-            <ul className="mt-10 border-b border-line-strong/70">
+            <ul className="mt-10 border-b border-line-strong">
               {results.map((resource, index) => (
                 <ResourceRow
                   key={resource.slug}
@@ -300,57 +286,53 @@ export function ResourcesPage() {
         )}
       </Section>
 
-      <Section tone="white">
-        <SectionHeading
-          eyebrow="Where to start"
+      <Section scaffold>
+        <SectionHead
+          label="Where to start"
           title="Pick the guide closest to your day job."
           description="Each team meets copycats differently. These three guides open the subject from each side."
         />
-        <ul className="mt-12 grid gap-5 lg:grid-cols-3">
-          {START_PATHS.map((path) => {
+        <ul className="mt-14 grid grid-cols-1 gap-px overflow-hidden border border-line-strong bg-line-strong lg:mt-20 lg:grid-cols-3">
+          {START_PATHS.map((path, index) => {
             const guide = findResource(path.slug);
             if (!guide) return null;
             return (
-              <li key={path.slug}>
-                <Reveal y={16} className="h-full">
-                  <SpotlightCard as="div" className="h-full">
-                    <Link
-                      to={`/resources/${guide.slug}`}
-                      data-cursor="Read"
-                      className="group flex h-full flex-col p-6 sm:p-7"
-                    >
-                      <span className="inline-flex size-10 items-center justify-center rounded-xl bg-accent/[0.08] text-accent ring-1 ring-accent/15">
-                        <path.icon aria-hidden className="size-5" />
-                      </span>
-                      <p className="mt-6 text-[13px] font-medium text-accent-ink">{path.team}</p>
-                      <h3 className="mt-2 text-[1.0625rem] leading-snug font-semibold tracking-[-0.015em]">
-                        {guide.title}
-                      </h3>
-                      <p className="mt-3 flex-1 leading-relaxed text-muted">{path.why}</p>
-                      <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium">
-                        Read the guide
-                        <ArrowRight
-                          aria-hidden
-                          className="size-4 text-accent-ink transition-transform group-hover:translate-x-1"
-                        />
-                      </span>
-                    </Link>
-                  </SpotlightCard>
-                </Reveal>
+              <li key={path.slug} className="bg-cream">
+                <Link
+                  to={`/resources/${guide.slug}`}
+                  data-cursor="Read"
+                  className="group flex h-full flex-col p-7 transition-colors duration-200 hover:bg-white lg:p-9"
+                >
+                  <span
+                    aria-hidden
+                    className="text-[4rem] leading-[0.85] font-semibold tracking-[-0.06em] text-accent tabular-nums"
+                  >
+                    0{index + 1}
+                  </span>
+                  <MonoLabel className="mt-8">{path.team}</MonoLabel>
+                  <h3 className="mt-3 text-[1.375rem] leading-[1.12] font-semibold tracking-[-0.03em] text-balance">
+                    {guide.title}
+                  </h3>
+                  <p className="mt-3 flex-1 leading-relaxed text-muted">{path.why}</p>
+                  <span className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-accent-ink">
+                    Read the guide
+                    <ArrowRight
+                      aria-hidden
+                      className="size-4 transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
+                    />
+                  </span>
+                </Link>
               </li>
             );
           })}
         </ul>
       </Section>
 
-      <CtaBand
-        eyebrow="Put it into practice"
-        title={
-          <>
-            From reading to <em className="text-accent-soft">watching.</em>
-          </>
-        }
+      <OrangeBand
+        label="Put it into practice"
+        title="From reading to watching."
         description="Similo applies these methods to your own brands, with every alert explained in plain words. Tell us what you have found and we will show you how Similo would look at it."
+        secondary={null}
       />
     </>
   );

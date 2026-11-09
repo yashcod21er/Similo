@@ -1,5 +1,6 @@
 import { AlertTriangle, Check } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
+import { MonoLabel } from '@/components/ui/specimen';
 import { cn } from '@/lib/cn';
 
 /*
@@ -18,18 +19,22 @@ import { cn } from '@/lib/cn';
 /**
  * Wraps a scene: announces it as one image to screen readers (the looping text would be noise),
  * makes it a size container (so layouts follow the window's width, not the screen's) and
- * adds the discreet "Illustrative example" caption.
+ * adds the one discreet mono caption ("FIG. 03: Sample data, made-up names"). `tone` is the
+ * band the scene sits on (the caption colour); the scene's own window stays dark.
  */
 export function SceneFigure({
   label,
-  caption = 'Illustrative example with made-up names.',
+  caption = 'Sample data, made-up names.',
   tone = 'dark',
+  index,
   className,
   children,
 }: {
   label: string;
   caption?: string;
   tone?: 'light' | 'dark';
+  /** The figure number, for example "03"; shown as "FIG. 03". */
+  index?: string;
   className?: string;
   children: ReactNode;
 }) {
@@ -39,10 +44,11 @@ export function SceneFigure({
         {children}
       </div>
       {caption && (
-        <figcaption
-          className={cn('mt-3 text-[12px]', tone === 'dark' ? 'text-cream/60' : 'text-muted')}
-        >
-          {caption}
+        <figcaption className="mt-5">
+          <MonoLabel tone={tone}>
+            {index ? `FIG. ${index} — ` : ''}
+            {caption}
+          </MonoLabel>
         </figcaption>
       )}
     </figure>

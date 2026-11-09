@@ -1,58 +1,47 @@
-import { MarqueeBand } from '@/components/marketing/MarqueeBand';
 import { ResearchProof } from '@/components/marketing/ResearchProof';
-import { CtaBand } from '@/components/marketing/sections';
 import { CheckerSection } from './home/CheckerSection';
+import { ClosingSection } from './home/ClosingSection';
+import { FloodSection } from './home/FloodSection';
 import { GlobeSection } from './home/GlobeSection';
 import { HomeFaq } from './home/HomeFaq';
 import { HomeHero } from './home/HomeHero';
-import { ProductZoom } from './home/ProductZoom';
-import { ProblemSection } from './home/ProblemSection';
-import { ScoringSection } from './home/ScoringSection';
-import { StatementSection } from './home/StatementSection';
-import { TeamsSection } from './home/TeamsSection';
-import { WorkflowStory } from './home/WorkflowStory';
+import { HowSection } from './home/HowSection';
+import { LetterSection } from './home/LetterSection';
+import { SpotSection } from './home/SpotSection';
+import { WatchSection } from './home/WatchSection';
 
 /**
- * Home page (design system v4). Light/dark rhythm, one message per band:
- *   night  hero: the 3D glass ∼ in front of a giant edge-to-edge word (WebGL)
- *   night  the product, zooming in as you scroll (pinned)
- *   white  a statement that lights up word by word
- *   night  a band of giant type that follows the scroll speed (MarqueeBand)
- *   cream  the live brand checker (#check)
- *   night  Watch → Explain → Decide, a scroll story
- *   white  the problem: what copycats look like
- *   night  the problem in numbers: cited public research (ResearchProof)
- *   cream  how we score, in the open
- *   night  what Similo watches: the 3D globe of domains (WebGL)
- *   white  who it is for (with a photo of people)
- *   cream  questions
- *   night  closing call to action (then the dark footer)
- * Each section lives in ./home so the page reads as a table of contents.
+ * Home page (v6, "Spot the difference"): the flagship of the evidence-room concept. Every band
+ * is one numbered plate (FIG. 01–10) with one idea and a different kind of picture:
+ *
+ *   cream   01 hero: the 3D ∼, crystal and orange glass, in front of the giant word (WebGL)
+ *   white   02 spot the difference: drag between your sign-in page and its copy
+ *   night   03 one letter is enough: acme.com → acrne.com, as a type specimen
+ *   cream   04 the live brand checker (#check)
+ *   night   05 how it works: pinned and scroll-scrubbed, a new picture per step, a stamp
+ *   white   06 what Similo watches: an isometric stack of sources and the case file
+ *   cream   07 wherever they appear: the globe as an ink engraving (WebGL)
+ *   night   the problem in numbers: cited public research (ResearchProof)
+ *   orange  08 the one flood band: "The difference is the evidence."
+ *   cream   09 questions
+ *   night   10 the close, then the dark footer
+ *
+ * The serif italic appears once (the hero). Each section lives in ./home.
  */
 export function HomePage() {
   return (
     <>
       <HomeHero />
-      <ProductZoom />
-      <StatementSection />
-      <MarqueeBand />
+      <SpotSection />
+      <LetterSection />
       <CheckerSection />
-      <WorkflowStory />
-      <ProblemSection />
-      <ResearchProof />
-      <ScoringSection />
+      <HowSection />
+      <WatchSection />
       <GlobeSection />
-      <TeamsSection />
+      <ResearchProof />
+      <FloodSection />
       <HomeFaq />
-      <CtaBand
-        eyebrow="See it with your brand"
-        title={
-          <>
-            Find the copycats <em className="text-accent-soft">first.</em>
-          </>
-        }
-        description="We will walk you through monitoring, plain-language alerts and an investigation, from the first signal to a reviewed takedown draft."
-      />
+      <ClosingSection />
     </>
   );
 }

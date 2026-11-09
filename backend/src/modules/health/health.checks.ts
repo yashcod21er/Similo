@@ -63,3 +63,28 @@ export function createAiServiceCheck({ client, logger }: AiServiceCheckOptions):
     },
   };
 }
+
+export function createMonitoringQueueCheck({
+  configured,
+  ping,
+  logger,
+}: {
+  configured: boolean;
+  ping: () => Promise<void>;
+  logger: Logger;
+}): DependencyCheck {
+  return {
+    name: 'monitoringQueue',
+    critical: false,
+    async run() {
+      if (!configured) return { status: 'not_configured', message: 'REDIS_URL is not set' };
+      try {
+        const latencyMs = await timed(ping);
+        return { status: 'up', message: 'Connected', latencyMs };
+      } catch (err) {
+        logger.warn({ err }, 'Monitoring queue health check failed');
+        return { status: 'down', message: 'Unreachable' };
+      }
+    },
+  };
+}

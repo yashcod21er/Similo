@@ -15,7 +15,7 @@ import { ButtonLink } from '@/components/ui/Button';
 import { Container } from '@/components/ui/layout';
 import { Logo } from '@/components/ui/Logo';
 import { useSession } from '@/features/auth/api';
-import { EASE_OUT } from '@/lib/motion';
+import { EASE_OUT_EXPO } from '@/components/motion/easing';
 import { cn } from '@/lib/cn';
 import { CommandMenu } from './CommandMenu';
 import { NavPreview } from './NavPreviews';
@@ -36,7 +36,7 @@ interface TopBackground {
 }
 
 const LIGHT_TOP: TopBackground = { color: 'rgb(246 240 230)', dark: false };
-const SCROLLED_BACKGROUND = 'rgb(246 240 230 / 0.96)';
+const SCROLLED_BACKGROUND = 'rgb(246 240 230 / 0.98)';
 const NIGHT_BACKGROUND = 'rgb(18 17 15)';
 
 let probe: CanvasRenderingContext2D | null | undefined;
@@ -73,6 +73,9 @@ function readTopBackgroundKey(): string {
     const rgba = toRgba(getComputedStyle(element).backgroundColor);
     if (rgba && rgba[3] > 240) {
       const [r, g, b] = rgba;
+      // A burnt-orange first band: the header stays cream (dark text on #c2500a is under 3:1,
+      // and white nav text would not match the rest of the site).
+      if (r > 150 && r - b > 120) return `${LIGHT_TOP.color}|light`;
       const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
       return `rgb(${r} ${g} ${b})|${luminance < 0.35 ? 'dark' : 'light'}`;
     }
@@ -108,11 +111,9 @@ function CheckerCard({ feature, onNavigate }: { feature: NavFeature; onNavigate:
     <Link
       to={feature.to}
       onClick={onNavigate}
-      className="group/card relative isolate flex flex-col overflow-hidden rounded-xl bg-night p-5 text-cream"
+      className="group/card relative isolate flex flex-col overflow-hidden rounded-lg bg-night p-5 text-cream"
     >
-      <p className="text-[12.5px] font-medium tracking-[0.06em] text-accent-soft uppercase">
-        {feature.eyebrow}
-      </p>
+      <p className="text-micro text-accent-soft">{feature.eyebrow}</p>
       <p className="mt-2 text-[17px] leading-snug font-semibold tracking-[-0.015em]">
         {feature.title}
       </p>
@@ -167,11 +168,9 @@ function GuideCard({ feature, onNavigate }: { feature: NavFeature; onNavigate: (
     <Link
       to={feature.to}
       onClick={onNavigate}
-      className="group/card flex flex-col rounded-xl bg-cream p-5 ring-1 ring-line transition-colors hover:bg-cream-deep/60"
+      className="group/card flex flex-col rounded-lg bg-cream p-5 ring-1 ring-line-strong transition-colors duration-150 hover:bg-cream-deep/60"
     >
-      <span className="text-[12.5px] font-medium tracking-[0.06em] text-accent-ink uppercase">
-        {feature.eyebrow}
-      </span>
+      <span className="text-micro text-accent-ink">{feature.eyebrow}</span>
       <span className="mt-2 text-[17px] leading-snug font-semibold tracking-[-0.015em]">
         {feature.title}
       </span>
@@ -203,7 +202,7 @@ function MegaPanel({
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 6 }}
-      transition={{ duration: 0.18, ease: EASE_OUT }}
+      transition={{ duration: 0.18, ease: EASE_OUT_EXPO }}
       className={cn(
         'absolute top-full z-50 pt-2',
         wide ? 'inset-x-0 mx-auto w-[min(62rem,calc(100%-3rem))]' : 'left-0 w-[34rem]',
@@ -211,7 +210,7 @@ function MegaPanel({
     >
       <div
         className={cn(
-          'grid gap-3 rounded-2xl bg-white p-3 shadow-window ring-1 ring-ink/[0.07]',
+          'grid gap-3 rounded-xl bg-white p-3 shadow-window ring-1 ring-ink/10',
           wide ? 'grid-cols-[minmax(0,1fr)_16.5rem]' : 'grid-cols-[minmax(0,1fr)_14rem]',
         )}
       >
@@ -282,7 +281,8 @@ function DesktopNav({ dark }: { dark: boolean }) {
 
   const linkClass = (active: boolean) =>
     cn(
-      'inline-flex items-center gap-1 rounded-md px-3 py-2 text-[14.5px] font-medium transition-colors',
+      "relative inline-flex items-center gap-1 rounded-md px-3 py-2 text-[14.5px] font-medium transition-colors duration-150 after:absolute after:inset-x-3 after:bottom-0.5 after:h-px after:content-['']",
+      active ? (dark ? 'after:bg-accent-soft' : 'after:bg-accent') : 'after:bg-transparent',
       dark
         ? active
           ? 'text-cream'
@@ -385,7 +385,7 @@ function MobileNav({ onClose }: { onClose: () => void }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.18, ease: EASE_OUT }}
+      transition={{ duration: 0.18, ease: EASE_OUT_EXPO }}
       className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto overscroll-contain bg-night text-cream lg:hidden"
     >
       <div
@@ -403,14 +403,12 @@ function MobileNav({ onClose }: { onClose: () => void }) {
             key={entry.label}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: EASE_OUT, delay: 0.04 * index }}
+            transition={{ duration: 0.3, ease: EASE_OUT_EXPO, delay: 0.04 * index }}
             className="border-b border-cream/10 py-4"
           >
             {isMenu(entry) ? (
               <>
-                <p className="text-[12.5px] font-medium tracking-[0.06em] text-accent-soft uppercase">
-                  {entry.label}
-                </p>
+                <p className="text-micro text-accent-soft">{entry.label}</p>
                 <ul className="mt-3 grid grid-cols-2 gap-2">
                   {entry.items.map((item) => (
                     <li key={item.to}>
@@ -560,11 +558,10 @@ export function SiteHeader() {
         style={style}
         className={cn(
           'sticky top-0 z-50 border-b transition-[background-color,border-color] duration-200',
-          scrolled && !mobileOpen && 'backdrop-blur-md',
           mobileOpen
             ? 'border-cream/10'
             : scrolled
-              ? 'border-line'
+              ? 'border-ink/10'
               : dark
                 ? 'border-cream/[0.06]'
                 : 'border-transparent',
@@ -595,7 +592,7 @@ export function SiteHeader() {
                 <span className="hidden sm:inline">Search</span>
                 <kbd
                   className={cn(
-                    'hidden rounded px-1.5 py-0.5 font-mono text-[10.5px] ring-1 sm:inline',
+                    'text-micro hidden rounded-sm px-1.5 py-0.5 tracking-[0.06em] ring-1 sm:inline',
                     dark
                       ? 'bg-cream/10 text-cream/75 ring-cream/15'
                       : 'bg-cream text-muted ring-line',

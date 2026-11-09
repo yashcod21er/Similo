@@ -5,6 +5,9 @@ import { createAuthRouter } from './modules/auth/auth.routes.js';
 import type { AuthSystem } from './modules/auth/auth.system.js';
 import { createBrandRouter } from './modules/brands/brand.routes.js';
 import type { BrandService } from './modules/brands/brand.service.js';
+import { createFindingRouter } from './modules/findings/finding.routes.js';
+import type { FindingService } from './modules/findings/finding.service.js';
+import type { MonitoringQueue } from './modules/monitoring/monitoring.queue.js';
 import {
   createDemoRequestRouter,
   type DemoRequestRouterOptions,
@@ -20,6 +23,8 @@ export interface ApiRouterDependencies {
   demoRequestOptions?: DemoRequestRouterOptions;
   auth: AuthSystem;
   brandService: BrandService;
+  findingService?: FindingService;
+  monitoringQueue?: MonitoringQueue | null;
   /** True when MongoDB is connected; identity routes answer 503 otherwise. */
   isDatabaseReady: () => boolean;
 }
@@ -40,6 +45,8 @@ export function createApiRouter({
   demoRequestOptions,
   auth,
   brandService,
+  findingService,
+  monitoringQueue,
   isDatabaseReady,
 }: ApiRouterDependencies): Router {
   const router = Router();
@@ -73,7 +80,22 @@ export function createApiRouter({
     noStore,
     createAuditRouter(auth.auditService),
   );
-  router.use('/brands', needsDatabase, auth.requireAuth, noStore, createBrandRouter(brandService));
+  router.use(
+    '/brands',
+    needsDatabase,
+    auth.requireAuth,
+    noStore,
+    createBrandRouter(brandService, monitoringQueue ?? null),
+  );
+  if (findingService) {
+    router.use(
+      '/findings',
+      needsDatabase,
+      auth.requireAuth,
+      noStore,
+      createFindingRouter(findingService),
+    );
+  }
 
   return router;
 }

@@ -1,7 +1,11 @@
 import { Router, type RequestHandler } from 'express';
 import multer from 'multer';
+import { rateLimit } from 'express-rate-limit';
 import { getAuth, requirePermission } from '../../middleware/auth.js';
 import { sendSuccess } from '../../lib/http-response.js';
+import { AppError, ErrorCode } from '../../lib/errors.js';
+import type { MonitoringQueue } from '../monitoring/monitoring.queue.js';
+import { unavailableMonitoringQueue } from '../monitoring/monitoring.queue.js';
 import {
   addDomainSchema,
   addTrademarkSchema,
@@ -50,10 +54,22 @@ function receiveLogo(): RequestHandler {
  * The permission check runs before the upload is read, so a Viewer's upload is
  * refused without buffering it.
  */
-export function createBrandRouter(service: BrandService): Router {
+export function createBrandRouter(
+  service: BrandService,
+  monitoringQueue: MonitoringQueue | null = null,
+): Router {
   const router = Router();
   const read = requirePermission('brands:read');
   const manage = requirePermission('brands:manage');
+  const scan = requirePermission('findings:update');
+  const scanLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    limit: 10,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+    handler: (_req, _res, next) =>
+      next(new AppError(429, ErrorCode.RateLimited, 'Too many scan requests. Try again later.')),
+  });
 
   router.get('/', read, async (_req, res) => {
     sendSuccess(res, await service.list(getAuth(res)));
@@ -67,6 +83,26 @@ export function createBrandRouter(service: BrandService): Router {
   router.get('/:brandId', read, async (req, res) => {
     const { brandId } = brandParamsSchema.parse(req.params);
     sendSuccess(res, await service.get(getAuth(res), brandId));
+  });
+
+  router.post('/:brandId/scan', scanLimiter, scan, async (req, res) => {
+    const { brandId } = brandParamsSchema.parse(req.params);
+    const auth = getAuth(res);
+    const brand = await service.get(auth, brandId);
+    if (brand.status !== 'active' || !brand.monitoring.domains) {
+      throw new AppError(
+        409,
+        ErrorCode.Conflict,
+        'Turn on domain monitoring for this active brand before scanning.',
+      );
+    }
+    if (!monitoringQueue) throw unavailableMonitoringQueue();
+    const queued = await monitoringQueue.enqueueScan({
+      organizationId: auth.organizationId,
+      brandId,
+      requestedBy: auth.user.id,
+    });
+    sendSuccess(res, { status: 'queued', ...queued }, 202);
   });
 
   router.patch('/:brandId', manage, async (req, res) => {

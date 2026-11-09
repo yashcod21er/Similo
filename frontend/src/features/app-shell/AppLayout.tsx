@@ -6,6 +6,7 @@ import {
   ScrollText,
   Settings,
   ShieldCheck,
+  TriangleAlert,
   Users,
   X,
   type LucideIcon,
@@ -28,6 +29,7 @@ const NAV: {
 }[] = [
   { to: '/app', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/app/brands', label: 'Brands', icon: ShieldCheck, permission: 'brands:read' },
+  { to: '/app/findings', label: 'Findings', icon: TriangleAlert, permission: 'findings:read' },
   { to: '/app/members', label: 'Members', icon: Users },
   { to: '/app/audit', label: 'Audit log', icon: ScrollText, permission: 'audit:read' },
   { to: '/app/settings', label: 'Settings', icon: Settings },

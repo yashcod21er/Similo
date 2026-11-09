@@ -20,16 +20,16 @@ flowchart TB
 ```
 
 **Built in Phase 1:** the web app, the API, the AI service, the health checks between them, and the MongoDB connection code.
-**Planned:** Redis, workers, object storage and external sources (see the [roadmap](#roadmap)).
+**Phase 5:** Redis/BullMQ queueing, a separate monitoring worker, Certificate Transparency discovery, RDAP enrichment and tenant-scoped findings. Object storage and other source adapters remain planned (see the [roadmap](#roadmap)).
 
 ### Who is responsible for what
 
-| Component                  | Responsible for                                                             | Never does                                                              |
-| -------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| **Frontend** (`frontend/`) | UI, routing, forms, calling the API                                         | Hold secrets, enforce security (UI only hides things; the API enforces) |
-| **Backend** (`backend/`)   | Auth, organisations, RBAC, CRUD, validation, audit logs, enqueuing jobs     | Long-running monitoring or AI work inside a request                     |
-| **Workers** (Phase 5)      | Scheduled monitoring, enrichment, calling the AI service, creating findings | Serve browser traffic                                                   |
-| **AI service** (`ai/`)     | Similarity, OCR, embeddings, risk scoring, RAG                              | Talk to browsers, decide tenant access on its own                       |
+| Component                  | Responsible for                                                         | Never does                                                              |
+| -------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| **Frontend** (`frontend/`) | UI, routing, forms, calling the API                                     | Hold secrets, enforce security (UI only hides things; the API enforces) |
+| **Backend** (`backend/`)   | Auth, organisations, RBAC, CRUD, validation, audit logs, enqueuing jobs | Long-running monitoring or AI work inside a request                     |
+| **Workers** (Phase 5)      | Scheduled monitoring, source enrichment and finding creation            | Serve browser traffic                                                   |
+| **AI service** (`ai/`)     | Similarity, OCR, embeddings, risk scoring, RAG                          | Talk to browsers, decide tenant access on its own                       |
 
 ## 2. Why this shape
 
@@ -85,20 +85,20 @@ and HTTP-only cookies (Phase 2) work exactly as they will in production behind o
 
 ## 5. Security baseline
 
-| Concern               | Phase 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Planned                                                                                            |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Secrets               | Read from environment variables and validated at startup; `.env` is git-ignored; error messages name the variable but never show its value                                                                                                                                                                                                                                                                                                                                             | Secret manager in production                                                                       |
-| HTTP headers          | `helmet` (CSP, HSTS, nosniff, frame options); `X-Powered-By` removed                                                                                                                                                                                                                                                                                                                                                                                                                   | —                                                                                                  |
-| CORS                  | Allow-list only (`CORS_ORIGINS`), credentials enabled                                                                                                                                                                                                                                                                                                                                                                                                                                  | —                                                                                                  |
-| Body limits           | JSON bodies limited to 1 MB                                                                                                                                                                                                                                                                                                                                                                                                                                                            | —                                                                                                  |
-| Log hygiene           | `authorization`, `cookie` and `set-cookie` headers redacted; request logs keep only method, URL and status                                                                                                                                                                                                                                                                                                                                                                             | —                                                                                                  |
-| AI service            | Not exposed to browsers; `/docs` disabled in production                                                                                                                                                                                                                                                                                                                                                                                                                                | Shared service token on `/internal/*` (Phase 5)                                                    |
-| Auth / RBAC / tenancy | Phase 2: Argon2id passwords (at least 10 characters); a 15-minute HS256 JWT access token plus a random refresh token, both in HTTP-only, SameSite=Lax cookies (`__Host-` + Secure in production); only the refresh token's SHA-256 hash is stored (idle 7 d, absolute 30 d); five roles checked per route with `requirePermission`; role and membership read on every request. Trade-off: a copied access token keeps working for up to 15 minutes after sign-out or a password change | MFA and SSO (Phase 10)                                                                             |
-| Rate limiting         | Demo requests 5/15 min; sign-in 10/15 min; sign-up 5/h; invitation links 30/15 min (per client, `express-rate-limit`); account pause for 15 min after 5 wrong passwords                                                                                                                                                                                                                                                                                                                | Shared Redis store when the API runs on several instances                                          |
-| CSRF                  | Phase 2: SameSite=Lax cookies plus an `Origin` allow-list check on every POST/PATCH/DELETE (`verifyOrigin`)                                                                                                                                                                                                                                                                                                                                                                            | —                                                                                                  |
-| Audit                 | Phase 2: append-only audit log (sign-ins, failures, lockouts, invitations, role changes, removals) with actor, target, IP; Phase 4: every brand change                                                                                                                                                                                                                                                                                                                                 | Export and retention settings                                                                      |
-| File uploads          | Phase 4: brand logos only; `multer` in memory, 1 file of at most 1 MB, refused while it streams in; type decided by magic bytes (PNG, JPEG, WebP), never by the name or the browser's type; SVG and GIF refused; file name cleaned for display; served by a signed-in route with the sniffed `Content-Type`, `nosniff`, `Content-Security-Policy: default-src 'none'`, `Content-Disposition: inline`, `Cache-Control: private`                                                         | Malware scanning and object storage before any other file types are accepted                       |
-| SSRF                  | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Phase 5: URL fetchers block private/loopback/metadata IPs and re-check the IP after DNS resolution |
+| Concern               | Phase 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Planned                                                                      |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Secrets               | Read from environment variables and validated at startup; `.env` is git-ignored; error messages name the variable but never show its value                                                                                                                                                                                                                                                                                                                                             | Secret manager in production                                                 |
+| HTTP headers          | `helmet` (CSP, HSTS, nosniff, frame options); `X-Powered-By` removed                                                                                                                                                                                                                                                                                                                                                                                                                   | —                                                                            |
+| CORS                  | Allow-list only (`CORS_ORIGINS`), credentials enabled                                                                                                                                                                                                                                                                                                                                                                                                                                  | —                                                                            |
+| Body limits           | JSON bodies limited to 1 MB                                                                                                                                                                                                                                                                                                                                                                                                                                                            | —                                                                            |
+| Log hygiene           | `authorization`, `cookie` and `set-cookie` headers redacted; request logs keep only method, URL and status                                                                                                                                                                                                                                                                                                                                                                             | —                                                                            |
+| AI service            | Not exposed to browsers; `/docs` disabled in production                                                                                                                                                                                                                                                                                                                                                                                                                                | Shared service token for worker calls (planned)                              |
+| Auth / RBAC / tenancy | Phase 2: Argon2id passwords (at least 10 characters); a 15-minute HS256 JWT access token plus a random refresh token, both in HTTP-only, SameSite=Lax cookies (`__Host-` + Secure in production); only the refresh token's SHA-256 hash is stored (idle 7 d, absolute 30 d); five roles checked per route with `requirePermission`; role and membership read on every request. Trade-off: a copied access token keeps working for up to 15 minutes after sign-out or a password change | MFA and SSO (Phase 10)                                                       |
+| Rate limiting         | Demo requests 5/15 min; sign-in 10/15 min; sign-up 5/h; invitation links 30/15 min (per client, `express-rate-limit`); account pause for 15 min after 5 wrong passwords                                                                                                                                                                                                                                                                                                                | Shared Redis store when the API runs on several instances                    |
+| CSRF                  | Phase 2: SameSite=Lax cookies plus an `Origin` allow-list check on every POST/PATCH/DELETE (`verifyOrigin`)                                                                                                                                                                                                                                                                                                                                                                            | —                                                                            |
+| Audit                 | Phase 2: append-only audit log (sign-ins, failures, lockouts, invitations, role changes, removals) with actor, target, IP; Phase 4: every brand change                                                                                                                                                                                                                                                                                                                                 | Export and retention settings                                                |
+| File uploads          | Phase 4: brand logos only; `multer` in memory, 1 file of at most 1 MB, refused while it streams in; type decided by magic bytes (PNG, JPEG, WebP), never by the name or the browser's type; SVG and GIF refused; file name cleaned for display; served by a signed-in route with the sniffed `Content-Type`, `nosniff`, `Content-Security-Policy: default-src 'none'`, `Content-Disposition: inline`, `Cache-Control: private`                                                         | Malware scanning and object storage before any other file types are accepted |
+| Candidate fetching    | Phase 5 does not fetch candidate websites; CT and RDAP requests use fixed or IANA-listed hosts, HTTPS, redirects disabled and timeouts                                                                                                                                                                                                                                                                                                                                                 | Private-address checks for any future URL-fetching adapters                  |
 
 ## 6. Multi-tenancy and authorisation (built in Phase 2)
 
@@ -133,12 +133,12 @@ and HTTP-only cookies (Phase 2) work exactly as they will in production behind o
 
 The platform must not claim coverage it doesn't have. Each source is an adapter behind an interface, so a source that is not yet approved can be swapped for clearly labelled test fixtures.
 
-| Module            | Candidate sources                                                                                                      | Constraint                                                                                                                      |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Domain discovery  | ICANN CZDS zone files; Certificate Transparency logs; licensed newly-registered-domain feeds; fixtures for development | CZDS needs approval per TLD (apply early: days to weeks). RDAP is used **only for enrichment**; it cannot discover new domains. |
-| Domain enrichment | RDAP (via the IANA bootstrap registry)                                                                                 | Rate limits per registry; personal data is often redacted                                                                       |
-| Apps              | Apple iTunes Search API (public, documented); licensed data providers                                                  | There is no official public Google Play search API. The Play Developer API only covers your own apps.                           |
-| Trademarks        | IP India trademark journals (PDF); WIPO Global Brand Database where its terms permit                                   | No comprehensive global coverage; the OCR quality of journal PDFs varies                                                        |
+| Module            | Candidate sources                                                                                                               | Constraint                                                                                                                                              |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Domain discovery  | Phase 5: crt.sh Certificate Transparency search; reserved `.example` fixtures for development; future ICANN CZDS/licensed feeds | CT results are incomplete and delayed, and only cover names with certificates. CZDS needs approval per TLD. RDAP is **only enrichment**, not discovery. |
+| Domain enrichment | Phase 5: RDAP via the official IANA DNS bootstrap                                                                               | Registry rate limits apply; contact data is often redacted. Only registration date, registrar name and nameservers are stored.                          |
+| Apps              | Apple iTunes Search API (public, documented); licensed data providers                                                           | There is no official public Google Play search API. The Play Developer API only covers your own apps.                                                   |
+| Trademarks        | IP India trademark journals (PDF); WIPO Global Brand Database where its terms permit                                            | No comprehensive global coverage; the OCR quality of journal PDFs varies                                                                                |
 
 ## 8. Key decisions
 
@@ -189,20 +189,20 @@ The platform must not claim coverage it doesn't have. Each source is an adapter 
 
 ## Roadmap
 
-| Phase | Scope                                                                                      | Status                                 |
-| ----- | ------------------------------------------------------------------------------------------ | -------------------------------------- |
-| 0     | Repository inspection, architecture                                                        | ✅ Done                                |
-| 1     | Foundation: monorepo, web, API, AI service, config, logging, errors, health checks         | ✅ Done (Atlas connected and verified) |
-| 2     | Authentication, organisations, roles, protected routes                                     | ✅ Done                                |
-| 3     | Public website: 11 pages, brand checker hero, resources, demo-request form + API endpoint  | ✅ Done (redesigned to v2 "Clarity")   |
-| 4     | Brand management (brands, logos, domains, trademarks, monitoring config)                   | ✅ Done                                |
-| 5     | First end-to-end domain monitoring (discovery adapter, similarity, RDAP, BullMQ, findings) | Next                                   |
-| 6     | AI intelligence (text/image similarity, OCR, explainable risk scoring, evaluation set)     | —                                      |
-| 7     | Investigations and evidence (provenance, SHA-256, timeline, reports)                       | —                                      |
-| 8     | RAG assistant (ingestion, embeddings, vector search, cited answers, drafts)                | —                                      |
-| 9     | App and trademark monitoring                                                               | —                                      |
-| 10    | Production readiness (security audit, performance, deployment, backups)                    | —                                      |
-| Later | MCP server (read-only tools, permission-checked)                                           | Extension point only                   |
+| Phase | Scope                                                                                      | Status                                   |
+| ----- | ------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| 0     | Repository inspection, architecture                                                        | ✅ Done                                  |
+| 1     | Foundation: monorepo, web, API, AI service, config, logging, errors, health checks         | ✅ Done (Atlas connected and verified)   |
+| 2     | Authentication, organisations, roles, protected routes                                     | ✅ Done                                  |
+| 3     | Public website: 11 pages, brand checker hero, resources, demo-request form + API endpoint  | ✅ Done (redesigned to v2 "Clarity")     |
+| 4     | Brand management (brands, logos, domains, trademarks, monitoring config)                   | ✅ Done                                  |
+| 5     | First end-to-end domain monitoring (discovery adapter, similarity, RDAP, BullMQ, findings) | Implemented; Redis required to run scans |
+| 6     | AI intelligence (text/image similarity, OCR, explainable risk scoring, evaluation set)     | —                                        |
+| 7     | Investigations and evidence (provenance, SHA-256, timeline, reports)                       | —                                        |
+| 8     | RAG assistant (ingestion, embeddings, vector search, cited answers, drafts)                | —                                        |
+| 9     | App and trademark monitoring                                                               | —                                        |
+| 10    | Production readiness (security audit, performance, deployment, backups)                    | —                                        |
+| Later | MCP server (read-only tools, permission-checked)                                           | Extension point only                     |
 
 ### Phase 2 — accounts, organisations and roles
 
@@ -237,7 +237,7 @@ organisation's brand id answers 404, like an id that never existed).
 | `POST /brands`, `PATCH`/`DELETE /brands/:brandId`                              | Owner, Admin | Create; change name, description, keywords, status; delete (its logos too)                                   |
 | `POST /brands/:brandId/domains`, `DELETE …/domains/:domain`                    | Owner, Admin | Official domains, normalised (`https://www.Example.com/x` → `example.com`; `bücher.de` → `xn--bcher-kva.de`) |
 | `POST /brands/:brandId/trademarks`, `PATCH`/`DELETE …/trademarks/:trademarkId` | Owner, Admin | Trademarks entered by hand: mark, office, number, Nice classes, status, date                                 |
-| `PUT /brands/:brandId/monitoring`                                              | Owner, Admin | Monitoring settings (stored only; nothing scans until Phase 5)                                               |
+| `PUT /brands/:brandId/monitoring`                                              | Owner, Admin | Monitoring settings used by Phase 5 domain scans; apps and trademarks are saved for later phases             |
 | `POST /brands/:brandId/logos`, `DELETE …/logos/:logoId`                        | Owner, Admin | Upload (multipart field `logo`) or remove a logo                                                             |
 | `GET /brands/:brandId/logos/:logoId`                                           | All roles    | The logo image, with the safe headers listed in §5                                                           |
 
@@ -247,6 +247,35 @@ of at most 1 MB. Brand names are unique per organisation, ignoring case (unique 
 (`brand.created`, `brand.domain_added`, `brand.logo_uploaded`, …). Data lives in the `brands`
 and `brand_logos` collections, and every document carries `organizationId`. `npm run seed:demo`
 adds one sample brand, "Northwind Coffee (sample data)", on reserved `.example` domains.
+
+### Phase 5 — first domain monitoring
+
+The API queues work in BullMQ and a separate worker scans active brands whose domain monitoring
+is enabled. A scheduled sweep runs every `DOMAIN_SCAN_INTERVAL_HOURS` (default 24); Owners,
+Admins and Analysts can also queue an on-demand scan with `POST /api/v1/brands/:brandId/scan`
+(limited to 10 requests per hour per client). The worker reads each tenant's brands by that
+tenant's `organizationId` and carries both IDs in every scan job.
+
+`DOMAIN_DISCOVERY_SOURCE=crtsh` searches recent crt.sh Certificate Transparency results for
+brand names, keywords and official-domain labels. It uses a 90-day lookback and does not claim
+complete registration coverage. `fixtures` (the development default) produces reserved
+`.example` results, which are labelled as development fixtures in the UI; production refuses
+fixture mode. The name-similarity score is a heuristic with a threshold set by the brand's
+sensitivity. A qualifying CT candidate is enriched via the official IANA RDAP DNS bootstrap;
+RDAP does not discover domains. Registry failures leave a finding without registration details
+instead of discarding the CT candidate.
+
+Findings are unique per organisation, brand and normalized domain. They retain first/last-seen
+times, source references, match reasons and limited registration metadata, but no RDAP contact
+records. `GET /api/v1/findings` is tenant-scoped and cursor-paginated; `PATCH /api/v1/findings/:id`
+lets Owners, Admins and Analysts update review status. The dashboard lists and reviews findings
+at `/app/findings`; status changes are written to the append-only audit log.
+
+Set `REDIS_URL` and run `npm run dev` to start the worker with the API, or run
+`npm run dev:worker` separately. Without Redis, the API remains available, the status page shows
+the monitoring queue as not configured, and scan requests return 503. Phase 5 does not fetch
+candidate websites; network requests go only to the fixed crt.sh and IANA bootstrap endpoints or
+RDAP servers named by IANA, with redirects disabled and timeouts applied.
 
 ### Phase 3 — public website
 

@@ -167,12 +167,23 @@ export function AppSignals({ shownCount }: { shownCount: number }) {
 const STEP_COUNT = 10;
 
 /** The App page's hero scene: your listing, the copycat, named signals, a person decides. */
-export function AppScene() {
+export function AppScene({
+  tone = 'dark',
+  index,
+}: {
+  /** The band the scene sits on (sets the caption colour; the window stays dark). */
+  tone?: 'light' | 'dark';
+  index?: string;
+} = {}) {
   const { ref, step } = useSceneStep(STEP_COUNT, 1150);
   const signals = step >= 3 ? Math.min(step - 2, 4) : 0;
   const stage = step >= 8 ? 2 : step >= 7 ? 1 : 0;
   return (
-    <SceneFigure label="Illustrative example: an app store listing for a copycat app next to your real app, with separate icon and name similarity scores, a publisher check and a permissions check, then a person reviews it.">
+    <SceneFigure
+      tone={tone}
+      {...(index ? { index } : {})}
+      label="Illustrative example: an app store listing for a copycat app next to your real app, with separate icon and name similarity scores, a publisher check and a permissions check, then a person reviews it."
+    >
       <AppWindow tone="dark" title="App listings" url="app.similo.example/apps">
         <div ref={ref} className={cn(WINDOW_BODY, 'p-4 @lg:p-5')}>
           <div className="grid grid-cols-2 items-stretch gap-3">

@@ -5,8 +5,7 @@ their protected brands. Similo then monitors domains, apps and trademark publica
 for look-alikes, explains why each one was flagged, and supports analysts through
 investigation, evidence collection and legal drafting. A person always makes the final decision.
 
-> **Status:** Phases 1 (foundation), 2 (accounts, organisations and roles), 3 (public website)
-> and 4 (brand management) are complete, on MongoDB Atlas. Phase 5 (first domain monitoring) is next.
+> **Status:** Phases 1–5 are implemented: foundation, accounts and roles, public website, brand management, and the first domain-monitoring pipeline. Phase 5 needs Redis to run scans; the development fixture source uses reserved `.example` domains.
 > See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#roadmap) and [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md).
 
 ## Repository layout
@@ -46,7 +45,7 @@ Also needed:
 - **MongoDB Atlas** connection string (accounts and sign-in need it). Without it the website
   and API still run, the status page shows the database as "not configured", and sign-in
   answers "the database is not connected".
-- **Redis.** Not needed until Phase 5 (background jobs).
+- **Redis.** Phase 5 uses Redis for BullMQ. The API still runs without Redis, but scans are disabled until `REDIS_URL` is set and the worker is running. Redis options include WSL2, Memurai on Windows, or Redis Cloud.
 
 ## Quick start
 
@@ -60,9 +59,10 @@ uv sync --directory ai
 # 3. Create local environment files from the templates (Windows: use `copy`)
 cp backend/.env.example backend/.env
 cp ai/.env.example ai/.env
-#    Then set MONGODB_URI in backend/.env if you have an Atlas cluster.
+#    Set MONGODB_URI in backend/.env if you have an Atlas cluster. For Phase 5,
+#    set REDIS_URL to your Redis connection string (redis:// or rediss://).
 
-# 4. Start the frontend, backend and AI service together
+# 4. Start the frontend, API, AI service and monitoring worker together
 npm run dev
 ```
 
@@ -82,7 +82,8 @@ to MongoDB; until `MONGODB_URI` is set it shows an honest "could not save" messa
 
 | Command                                            | What it does                                                                                              |
 | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `npm run dev`                                      | Run the frontend, backend and AI service together (`dev:frontend`, `dev:backend`, `dev:ai` run one)       |
+| `npm run dev`                                      | Run the frontend, backend, AI service and domain-monitoring worker together                               |
+| `npm run dev:worker`                               | Run just the domain-monitoring worker                                                                     |
 | `npm test`                                         | Frontend and backend tests (Vitest)                                                                       |
 | `npm run test:ai`                                  | AI service tests (pytest)                                                                                 |
 | `npm run typecheck`                                | TypeScript type check for all workspaces                                                                  |
@@ -139,11 +140,15 @@ In the dashboard, **Brands** lets you record for each brand:
   UKIPO or other), the registration or application number, the Nice classes and the status;
 - up to 5 **logos** (PNG, JPEG or WebP, at most 1 MB each; the file's contents are checked,
   not just its name, and SVG files are not accepted because they can contain scripts);
-- **monitoring settings**: which channels to watch, how sensitive alerts should be, and whether
-  to email alerts.
+- **monitoring settings**: whether to watch domains, apps or trademark filings, how sensitive
+  domain matches should be, and whether to email alerts. Phase 5 runs domain checks; app,
+  trademark and email alerts remain future work.
 
-Monitoring itself starts in Phase 5. Today these settings are saved but nothing scans yet, and
-the dashboard says so.
+Domain monitoring queues daily and on-demand scans when Redis and the worker are configured.
+The development fixture source creates clearly labelled `.example` findings. Set
+`DOMAIN_DISCOVERY_SOURCE=crtsh` to search Certificate Transparency data; its coverage is
+incomplete and delayed, so findings are leads for human review. RDAP enriches matches but does
+not discover domains. App and trademark monitoring and email alerts are not active yet.
 
 | Role                                          | Brands                         |
 | --------------------------------------------- | ------------------------------ |

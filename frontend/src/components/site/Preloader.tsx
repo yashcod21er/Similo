@@ -50,9 +50,7 @@ export function Preloader() {
           </svg>
         </div>
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between px-5 pb-6 sm:px-8 sm:pb-8">
-          <span className="text-[12.5px] font-medium tracking-[0.06em] text-cream/60 uppercase">
-            Similo
-          </span>
+          <span className="text-micro text-cream/65">Similo</span>
           <span
             ref={counterRef}
             className="text-[clamp(3rem,2rem+5vw,6rem)] leading-none font-semibold tracking-[-0.05em] text-cream tabular-nums"

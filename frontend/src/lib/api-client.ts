@@ -7,7 +7,15 @@
  * deal with real data or a single error type.
  */
 
-export const API_BASE_PATH = '/api/v1';
+const configuredApiOrigin = import.meta.env.VITE_API_BASE_URL?.trim().replace(/\/+$/, '');
+
+/**
+ * Use a same-origin API by default (Vite proxies `/api` during development).
+ * Production hosts can set `VITE_API_BASE_URL` when the API is deployed separately.
+ */
+export const API_BASE_PATH = configuredApiOrigin
+  ? `${configuredApiOrigin}/api/v1`
+  : '/api/v1';
 
 interface ApiErrorInit {
   status: number;

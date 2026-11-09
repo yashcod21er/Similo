@@ -1,23 +1,26 @@
-import { Clock3, KeyRound, Mail, Spline } from 'lucide-react';
-import { CtaBand, FeatureCard, Section, SplitHero } from '@/components/marketing/sections';
-import { SectionHeading } from '@/components/ui/layout';
+import { Section } from '@/components/marketing/sections';
+import { Reveal } from '@/components/ui/Reveal';
+import { DomainScene } from '@/components/visuals/domain';
+import { DomainSwapExhibit, PageCompareExhibit } from '@/components/visuals/exhibits';
 import {
-  DomainComparePanel,
-  DomainDecisionPanel,
-  DomainEvidencePanel,
-  DomainScene,
-  DomainWatchPanel,
-  PageCompareVisual,
-} from '@/components/visuals/domain';
-import { CardGrid, FaqBlock, SplitSection, StoryBand, Timeline, type StoryItem } from './page-kit';
+  FaqBlock,
+  OrangeBand,
+  PageHero,
+  SectionHead,
+  SpecimenGrid,
+  StepsWithScene,
+  Timeline,
+  type SpecimenData,
+  type Step,
+} from './page-kit';
 
 const STORY = [
   {
     when: 'Day 0',
     text: (
       <>
-        Someone registers <span className="font-mono text-[0.95em]">acrne-login.com</span>. Read
-        quickly, it looks just like <span className="font-mono text-[0.95em]">acme.com</span>.
+        Someone registers <span className="font-mono text-[0.95em]">acrne.com</span>. Read quickly,
+        it looks just like <span className="font-mono text-[0.95em]">acme.com</span>.
       </>
     ),
   },
@@ -33,65 +36,53 @@ const STORY = [
   },
 ];
 
-const KINDS = [
+const KINDS: SpecimenData[] = [
   {
-    icon: Spline,
     title: 'Lookalike spelling',
     text: 'Swapped, missing or lookalike letters that are easy to miss at a glance.',
     example: 'acrne.com (r and n together look like m)',
+    hood: 'Edit distance and homoglyph checks.',
   },
   {
-    icon: KeyRound,
     title: 'Fake sign-in pages',
     text: 'Copies of your login page, built to collect customer or staff passwords.',
     example: 'acme-sso-login.net',
+    hood: 'Page capture and visual comparison.',
   },
   {
-    icon: Mail,
     title: 'Fake invoice emails',
     text: 'Names set up to send email, used to ask your clients to pay the wrong account.',
     example: 'billing@acme-invoices.co',
+    hood: 'DNS records show whether a name can send mail.',
   },
   {
-    icon: Clock3,
     title: 'Sleeper sites',
     text: 'Registered and left quiet for weeks, then suddenly switched on.',
     example: 'quiet for 60 days, then live',
+    hood: 'Registration dates (RDAP) and re-checks.',
   },
 ];
 
-const STORY_ITEMS: StoryItem[] = [
+const STEPS: Step[] = [
   {
-    label: 'Watch',
-    title: 'Every new website name, as it appears.',
-    description:
-      'We regularly check newly registered website names and security certificates from approved sources.',
-    detail: 'Under the hood: zone files, Certificate Transparency logs',
-    visual: <DomainWatchPanel />,
+    title: 'Watch every new website name, as it appears.',
+    text: 'We regularly check newly registered website names and security certificates from approved sources.',
+    hood: 'Zone files, Certificate Transparency logs.',
   },
   {
-    label: 'Compare',
-    title: 'Your name, letter by letter, and the page itself.',
-    description:
-      'Each name is compared with yours. We also look at the page itself, who registered the name and when, and what it is set up to do.',
-    detail: 'Under the hood: edit distance, homoglyphs, RDAP, DNS records',
-    visual: <DomainComparePanel />,
+    title: 'Compare your name, letter by letter, and the page itself.',
+    text: 'We also look at who registered the name and when, and what it is set up to do.',
+    hood: 'Edit distance, homoglyphs, RDAP, DNS records.',
   },
   {
-    label: 'Explain',
-    title: 'A risk level, the reasons, and the proof.',
-    description:
-      'Anything suspicious gets a risk level and the reasons behind it, in plain words. Every capture is saved with its time and a fingerprint.',
-    detail: 'Under the hood: reason codes, SHA-256 hashes',
-    visual: <DomainEvidencePanel />,
+    title: 'Explain with a risk level, the reasons and the proof.',
+    text: 'Anything suspicious gets a risk level and the reasons behind it, in plain words. Every capture is saved with its time and a fingerprint.',
+    hood: 'Reason codes, SHA-256 hashes.',
   },
   {
-    label: 'You decide',
-    title: 'A person reviews it. Nothing happens without one.',
-    description:
-      'Your team reviews the evidence. Nothing is sent or taken down without a person approving it. A false alarm can be dismissed with a reason.',
-    detail: 'Under the hood: human approval, audit log',
-    visual: <DomainDecisionPanel />,
+    title: 'A person decides. Nothing happens without one.',
+    text: 'Nothing is sent or taken down without a person approving it. A false alarm can be dismissed with a reason.',
+    hood: 'Human approval, audit log.',
   },
 ];
 
@@ -131,67 +122,65 @@ const FAQ = [
 export function DomainIntelligencePage() {
   return (
     <>
-      <SplitHero
-        eyebrow="Domain Intelligence"
+      <PageHero
+        label="Case 01 · Websites"
         title={
           <>
-            Spot fake websites <em className="text-accent-soft">before they fool anyone.</em>
+            Spot fake websites <em>before they fool anyone.</em>
           </>
         }
-        description="Similo watches new website names for ones that look like yours, checks what each one is set up to do, and tells you in plain words why it looks risky."
-        secondaryCta={{ label: 'Read the guide', to: '/resources/lookalike-domains-explained' }}
-        visual={<DomainScene />}
+        description="Similo watches new website names for ones that look like yours, and tells you in plain words why each looks risky."
+        secondary={{ label: 'Read the guide', to: '/resources/lookalike-domains-explained' }}
+        visual={<DomainSwapExhibit />}
       />
 
-      <Section>
-        <SplitSection
-          text={
-            <>
-              <SectionHeading
-                eyebrow="The problem"
-                title="A copy of your website can go live in days."
-                description="Anyone can register a name that looks like yours for a few dollars. Because the website isn’t yours, your own security tools never see it."
-              />
+      <Section scaffold tone="white">
+        <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
+          <div>
+            <SectionHead
+              label="The problem"
+              title="A copy of your website can go live in days."
+              description="Anyone can register a name that looks like yours for a few dollars. Because the website isn’t yours, your own security tools never see it."
+            />
+            <Reveal delay={0.1}>
               <Timeline items={STORY} />
-            </>
-          }
-          media={<PageCompareVisual />}
-        />
+            </Reveal>
+          </div>
+          <Reveal className="min-w-0">
+            <PageCompareExhibit />
+          </Reveal>
+        </div>
       </Section>
 
-      <StoryBand
-        eyebrow="How it works"
-        title={
-          <>
-            The same four steps for <em>every</em> website.
-          </>
-        }
-        description="Nothing reaches your team without evidence, and nothing is dismissed without a reason."
-        items={STORY_ITEMS}
-      />
+      <Section scaffold tone="dark">
+        <SectionHead
+          tone="dark"
+          label="How it works"
+          title="The same four steps for every website."
+          description="Nothing reaches your team without evidence, and nothing is dismissed without a reason."
+        />
+        <div className="mt-14 lg:mt-20">
+          <StepsWithScene
+            tone="dark"
+            steps={STEPS}
+            scene={<DomainScene tone="dark" index="03" />}
+          />
+        </div>
+      </Section>
 
-      <Section tone="white">
-        <SectionHeading
-          eyebrow="What we look for"
+      <Section scaffold>
+        <SectionHead
+          label="What we look for"
           title="Four kinds of fake website."
           description="Each one is checked differently, so a harmless-looking name can still be caught."
         />
-        <CardGrid columns={4} className="mt-12">
-          {KINDS.map((kind) => (
-            <FeatureCard
-              key={kind.title}
-              icon={<kind.icon aria-hidden className="size-5" />}
-              title={kind.title}
-              description={kind.text}
-            >
-              <p className="text-[13px] text-muted">Example: {kind.example}</p>
-            </FeatureCard>
-          ))}
-        </CardGrid>
+        <div className="mt-14 lg:mt-20">
+          <SpecimenGrid items={KINDS} columns={4} />
+        </div>
       </Section>
 
       <FaqBlock
-        tone="light"
+        tone="white"
         title="Questions, answered."
         description="The things people usually ask before they start watching their website names."
         items={FAQ}
@@ -201,13 +190,9 @@ export function DomainIntelligencePage() {
         }}
       />
 
-      <CtaBand
-        eyebrow="Domain review"
-        title={
-          <>
-            See which websites are <em>pretending</em> to be you.
-          </>
-        }
+      <OrangeBand
+        label="Domain review"
+        title="See which websites are pretending to be you."
         description="Tell us your main website addresses and we’ll walk you through how lookalikes are found, explained and reviewed."
         primary={{ label: 'Request a domain review', to: '/contact' }}
         secondary={{ label: 'How the AI decides', to: '/technology' }}

@@ -169,11 +169,22 @@ export function DraftLetter({ shown, approved }: { shown: boolean; approved: boo
 const STEP_COUNT = 9;
 
 /** The Investigation page's hero scene: a case timeline being assembled. */
-export function EvidenceScene() {
+export function EvidenceScene({
+  tone = 'dark',
+  index,
+}: {
+  /** The band the scene sits on (sets the caption colour; the window stays dark). */
+  tone?: 'light' | 'dark';
+  index?: string;
+} = {}) {
   const { ref, step } = useSceneStep(STEP_COUNT, 1300);
   const count = Math.min(step + 1, EVENTS.length);
   return (
-    <SceneFigure label="Illustrative example: a case timeline being built. A page screenshot is captured, its fingerprint is recorded, a registration record and an analyst note are added, a draft takedown letter is prepared, and a legal reviewer approves it for a person to send.">
+    <SceneFigure
+      tone={tone}
+      {...(index ? { index } : {})}
+      label="Illustrative example: a case timeline being built. A page screenshot is captured, its fingerprint is recorded, a registration record and an analyst note are added, a draft takedown letter is prepared, and a legal reviewer approves it for a person to send."
+    >
       <AppWindow tone="dark" title="Case 0142" url="app.similo.example/cases/fake-sign-in-pages">
         <div ref={ref} className={cn(WINDOW_BODY, 'p-4 @lg:p-5')}>
           <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/[0.07] pb-3.5">
@@ -404,7 +415,8 @@ export function VanishingPage() {
     <SceneFigure
       tone="light"
       label="Illustrative example: a fake sign-in page that is online on day one and gone by day four. Similo's saved copy of the page, with its fingerprint, is still there."
-      caption="Illustrative example: the page and the fingerprint are made up."
+      index="02"
+      caption="Sample page and fingerprint, made up."
     >
       <div className="rounded-2xl bg-cream-deep/70 p-4 shadow-card ring-1 ring-line sm:p-5">
         <div className="grid grid-cols-2 gap-3 sm:gap-4">

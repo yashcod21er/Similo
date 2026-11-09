@@ -12,10 +12,11 @@
     "node": ">=22.12"
   },
   "scripts": {
-    "dev": "concurrently --names frontend,backend,ai --prefix-colors cyan,green,magenta \"npm:dev:frontend\" \"npm:dev:backend\" \"npm:dev:ai\"",
+    "dev": "concurrently --names frontend,backend,ai,worker --prefix-colors cyan,green,magenta,yellow \"npm:dev:frontend\" \"npm:dev:backend\" \"npm:dev:ai\" \"npm:dev:worker\"",
     "dev:frontend": "npm run dev --workspace @similo/frontend",
     "dev:backend": "npm run dev --workspace @similo/backend",
     "dev:ai": "uv run --directory ai uvicorn app.main:app --reload --port 8000",
+    "dev:worker": "npm run dev:worker --workspace @similo/backend",
     "build": "npm run build --workspaces",
     "typecheck": "npm run typecheck --workspaces",
     "lint": "eslint .",

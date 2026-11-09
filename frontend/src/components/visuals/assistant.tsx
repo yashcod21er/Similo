@@ -25,8 +25,10 @@ function Cite({ id }: { id: number }) {
 export function AssistantScene({
   className,
   tone = 'dark',
+  index,
 }: {
   className?: string;
+  index?: string;
   /** The band the scene sits on, which sets the caption colour. The window stays dark. */
   tone?: 'light' | 'dark';
 }) {
@@ -35,6 +37,7 @@ export function AssistantScene({
     <SceneFigure
       className={className}
       tone={tone}
+      {...(index ? { index } : {})}
       label="Illustrative example: someone asks why an alert was flagged. The assistant answers from the case records, cites three of them by number, and says that who operates the website is not in the records."
     >
       <AppWindow

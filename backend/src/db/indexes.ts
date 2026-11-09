@@ -1,6 +1,7 @@
 import { AuditEventModel } from '../modules/audit/audit.model.js';
 import { BrandLockModel, BrandLogoModel, BrandModel } from '../modules/brands/brand.model.js';
 import { DemoRequestModel } from '../modules/demo-requests/demo-request.model.js';
+import { FindingModel } from '../modules/findings/finding.model.js';
 import {
   InviteModel,
   MembershipModel,
@@ -20,6 +21,7 @@ export const ALL_MODELS = [
   BrandModel,
   BrandLogoModel,
   BrandLockModel,
+  FindingModel,
 ];
 
 /**

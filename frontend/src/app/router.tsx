@@ -132,6 +132,11 @@ export const router = createBrowserRouter([
           })),
       },
       {
+        path: 'findings',
+        lazy: () =>
+          import('@/features/findings/FindingsPage').then((m) => ({ Component: m.FindingsPage })),
+      },
+      {
         path: 'members',
         lazy: () =>
           import('@/features/organization/MembersPage').then((m) => ({ Component: m.MembersPage })),

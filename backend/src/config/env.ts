@@ -52,6 +52,16 @@ const envSchema = z
     ),
     AI_SERVICE_URL: z.url().default('http://localhost:8000'),
     AI_SERVICE_TIMEOUT_MS: z.coerce.number().int().positive().default(3000),
+    REDIS_URL: optionalString.refine((value) => {
+      if (value === undefined) return true;
+      try {
+        return ['redis:', 'rediss:'].includes(new URL(value).protocol);
+      } catch {
+        return false;
+      }
+    }, 'must be a valid redis:// or rediss:// URL'),
+    DOMAIN_DISCOVERY_SOURCE: z.enum(['fixtures', 'crtsh']).default('fixtures'),
+    DOMAIN_SCAN_INTERVAL_HOURS: z.coerce.number().int().min(1).max(168).default(24),
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV === 'production' && !env.MONGODB_URI) {
@@ -63,6 +73,16 @@ const envSchema = z
     }
     if (env.NODE_ENV === 'production' && !env.JWT_SECRET) {
       ctx.addIssue({ code: 'custom', path: ['JWT_SECRET'], message: 'is required in production' });
+    }
+    if (env.NODE_ENV === 'production' && !env.REDIS_URL) {
+      ctx.addIssue({ code: 'custom', path: ['REDIS_URL'], message: 'is required in production' });
+    }
+    if (env.NODE_ENV === 'production' && env.DOMAIN_DISCOVERY_SOURCE !== 'crtsh') {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['DOMAIN_DISCOVERY_SOURCE'],
+        message: 'must be crtsh in production; fixture detections are development-only',
+      });
     }
   });
 

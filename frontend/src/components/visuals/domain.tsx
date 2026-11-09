@@ -196,7 +196,14 @@ export function RdapFacts({ shown }: { shown: boolean }) {
 const STEP_COUNT = 11;
 
 /** The Domain page's hero scene. */
-export function DomainScene() {
+export function DomainScene({
+  tone = 'dark',
+  index,
+}: {
+  /** The band the scene sits on (sets the caption colour; the window stays dark). */
+  tone?: 'light' | 'dark';
+  index?: string;
+} = {}) {
   const { ref, step } = useSceneStep(STEP_COUNT, 1100);
   const count = Math.min(step + 1, FEED.length);
   const scored = Math.min(Math.max(step, 0), FEED.length);
@@ -205,7 +212,11 @@ export function DomainScene() {
   const stage = step >= 9 ? 2 : step >= 8 ? 1 : 0;
 
   return (
-    <SceneFigure label="Illustrative example: a look-alike website name arrives in a feed of new registrations, is flagged with separate text, visual and meaning scores, its registration facts and a page capture are saved, and a person reviews it.">
+    <SceneFigure
+      tone={tone}
+      {...(index ? { index } : {})}
+      label="Illustrative example: a look-alike website name arrives in a feed of new registrations, is flagged with separate text, visual and meaning scores, its registration facts and a page capture are saved, and a person reviews it."
+    >
       <AppWindow tone="dark" title="Domains" url="app.similo.example/domains">
         <div
           ref={ref}
