@@ -1,31 +1,45 @@
-import { ArrowDown, ArrowRight, Globe, Smartphone, Stamp } from 'lucide-react';
+import { ArrowDown, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
-import { lazy, Suspense, useCallback, useState, type ReactNode } from 'react';
+import { lazy, Suspense, useCallback, useRef, useState, type ReactNode } from 'react';
+import { introDelay } from '@/components/motion/intro';
 import { SimilarityWave } from '@/components/motion/SimilarityWave';
 import { ButtonLink } from '@/components/ui/Button';
 import { buttonClasses } from '@/components/ui/button-styles';
-import { Container, Eyebrow } from '@/components/ui/layout';
+import { Eyebrow } from '@/components/ui/layout';
+import { LogoMark } from '@/components/ui/Logo';
+import { cn } from '@/lib/cn';
 
 // three.js is only downloaded on the home page, after the text is on screen.
-const DomainGlobe = lazy(() => import('@/components/motion/DomainGlobe'));
-
-const SOURCES = [
-  { icon: Globe, label: 'Newly registered websites' },
-  { icon: Smartphone, label: 'App store listings' },
-  { icon: Stamp, label: 'Trademark journals' },
-];
+const GlassMark = lazy(() => import('@/components/motion/GlassMark'));
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+/** The page gutter, as in `Container` (spans, because they sit inside the h1). */
+const GUTTER = 'mx-auto block w-full max-w-7xl px-4 sm:px-6 lg:px-8';
+
+/** The glow behind the word; GlassMark paints the same gradient into its refraction. */
+const GLOW =
+  'radial-gradient(closest-side, rgba(194, 80, 10, 0.26), rgba(194, 80, 10, 0.09) 45%, rgba(194, 80, 10, 0))';
+
 /** One headline line that slides up from behind a mask. */
-function Line({ children, index }: { children: ReactNode; index: number }) {
+function Line({
+  children,
+  index,
+  delay,
+  className,
+}: {
+  children: ReactNode;
+  index: number;
+  delay: number;
+  className?: string;
+}) {
   return (
-    <span className="block overflow-hidden pb-[0.08em]">
+    <span className={cn('block overflow-hidden pb-[0.08em]', className)}>
       <motion.span
         className="block"
         initial={{ y: '105%' }}
         animate={{ y: 0 }}
-        transition={{ duration: 1, delay: 0.15 + index * 0.09, ease: EASE }}
+        transition={{ duration: 1, delay: delay + 0.1 + index * 0.09, ease: EASE }}
       >
         {children}
       </motion.span>
@@ -34,64 +48,97 @@ function Line({ children, index }: { children: ReactNode; index: number }) {
 }
 
 /**
- * Home hero ("bold and immersive"): a full-screen night band with a 3D globe of
- * the world's domains, where copycats flare up and are traced back to your brand,
- * and a giant headline. Falls back to the 2D SimilarityWave without WebGL.
+ * Home hero (v5, "dark luxury"): the giant word "copycats" runs edge to edge across a night
+ * band, and the logo's ∼ floats in front of it in 3D: the original half polished black, the
+ * copy half smoked burnt-orange glass that refracts the word. The halves drift apart and snap
+ * back together (original vs copy). Without WebGL the 2D logo tile and a calm SimilarityWave
+ * stand in.
+ *
+ * Layers: the giant word (z-0) < the 3D canvas (z-10) < every other line of text (z-20), so the
+ * mark never covers the reading text or the buttons.
  */
 export function HomeHero() {
   const [webglFailed, setWebglFailed] = useState(false);
   const onFail = useCallback(() => setWebglFailed(true), []);
+  // When the site intro plays, the entrance waits for its curtain to lift.
+  const [delay] = useState(introDelay);
+  const wordRef = useRef<HTMLSpanElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-night text-cream">
+    <section className="relative isolate flex min-h-[calc(100svh-4rem)] flex-col overflow-hidden bg-night text-cream">
       <div aria-hidden className="absolute inset-0 -z-10">
-        {/* A warm glow behind the globe. */}
-        <div className="absolute top-[18%] right-[-10%] aspect-square w-[90vw] max-w-[820px] rounded-full bg-accent/12 blur-[140px] lg:right-[2%] lg:w-[55vw]" />
-        {webglFailed ? (
-          <SimilarityWave tone="dark" density="full" />
-        ) : (
-          <Suspense fallback={null}>
-            <DomainGlobe
-              onFail={onFail}
-              className="absolute top-[34%] right-[-45%] h-[78%] w-[150%] opacity-60 sm:right-[-25%] sm:w-[110%] lg:top-[4%] lg:right-[-6%] lg:h-[96%] lg:w-[64%] lg:opacity-100"
-            />
-          </Suspense>
+        <div
+          ref={glowRef}
+          className="absolute top-[50%] left-1/2 aspect-square w-[130vw] max-w-[1400px] -translate-x-1/2 -translate-y-1/2"
+          style={{ backgroundImage: GLOW }}
+        />
+        {webglFailed && (
+          // Kept behind the giant word and faded out before the reading text.
+          <div className="absolute inset-x-0 top-[22%] h-[48%] opacity-70 [mask-image:linear-gradient(to_bottom,transparent,black_30%,black_60%,transparent)]">
+            <SimilarityWave tone="dark" density="calm" />
+          </div>
         )}
-        {/* Keep the headline side calm. */}
-        <div className="absolute inset-0 bg-linear-to-b from-night/80 via-night/40 to-night lg:bg-linear-to-r lg:from-night lg:via-night/70 lg:to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-night to-transparent" />
       </div>
 
-      <Container className="flex flex-1 flex-col justify-center pt-28 pb-12 lg:pt-28 lg:pb-14">
+      {!webglFailed && (
+        <Suspense fallback={null}>
+          <GlassMark
+            anchorRef={wordRef}
+            glowRef={glowRef}
+            onFail={onFail}
+            showAfterMs={Math.round((delay + 1.1) * 1000)}
+            className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
+          />
+        </Suspense>
+      )}
+
+      <div className="flex flex-1 flex-col justify-center pt-14 pb-10 sm:pt-16 lg:pt-12 lg:pb-12">
         <motion.div
+          className={cn(GUTTER, 'relative z-20')}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, ease: EASE }}
+          transition={{ duration: 0.8, delay, ease: EASE }}
         >
           <Eyebrow tone="dark">Brand protection for websites, apps and trademarks</Eyebrow>
         </motion.div>
 
-        <h1 className="text-mega mt-6 max-w-[13ch] font-semibold text-cream">
-          <Line index={0}>Find the</Line> <Line index={1}>copycats</Line>{' '}
-          <Line index={2}>
-            <em className="text-accent-soft">before your</em>
-          </Line>{' '}
-          <Line index={3}>
-            <em className="text-accent-soft">customers do.</em>
-          </Line>
+        <h1 className="mt-6 font-semibold text-cream lg:mt-4">
+          <span className={cn(GUTTER, 'text-hero-line relative z-20')}>
+            <Line index={0} delay={delay}>
+              Find the
+            </Line>
+          </span>{' '}
+          <span className="relative z-0 block py-2 sm:py-0">
+            <Line index={1} delay={delay} className="text-giant text-center">
+              <span ref={wordRef}>copycats</span>
+            </Line>
+            {webglFailed && (
+              <LogoMark className="absolute top-1/2 left-1/2 size-auto h-[48%] -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_16px_40px_rgb(0_0_0/0.55)]" />
+            )}
+          </span>{' '}
+          <span className={cn(GUTTER, 'text-hero-line relative z-20 text-right')}>
+            <Line index={2} delay={delay}>
+              <em className="text-accent-soft">before your customers do.</em>
+            </Line>
+          </span>
         </h1>
 
         <motion.div
+          className={cn(
+            GUTTER,
+            'relative z-20 mt-10 flex flex-col gap-8 lg:mt-12 lg:flex-row lg:items-end lg:justify-between',
+          )}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.6, ease: EASE }}
+          transition={{ duration: 0.9, delay: delay + 0.55, ease: EASE }}
         >
-          <p className="text-lead mt-8 max-w-xl text-pretty text-cream/75">
+          <p className="text-lead max-w-xl text-pretty text-cream/75">
             Similo watches the world’s new websites, apps and trademark filings for look-alikes of
             your brand, shows exactly why each one looks like you, and lets a person on your team
             decide what happens next.
           </p>
-          <div className="mt-9 flex flex-wrap gap-3">
+          <div className="flex shrink-0 flex-wrap gap-3">
             <ButtonLink to="/contact" size="lg">
               Request a demo
               <ArrowRight aria-hidden className="size-4" />
@@ -102,23 +149,6 @@ export function HomeHero() {
             </a>
           </div>
         </motion.div>
-      </Container>
-
-      <div className="border-t border-cream/10">
-        <Container className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:gap-10">
-          <p className="text-[13px] font-medium text-cream/65">Similo watches</p>
-          <ul className="flex flex-wrap gap-x-8 gap-y-3">
-            {SOURCES.map((source) => (
-              <li key={source.label} className="flex items-center gap-2 text-[14px] text-cream/85">
-                <source.icon aria-hidden className="size-4 text-accent-soft" />
-                {source.label}
-              </li>
-            ))}
-          </ul>
-          <p className="text-[12px] text-cream/50 sm:ml-auto">
-            The globe is an illustration, not live data.
-          </p>
-        </Container>
       </div>
     </section>
   );

@@ -12,6 +12,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router';
 import { AppWindow } from '@/components/motion/AppWindow';
 import { ScrollStory, type ScrollStoryStep } from '@/components/motion/ScrollStory';
+import { SplitReveal } from '@/components/motion/SplitReveal';
 import { Container, Eyebrow } from '@/components/ui/layout';
 import { Reveal } from '@/components/ui/Reveal';
 import { cn } from '@/lib/cn';
@@ -261,15 +262,18 @@ export function WorkflowStory() {
   return (
     <section aria-labelledby="workflow-title" className="bg-night py-24 text-cream lg:py-32">
       <Container>
-        <Reveal className="max-w-3xl">
-          <Eyebrow tone="dark">How Similo works</Eyebrow>
-          <h2
+        <div className="max-w-3xl">
+          <Reveal y={12}>
+            <Eyebrow tone="dark">How Similo works</Eyebrow>
+          </Reveal>
+          <SplitReveal
+            as="h2"
             id="workflow-title"
             className="text-statement serif-em mt-5 font-semibold text-balance"
           >
             From the first signal to <em className="text-accent-soft">a decision you made.</em>
-          </h2>
-        </Reveal>
+          </SplitReveal>
+        </div>
         <ScrollStory steps={STEPS} tone="dark" className="mt-16 lg:mt-8" />
         <Reveal className="mt-14 lg:mt-4">
           <Link

@@ -1,6 +1,7 @@
 import { ArrowRight } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { SimilarityWave } from '@/components/motion/SimilarityWave';
+import { SplitReveal } from '@/components/motion/SplitReveal';
 import { ButtonLink } from '@/components/ui/Button';
 import { Container, Eyebrow } from '@/components/ui/layout';
 import { LogoSymbol } from '@/components/ui/Logo';
@@ -175,13 +176,20 @@ export function CtaBand({
         className="absolute inset-0 -z-10 bg-linear-to-b from-night/40 via-night/70 to-night"
       />
       <Container className="grid grid-cols-1 gap-10 py-20 lg:grid-cols-[1.5fr_1fr] lg:items-end lg:gap-16 lg:py-32">
-        <Reveal>
-          <Eyebrow tone="dark">{eyebrow}</Eyebrow>
-          <h2 className="text-statement serif-em mt-5 max-w-3xl font-semibold text-balance text-cream">
+        <div>
+          <Reveal y={12}>
+            <Eyebrow tone="dark">{eyebrow}</Eyebrow>
+          </Reveal>
+          <SplitReveal
+            as="h2"
+            className="text-statement serif-em mt-5 max-w-3xl font-semibold text-balance text-cream"
+          >
             {title}
-          </h2>
-          <p className="text-lead mt-5 max-w-xl text-pretty text-cream/75">{description}</p>
-        </Reveal>
+          </SplitReveal>
+          <Reveal delay={0.25}>
+            <p className="text-lead mt-5 max-w-xl text-pretty text-cream/75">{description}</p>
+          </Reveal>
+        </div>
         <div className="flex flex-wrap gap-3 lg:justify-end lg:pb-2">
           <ButtonLink to={primary.to} size="lg">
             {primary.label}

@@ -1,7 +1,10 @@
+import { motion, useScroll, useTransform } from 'motion/react';
+import { useRef } from 'react';
 import { Link } from 'react-router';
+import { usePrefersReducedMotion } from '@/components/motion/hooks';
 import { SimilarityWave } from '@/components/motion/SimilarityWave';
 import { Container } from '@/components/ui/layout';
-import { Logo } from '@/components/ui/Logo';
+import { Logo, LogoWordmark } from '@/components/ui/Logo';
 import { useSystemStatus } from '@/features/system-status/api';
 import { cn } from '@/lib/cn';
 import { footerColumns } from './navigation';
@@ -36,6 +39,31 @@ function LiveStatus() {
       </span>
       {label}
     </Link>
+  );
+}
+
+/**
+ * The giant "similo" at the very bottom of the page, edge to edge. As the footer scrolls into
+ * view it rises out of the page's bottom edge (a mask) and warms from a dark tone to cream; it
+ * is fully risen when you reach the end of the page. A little of its base stays cropped by the
+ * edge on purpose. Decorative (the logo above carries the name); static with reduced motion.
+ */
+function FooterWordmark() {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduced = usePrefersReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end end'] });
+  const y = useTransform(scrollYProgress, [0, 0.9], ['108%', '7%']);
+  const color = useTransform(scrollYProgress, [0.1, 0.9], ['#2b2824', '#f6f0e6']);
+
+  return (
+    <div ref={ref} aria-hidden className="mx-auto max-w-[120rem] overflow-hidden">
+      <motion.div
+        style={reduced ? undefined : { y, color }}
+        className={cn('px-1 sm:px-2', reduced && 'translate-y-[7%] text-cream')}
+      >
+        <LogoWordmark />
+      </motion.div>
+    </div>
   );
 }
 
@@ -92,6 +120,8 @@ export function SiteFooter() {
           <LiveStatus />
         </Container>
       </div>
+
+      <FooterWordmark />
     </footer>
   );
 }

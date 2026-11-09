@@ -2,6 +2,7 @@ import { Megaphone, Scale, ShieldAlert, type LucideIcon } from 'lucide-react';
 import { PhotoFrame } from '@/components/marketing/PhotoFrame';
 import { Section } from '@/components/marketing/sections';
 import { Parallax } from '@/components/motion/scroll';
+import { SplitReveal } from '@/components/motion/SplitReveal';
 import { Eyebrow } from '@/components/ui/layout';
 import { Reveal } from '@/components/ui/Reveal';
 
@@ -38,27 +39,33 @@ export function TeamsSection() {
             />
           </Parallax>
         </Reveal>
-        <Reveal delay={0.05}>
-          <Eyebrow>Who it is for</Eyebrow>
-          <h2 className="text-headline mt-3 font-semibold text-balance">
+        <div>
+          <Reveal y={12}>
+            <Eyebrow>Who it is for</Eyebrow>
+          </Reveal>
+          <SplitReveal as="h2" className="text-headline mt-3 font-semibold text-balance">
             Built for the teams that share the problem.
-          </h2>
-          <p className="text-lead mt-4 text-pretty text-muted">
-            Brand protection sits between legal, security and marketing. Everyone works from the
-            same evidence, with the view that suits their job.
-          </p>
-          <ul className="mt-8 divide-y divide-line border-y border-line">
-            {TEAMS.map((team) => (
-              <li key={team.team} className="flex gap-4 py-5">
-                <team.icon aria-hidden className="mt-0.5 size-5 shrink-0 text-accent" />
-                <div>
-                  <h3 className="font-semibold">{team.team}</h3>
-                  <p className="mt-1 leading-relaxed text-muted">{team.text}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </Reveal>
+          </SplitReveal>
+          <Reveal delay={0.2}>
+            <p className="text-lead mt-4 text-pretty text-muted">
+              Brand protection sits between legal, security and marketing. Everyone works from the
+              same evidence, with the view that suits their job.
+            </p>
+          </Reveal>
+          <Reveal delay={0.3}>
+            <ul className="mt-8 divide-y divide-line border-y border-line">
+              {TEAMS.map((team) => (
+                <li key={team.team} className="flex gap-4 py-5">
+                  <team.icon aria-hidden className="mt-0.5 size-5 shrink-0 text-accent" />
+                  <div>
+                    <h3 className="font-semibold">{team.team}</h3>
+                    <p className="mt-1 leading-relaxed text-muted">{team.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </div>
       </div>
     </Section>
   );

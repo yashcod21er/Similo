@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { useInView, usePageVisible, usePrefersReducedMotion } from './hooks';
+import { canUseWebGL } from './webgl';
 
 /**
  * The home hero's 3D scene (WebGL, three.js): a globe of glowing points — the
@@ -116,6 +117,10 @@ export default function DomainGlobe({
     if (!host) return;
 
     let renderer: THREE.WebGLRenderer;
+    if (!canUseWebGL()) {
+      onFail?.();
+      return;
+    }
     try {
       renderer = new THREE.WebGLRenderer({
         antialias: true,
@@ -328,6 +333,7 @@ export default function DomainGlobe({
       ref={hostRef}
       aria-hidden
       className={className}
+      data-scene="domain-globe"
       data-running={!reduced && visible && inView}
     />
   );

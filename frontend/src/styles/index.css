@@ -195,3 +195,137 @@
     mask-image: linear-gradient(to bottom, black 60%, transparent);
   }
 }
+
+/* ------------------------------------------------------------------ v5 */
+
+/* The home hero's lines around the giant word. */
+@utility text-hero-line {
+  font-size: clamp(2.25rem, 1rem + 4.2vw, 5rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+/* One giant word, edge to edge ("copycats" fills the width at every screen size). */
+@utility text-giant {
+  font-size: 25.6vw;
+  line-height: 0.84;
+  letter-spacing: -0.07em;
+}
+
+@layer components {
+  /* Film grain: a barely visible, slowly shifting noise over the whole site. The noise is an
+     SVG turbulence tile; only its transform moves (compositor only), in a few steps per second. */
+  .film-grain {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0.045;
+  }
+  .film-grain::before {
+    content: '';
+    position: absolute;
+    inset: -60%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 220px 220px;
+    animation: grain-shift 1s steps(1) infinite;
+  }
+
+  /* Custom cursor: the native one is hidden only while ours is active, and comes back for
+     text fields (where people need the I-beam). */
+  html.has-custom-cursor,
+  html.has-custom-cursor * {
+    cursor: none !important;
+  }
+  html.has-custom-cursor :is(input, textarea, [contenteditable='true']) {
+    cursor: text !important;
+  }
+  html.has-custom-cursor select {
+    cursor: default !important;
+  }
+
+  /* The night curtain of the intro and page transitions: a little taller than the screen,
+     with thin burnt-orange edges that only show while it moves. */
+  .curtain-panel {
+    position: absolute;
+    inset-inline: 0;
+    top: -3px;
+    height: calc(100% + 6px);
+    border-block: 3px solid var(--color-accent);
+    background: var(--color-night);
+  }
+
+  /* Intro (preloader): the curtain lifts. */
+  .intro-layer {
+    animation: curtain-out 360ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  }
+  .intro-half {
+    animation: intro-split 300ms cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+
+  /* Page transitions between public pages. */
+  .page-curtain[data-phase='cover'] > * {
+    animation: curtain-in 240ms cubic-bezier(0.76, 0, 0.24, 1) both;
+  }
+  .page-curtain[data-phase='reveal'] > * {
+    animation: curtain-out 300ms cubic-bezier(0.76, 0, 0.24, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .film-grain::before,
+    .intro-layer,
+    .intro-half,
+    .page-curtain > * {
+      animation: none;
+    }
+  }
+}
+
+@keyframes grain-shift {
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-7%, 4%);
+  }
+  40% {
+    transform: translate(5%, -6%);
+  }
+  60% {
+    transform: translate(-3%, 8%);
+  }
+  80% {
+    transform: translate(8%, 2%);
+  }
+  100% {
+    transform: translate(-5%, -4%);
+  }
+}
+
+@keyframes curtain-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes curtain-out {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes intro-split {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--split, 0));
+  }
+}

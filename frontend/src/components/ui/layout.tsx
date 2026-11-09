@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { SplitReveal } from '@/components/motion/SplitReveal';
 import { cn } from '@/lib/cn';
 import { Reveal } from './Reveal';
 
@@ -82,7 +83,8 @@ interface SectionHeadingProps {
 /**
  * Standard section intro. Left-aligned by default; use `center` only for a
  * short intro. `split` puts the title left and description right on large
- * screens.
+ * screens. The title's words slide up out of a mask as it enters the view
+ * (`SplitReveal`; plain text with reduced motion); the label and intro fade in after it.
  */
 export function SectionHeading({
   eyebrow,
@@ -96,16 +98,26 @@ export function SectionHeading({
   const titleClass = cn(
     'text-headline font-semibold text-balance',
     tone === 'dark' ? 'text-cream' : 'text-ink',
+    eyebrow && 'mt-3',
   );
   const descriptionClass = cn(
     'text-lead text-pretty',
     tone === 'dark' ? 'text-cream/70' : 'text-muted',
   );
-  const eyebrowEl = eyebrow && <Eyebrow tone={tone}>{eyebrow}</Eyebrow>;
+  const eyebrowEl = eyebrow && (
+    <Reveal y={12}>
+      <Eyebrow tone={tone}>{eyebrow}</Eyebrow>
+    </Reveal>
+  );
+  const titleEl = (
+    <SplitReveal as="h2" id={id} className={titleClass}>
+      {title}
+    </SplitReveal>
+  );
 
   if (align === 'split') {
     return (
-      <Reveal
+      <div
         className={cn(
           'grid grid-cols-1 gap-5 lg:grid-cols-[1.15fr_1fr] lg:items-end lg:gap-16',
           className,
@@ -113,17 +125,19 @@ export function SectionHeading({
       >
         <div>
           {eyebrowEl}
-          <h2 id={id} className={cn(titleClass, eyebrow && 'mt-3')}>
-            {title}
-          </h2>
+          {titleEl}
         </div>
-        {description && <p className={cn(descriptionClass, 'lg:pb-1')}>{description}</p>}
-      </Reveal>
+        {description && (
+          <Reveal delay={0.2} className="lg:pb-1">
+            <p className={descriptionClass}>{description}</p>
+          </Reveal>
+        )}
+      </div>
     );
   }
 
   return (
-    <Reveal
+    <div
       className={cn(
         'max-w-2xl',
         align === 'center' && 'mx-auto flex flex-col items-center text-center',
@@ -131,11 +145,13 @@ export function SectionHeading({
       )}
     >
       {eyebrowEl}
-      <h2 id={id} className={cn(titleClass, eyebrow && 'mt-3')}>
-        {title}
-      </h2>
-      {description && <p className={cn(descriptionClass, 'mt-4')}>{description}</p>}
-    </Reveal>
+      {titleEl}
+      {description && (
+        <Reveal delay={0.2} className="mt-4">
+          <p className={descriptionClass}>{description}</p>
+        </Reveal>
+      )}
+    </div>
   );
 }
 

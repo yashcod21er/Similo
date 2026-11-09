@@ -9,10 +9,14 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
+import { HoverReveal, HoverRevealItem } from '@/components/motion/HoverReveal';
 import { SimilarityWave } from '@/components/motion/SimilarityWave';
+import { SplitReveal } from '@/components/motion/SplitReveal';
+import { useFinePointer } from '@/components/motion/useFinePointer';
 import { PhotoFrame } from '@/components/marketing/PhotoFrame';
 import { CtaBand, Section } from '@/components/marketing/sections';
 import { Container, Eyebrow, SectionHeading } from '@/components/ui/layout';
+import { Photo } from '@/components/ui/Photo';
 import { Reveal } from '@/components/ui/Reveal';
 import { SpotlightCard } from '@/components/ui/SpotlightCard';
 import {
@@ -61,25 +65,59 @@ function matches(resource: Resource, query: string, category: ResourceCategory |
     .every((word) => haystack.includes(word));
 }
 
-function ResourceCard({ resource }: { resource: Resource }) {
+/**
+ * One guide as a row of an index: a number, the title in large type, a one-line summary and
+ * the topic and reading time. With a mouse the cover appears beside the cursor on hover
+ * (`HoverReveal`); on touch screens the row carries a small thumbnail instead.
+ */
+function ResourceRow({ resource, number }: { resource: Resource; number: string }) {
+  const fine = useFinePointer();
   return (
-    <Link to={`/resources/${resource.slug}`} className="group flex h-full flex-col">
-      <PhotoFrame
-        {...resource.cover}
-        {...COVER_SIZE}
-        ratio="aspect-[3/2]"
-        sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 100vw"
-        className="transition-transform duration-300 ease-out group-hover:-translate-y-1 motion-reduce:group-hover:translate-y-0"
-      />
-      <p className="mt-5 text-[13px] font-medium text-accent-ink">
-        {resource.category} · {resource.type}
-      </p>
-      <h3 className="mt-2 text-[1.1875rem] leading-snug font-semibold tracking-[-0.02em] group-hover:underline group-hover:decoration-line-strong group-hover:underline-offset-4">
-        {resource.title}
-      </h3>
-      <p className="mt-3 line-clamp-3 flex-1 leading-relaxed text-muted">{resource.summary}</p>
-      <p className="mt-4 text-[13px] text-muted">{resource.readMinutes} min read</p>
-    </Link>
+    <HoverRevealItem id={resource.slug} src={`${resource.cover.src}-800.webp`}>
+      <Reveal y={14}>
+        <Link
+          to={`/resources/${resource.slug}`}
+          data-cursor="Read"
+          className="group/row grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-6 gap-y-3 border-t border-line-strong/70 py-7 transition-opacity duration-300 sm:py-8 lg:grid-cols-[3rem_minmax(0,1fr)_14rem] lg:gap-x-8 lg:py-10 motion-reduce:transition-none [@media(hover:hover)]:[ul:hover_&]:opacity-45 [@media(hover:hover)]:[ul:hover_&:hover]:opacity-100"
+        >
+          {fine && (
+            <span className="hidden pt-2 font-mono text-[12.5px] text-muted tabular-nums lg:block">
+              {number}
+            </span>
+          )}
+          <div className={cn('min-w-0', fine ? 'lg:col-start-2' : 'lg:col-span-2')}>
+            <p className="text-[12.5px] font-medium tracking-[0.06em] text-accent-ink uppercase">
+              {resource.category} · {resource.type}
+            </p>
+            <h3 className="mt-2.5 text-[clamp(1.375rem,1rem+1.3vw,2.25rem)] leading-[1.12] font-semibold tracking-[-0.03em] text-balance transition-transform duration-500 ease-out group-hover/row:translate-x-1.5 motion-reduce:transition-none motion-reduce:group-hover/row:translate-x-0">
+              {resource.title}
+            </h3>
+            <p className="mt-3 line-clamp-2 max-w-2xl leading-relaxed text-muted">
+              {resource.summary}
+            </p>
+          </div>
+          {!fine && (
+            <div className="w-24 overflow-hidden rounded-xl bg-cream-deep ring-1 ring-ink/[0.06] sm:w-36">
+              <div className="aspect-[3/2]">
+                <Photo
+                  {...resource.cover}
+                  {...COVER_SIZE}
+                  sizes="144px"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
+          )}
+          <div className="col-span-2 flex items-center gap-4 lg:col-span-1 lg:col-start-3 lg:justify-end lg:pt-2">
+            <span className="text-[13px] text-muted">{resource.readMinutes} min read</span>
+            <ArrowRight
+              aria-hidden
+              className="size-5 text-accent-ink transition-transform duration-300 group-hover/row:translate-x-1 motion-reduce:transition-none"
+            />
+          </div>
+        </Link>
+      </Reveal>
+    </HoverRevealItem>
   );
 }
 
@@ -88,12 +126,14 @@ function FeaturedResource({ resource }: { resource: Resource }) {
   return (
     <Link
       to={`/resources/${resource.slug}`}
+      data-cursor="Read"
       className="group block rounded-2xl bg-night-raised p-3 shadow-window-dark ring-1 ring-cream/10 transition-colors hover:ring-cream/25"
     >
       <PhotoFrame
         {...resource.cover}
         {...COVER_SIZE}
         ratio="aspect-[3/2]"
+        imageClassName="transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         priority
         sizes="(min-width: 1280px) 560px, (min-width: 1024px) 45vw, 100vw"
       />
@@ -204,9 +244,9 @@ export function ResourcesPage() {
 
       <Section>
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <h2 className="text-headline font-semibold">
+          <SplitReveal as="h2" className="text-headline font-semibold">
             {isFiltering ? 'Matching guides' : 'All guides'}
-          </h2>
+          </SplitReveal>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by topic">
             {(['All', ...RESOURCE_CATEGORIES] as const).map((item) => (
               <button
@@ -246,15 +286,17 @@ export function ResourcesPage() {
             </button>
           </div>
         ) : (
-          <ul className="mt-8 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-            {results.map((resource, index) => (
-              <li key={resource.slug}>
-                <Reveal y={16} delay={Math.min(index % 3, 2) * 0.06} className="h-full">
-                  <ResourceCard resource={resource} />
-                </Reveal>
-              </li>
-            ))}
-          </ul>
+          <HoverReveal>
+            <ul className="mt-10 border-b border-line-strong/70">
+              {results.map((resource, index) => (
+                <ResourceRow
+                  key={resource.slug}
+                  resource={resource}
+                  number={String(index + 1).padStart(2, '0')}
+                />
+              ))}
+            </ul>
+          </HoverReveal>
         )}
       </Section>
 
@@ -274,6 +316,7 @@ export function ResourcesPage() {
                   <SpotlightCard as="div" className="h-full">
                     <Link
                       to={`/resources/${guide.slug}`}
+                      data-cursor="Read"
                       className="group flex h-full flex-col p-6 sm:p-7"
                     >
                       <span className="inline-flex size-10 items-center justify-center rounded-xl bg-accent/[0.08] text-accent ring-1 ring-accent/15">

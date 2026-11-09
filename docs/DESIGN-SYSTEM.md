@@ -1,4 +1,4 @@
-# Similo design system v4: cream, black and burnt orange
+# Similo design system v4 + v5: cream, black and burnt orange
 
 The public website's visual language. v1 copied the usual brand-protection template and decorated
 it (glows, orbiting badges, fake terminals, dot grids). v3 ("Calm") was credible but, in the
@@ -74,17 +74,18 @@ of the same weight in a row without a change of tone or layout.
 
 The home page follows it exactly:
 
-| Band  | Section                                                           | File                                   |
-| ----- | ----------------------------------------------------------------- | -------------------------------------- |
-| night | Hero: wave + animated alert scene in an `AppWindow`               | `pages/home/HomeHero.tsx`, `HeroScene` |
-| cream | The live brand checker (`#check`), the interactive centrepiece    | `CheckerSection`, `LookalikeChecker`   |
-| night | Watch → Explain → Decide, a `ScrollStory`                         | `WorkflowStory.tsx`                    |
-| white | The problem: what copycats look like                              | `ProblemSection.tsx`                   |
-| night | The problem in numbers: cited public research                     | `components/marketing/ResearchProof`   |
-| cream | How we score, in the open (three named signals, a person decides) | `ScoringSection.tsx`                   |
-| white | Who it is for (a photo of people)                                 | `TeamsSection.tsx`                     |
-| cream | Questions                                                         | `HomeFaq.tsx`                          |
-| night | Closing call to action, then the dark footer                      | `CtaBand`                              |
+| Band  | Section                                                            | File                                 |
+| ----- | ------------------------------------------------------------------ | ------------------------------------ |
+| night | Hero: the 3D ∼ (`GlassMark`) in front of the giant word "copycats" | `pages/home/HomeHero.tsx`            |
+| cream | The live brand checker (`#check`), the interactive centrepiece     | `CheckerSection`, `LookalikeChecker` |
+| night | Watch → Explain → Decide, a `ScrollStory`                          | `WorkflowStory.tsx`                  |
+| white | The problem: what copycats look like                               | `ProblemSection.tsx`                 |
+| night | The problem in numbers: cited public research                      | `components/marketing/ResearchProof` |
+| cream | How we score, in the open (three named signals, a person decides)  | `ScoringSection.tsx`                 |
+| night | What Similo watches: the 3D globe of domains                       | `GlobeSection.tsx`                   |
+| white | Who it is for (a photo of people)                                  | `TeamsSection.tsx`                   |
+| cream | Questions                                                          | `HomeFaq.tsx`                        |
+| night | Closing call to action, then the dark footer                       | `CtaBand`                            |
 
 ## Depth and craft
 
@@ -178,6 +179,83 @@ advances. Show things with `step >= n` and keep their space reserved (opacity/tr
 nothing shifts.
 
 Also exported: `usePrefersReducedMotion`, `usePageVisible`, `useInView`.
+
+## v5: signature motion
+
+v5 adds the craft of award-style sites (landing.love, siteinspire, minimal.gallery,
+darkmodedesign) without giving up v4's honesty. The rule is **restraint**: one signature object,
+quiet site-wide touches, every effect polished, fast and switched off with reduced motion.
+
+### `GlassMark`: the signature object (home hero)
+
+`components/motion/GlassMark.tsx`, lazy-loaded (`lazy(() => import(...))`), three.js.
+
+The logo's ∼ in 3D, "dark luxury": the original half is polished black lacquer, the copy half is
+smoked burnt-orange glass (`MeshPhysicalMaterial` with transmission). Both get crisp highlights
+from a generated studio environment (`RoomEnvironment` + `PMREMGenerator`, no image files) and a
+burnt-orange rim light. It floats in front of the giant word **copycats** (`text-giant`, edge to
+edge), tilts toward the pointer, and the halves drift apart and snap back together every 7.5 s
+(original vs copy); they also part a little when the pointer comes close.
+
+```tsx
+const wordRef = useRef<HTMLSpanElement>(null);
+<GlassMark
+  anchorRef={wordRef}
+  glowRef={glowRef}
+  onFail={onFail}
+  showAfterMs={1100}
+  className="pointer-events-none absolute inset-0 z-10 opacity-0 data-[ready=true]:opacity-100"
+/>;
+```
+
+- **Refraction of real text.** The word is DOM text under the canvas. GlassMark paints the same
+  word (and the hero's glow) onto an invisible backdrop plane at the exact pixels the browser used
+  (read with `Range` rects and the computed font). The plane only writes colour in three's
+  transmission pass, so the glass refracts the word while the page shows the real text.
+- **Layers:** giant word `z-0` < canvas `z-10` < every other line, the lead and the buttons
+  `z-20`. The mark never covers reading text or controls.
+- **Performance:** DPR ≤ 2, transmission at 0.75 resolution, paused off-screen and in a hidden tab
+  (`data-running`), one still frame with reduced motion. Phones (< 768 px wide) get a lighter
+  version: no transmission (the copy half is orange lacquer), fewer bevel segments, DPR ≤ 1.5.
+- **Fallback:** without WebGL (`canUseWebGL()` in `motion/webgl.ts`, checked before three.js is
+  asked, so nothing is logged) the hero shows the 2D `LogoMark` tile over the word and a calm
+  `SimilarityWave` behind it.
+- The ∼ path data lives in `motion/mark-paths.ts` (a copy of `ui/Logo.tsx`; keep them in sync).
+
+**One WebGL scene at a time.** The hero's GlassMark and the globe (`GlobeSection`, far down the
+page) both pause when off-screen, so only one animates. Every 3D host has `data-scene`
+(`glass-mark`, `domain-globe`) and `data-running` for visual QA.
+
+### `GlobeSection` (home)
+
+`pages/home/GlobeSection.tsx`: the `DomainGlobe` (the v4 hero) in its own night band, "One brand.
+_The whole internet_ to watch.", beside the three sources Similo watches. Warm amber glow, a soft
+vignette and a faint scanline masked to the globe (an old amber monitor, not a fake terminal).
+Caption: "The globe is an illustration, not live data."
+
+### Site-wide layer (`components/site/SiteLayout.tsx`, public site only, never in `/app`)
+
+| Piece        | File                                | Behaviour                                                                                                                                                                                                                                                                                                                                                                                            |
+| ------------ | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Intro        | `site/Preloader.tsx`                | First visit per tab session (`sessionStorage`), never with reduced motion. Night screen, counter 00 → 100, the ∼ splits into its halves, the curtain lifts on a thin orange edge. 1.0 s in total; the page is rendered underneath and the intro is `aria-hidden`. `introDelay()` (`motion/intro.ts`) lets the hero start its entrance as the curtain lifts.                                          |
+| Page curtain | `site/PageTransition.tsx`           | Following a link to another public page: a night curtain with a thin orange edge sweeps up (0.24 s), the page changes underneath and jumps to the top unseen, the curtain sweeps away (0.3 s). Uses `useBlocker` for push/replace only: back/forward, hash links and query changes are untouched, so history and scroll restoration behave as before. Focus is never moved. Off with reduced motion. |
+| Cursor       | `site/Cursor.tsx`                   | Mouse/trackpad only (`pointer: fine`), never with reduced motion. A 6 px orange dot and a thin ring that follows with easing; the ring grows over links and buttons and shows a short label over elements with `data-cursor="View"` (or any link larger than 240 × 160 px reads "Open"). Text fields keep the native I-beam; focus outlines are untouched.                                           |
+| Film grain   | `.film-grain` in `styles/index.css` | A fixed SVG-noise layer at 4.5 % opacity, `pointer-events: none`. Only its transform moves, in 5 steps a second (compositor only). Static with reduced motion.                                                                                                                                                                                                                                       |
+
+Use `data-cursor="View"` (or "Open", "Read") on a card or row that is one big link.
+
+### Kinetic type (`Marquee`, `SplitReveal`, `HorizontalScroll`, `HoverReveal`)
+
+Owned by the kinetic-type work; see the comments at the top of each file in
+`components/motion/` for the full contract. In short: `Marquee` is a giant line of type whose
+speed and direction follow the scroll; `SplitReveal` slides heading words up out of a mask while
+the real text stays in the DOM; `HorizontalScroll` pins a section and slides its panels sideways
+on large screens (a plain stack on phones and with reduced motion); `HoverReveal` shows a row's
+picture beside the cursor on fine pointers. All of them stop moving with reduced motion.
+
+### New type utilities
+
+`text-giant` (one word, 25.6vw, edge to edge) and `text-hero-line` (the hero lines around it).
 
 ## Product scenes (the star)
 

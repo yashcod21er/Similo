@@ -83,3 +83,19 @@ export function useMinWidth(minWidth: number): boolean {
   }, [query]);
   return matches;
 }
+
+/** True while a CSS media query matches, e.g. `(pointer: fine)`. Updates live. */
+export function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia?.(query).matches === true,
+  );
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return;
+    const list = window.matchMedia(query);
+    const onChange = () => setMatches(list.matches);
+    onChange();
+    list.addEventListener('change', onChange);
+    return () => list.removeEventListener('change', onChange);
+  }, [query]);
+  return matches;
+}

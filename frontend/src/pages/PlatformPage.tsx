@@ -1,15 +1,21 @@
 import { ArrowRight, Eye, ListChecks, Lock, UserCheck, type LucideIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { PhotoFrame } from '@/components/marketing/PhotoFrame';
 import { ResearchProof } from '@/components/marketing/ResearchProof';
 import { CtaBand, ProcessSteps, Section, SplitHero } from '@/components/marketing/sections';
 import { AppWindow } from '@/components/motion';
-import { solutionItems } from '@/components/site/navigation';
+import { HorizontalScroll } from '@/components/motion/HorizontalScroll';
+import { SplitReveal } from '@/components/motion/SplitReveal';
+import { solutionItems, type NavItem } from '@/components/site/navigation';
 import { Eyebrow, SectionHeading } from '@/components/ui/layout';
 import { Photo } from '@/components/ui/Photo';
 import { Reveal } from '@/components/ui/Reveal';
-import { ModuleThumb, type ModuleKind } from '@/components/visuals/modules';
+import { AppScene } from '@/components/visuals/app';
+import { DomainScene } from '@/components/visuals/domain';
+import { EvidenceScene } from '@/components/visuals/evidence';
 import { PlatformScene } from '@/components/visuals/platform';
+import { TrademarkScene } from '@/components/visuals/trademark';
 import { FaqBlock } from './platform-faq';
 
 /* ------------------------------------------------------------------ Data */
@@ -50,11 +56,12 @@ const SETUP_NOTES = [
   },
 ];
 
-const MODULE_KIND: Record<string, ModuleKind> = {
-  '/solutions/domain-intelligence': 'domain',
-  '/solutions/app-intelligence': 'app',
-  '/solutions/trademark-intelligence': 'trademark',
-  '/solutions/investigation-evidence': 'investigation',
+/** The four modules, each with the product scene from its own page (sample data, made-up names). */
+const MODULES: Record<string, { label: string; scene: ReactNode }> = {
+  '/solutions/domain-intelligence': { label: 'Websites', scene: <DomainScene /> },
+  '/solutions/app-intelligence': { label: 'Apps', scene: <AppScene /> },
+  '/solutions/trademark-intelligence': { label: 'Trademarks', scene: <TrademarkScene /> },
+  '/solutions/investigation-evidence': { label: 'Evidence', scene: <EvidenceScene /> },
 };
 
 const PRINCIPLES: { icon: LucideIcon; title: string; text: string }[] = [
@@ -153,33 +160,34 @@ function DashboardFrame() {
   );
 }
 
-function ModuleCard({ item }: { item: (typeof solutionItems)[number] }) {
-  const kind = MODULE_KIND[item.to];
+/**
+ * One module as a big panel: its name and what it does on the left, its own product scene on
+ * the right. The panel adapts to its own width, so the same markup is the sideways panel on
+ * large screens and the stacked card on phones.
+ */
+function ModulePanel({ item, scene, number }: { item: NavItem; scene: ReactNode; number: string }) {
   return (
-    <Link
-      to={item.to}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-line transition-shadow duration-200 hover:shadow-window"
-    >
-      {kind && (
-        <div className="bg-night p-5 pt-6">
-          <ModuleThumb kind={kind} />
+    <article className="h-full @container">
+      <div className="h-full rounded-[1.75rem] bg-night p-5 text-cream shadow-window ring-1 ring-ink/10 @3xl:grid @3xl:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] @3xl:items-center @3xl:gap-10 @3xl:p-8">
+        <div className="pt-2 pb-8 @3xl:pb-0 @3xl:pl-2">
+          <p className="font-mono text-[12.5px] text-accent-soft">{number}</p>
+          <h3 className="text-headline mt-4 font-semibold text-balance text-cream">{item.label}</h3>
+          <p className="text-lead mt-4 text-pretty text-cream/70">{item.description}</p>
+          <Link
+            to={item.to}
+            data-cursor="Open"
+            className="group mt-8 inline-flex items-center gap-2 text-[15px] font-medium text-accent-soft"
+          >
+            Explore {item.label}
+            <ArrowRight
+              aria-hidden
+              className="size-4 transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
+            />
+          </Link>
         </div>
-      )}
-      <div className="flex flex-1 flex-col p-6">
-        <span className="flex items-center gap-3 text-[1.0625rem] font-semibold">
-          <item.icon aria-hidden className="size-5 shrink-0 text-accent" />
-          {item.label}
-        </span>
-        <span className="mt-2 leading-relaxed text-muted">{item.description}</span>
-        <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-[15px] font-medium text-accent-ink">
-          Learn more
-          <ArrowRight
-            aria-hidden
-            className="size-4 transition-transform group-hover:translate-x-0.5"
-          />
-        </span>
+        <div className="min-w-0">{scene}</div>
       </div>
-    </Link>
+    </article>
   );
 }
 
@@ -212,17 +220,24 @@ export function PlatformPage() {
       </Section>
 
       <Section tone="dark">
-        <Reveal className="max-w-3xl">
-          <Eyebrow tone="dark">The real product</Eyebrow>
-          <h2 className="text-statement serif-em mt-5 font-semibold text-balance text-cream">
+        <div className="max-w-3xl">
+          <Reveal y={12}>
+            <Eyebrow tone="dark">The real product</Eyebrow>
+          </Reveal>
+          <SplitReveal
+            as="h2"
+            className="text-statement serif-em mt-5 font-semibold text-balance text-cream"
+          >
             Start by telling Similo what to <em>protect.</em>
-          </h2>
-          <p className="text-lead mt-5 max-w-2xl text-pretty text-cream/75">
-            Add each brand with its other spellings, official websites, logos and registered
-            trademarks. This is what Similo compares everything against, so it never flags your own
-            sites.
-          </p>
-        </Reveal>
+          </SplitReveal>
+          <Reveal delay={0.25}>
+            <p className="text-lead mt-5 max-w-2xl text-pretty text-cream/75">
+              Add each brand with its other spellings, official websites, logos and registered
+              trademarks. This is what Similo compares everything against, so it never flags your
+              own sites.
+            </p>
+          </Reveal>
+        </div>
         <DashboardFrame />
         <ul className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-x-8 gap-y-6 border-t border-cream/15 pt-8 sm:grid-cols-3">
           {SETUP_NOTES.map((note, index) => (
@@ -235,22 +250,28 @@ export function PlatformPage() {
         </ul>
       </Section>
 
-      <Section>
-        <SectionHeading
-          eyebrow="What’s inside"
-          title="Four modules, one workflow."
-          description="Each module looks at a different place where copycats appear. They all feed the same alert list and the same investigation workspace."
-        />
-        <Reveal className="mt-12">
-          <ul className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:gap-6">
-            {solutionItems.map((item) => (
-              <li key={item.to}>
-                <ModuleCard item={item} />
-              </li>
-            ))}
-          </ul>
-        </Reveal>
-      </Section>
+      <HorizontalScroll
+        labelledBy="platform-modules-title"
+        intro={
+          <SectionHeading
+            id="platform-modules-title"
+            eyebrow="What’s inside"
+            title="Four modules, one workflow."
+            description="Each module looks at a different place where copycats appear. They all feed the same alert list and the same investigation workspace."
+          />
+        }
+        panels={solutionItems.flatMap((item, index) => {
+          const module = MODULES[item.to];
+          if (!module) return [];
+          return [
+            {
+              id: item.to,
+              label: module.label,
+              children: <ModulePanel item={item} scene={module.scene} number={`0${index + 1}`} />,
+            },
+          ];
+        })}
+      />
 
       <Section tone="white">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
@@ -263,27 +284,33 @@ export function PlatformPage() {
               ratio="aspect-[3/2]"
             />
           </Reveal>
-          <Reveal delay={0.05}>
-            <Eyebrow>Principles</Eyebrow>
-            <h2 className="text-headline mt-3 font-semibold text-balance">
+          <div>
+            <Reveal y={12}>
+              <Eyebrow>Principles</Eyebrow>
+            </Reveal>
+            <SplitReveal as="h2" className="text-headline mt-3 font-semibold text-balance">
               Built on trust, not just detection.
-            </h2>
-            <p className="text-lead mt-4 text-pretty text-muted">
-              Brand protection decisions can have legal consequences, so every result has to be
-              checkable.
-            </p>
-            <ul className="mt-8 divide-y divide-line border-y border-line">
-              {PRINCIPLES.map((principle) => (
-                <li key={principle.title} className="flex gap-4 py-5">
-                  <principle.icon aria-hidden className="mt-0.5 size-5 shrink-0 text-accent" />
-                  <div>
-                    <h3 className="font-semibold">{principle.title}</h3>
-                    <p className="mt-1 leading-relaxed text-muted">{principle.text}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </Reveal>
+            </SplitReveal>
+            <Reveal delay={0.2}>
+              <p className="text-lead mt-4 text-pretty text-muted">
+                Brand protection decisions can have legal consequences, so every result has to be
+                checkable.
+              </p>
+            </Reveal>
+            <Reveal delay={0.3}>
+              <ul className="mt-8 divide-y divide-line border-y border-line">
+                {PRINCIPLES.map((principle) => (
+                  <li key={principle.title} className="flex gap-4 py-5">
+                    <principle.icon aria-hidden className="mt-0.5 size-5 shrink-0 text-accent" />
+                    <div>
+                      <h3 className="font-semibold">{principle.title}</h3>
+                      <p className="mt-1 leading-relaxed text-muted">{principle.text}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          </div>
         </div>
       </Section>
 

@@ -2,6 +2,7 @@ import { ArrowRight } from 'lucide-react';
 import { Section } from '@/components/marketing/sections';
 import { Accordion, type AccordionItem } from '@/components/ui/Accordion';
 import { ButtonLink } from '@/components/ui/Button';
+import { SplitReveal } from '@/components/motion/SplitReveal';
 import { Eyebrow } from '@/components/ui/layout';
 import { Reveal } from '@/components/ui/Reveal';
 
@@ -43,16 +44,20 @@ export function HomeFaq() {
   return (
     <Section>
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-        <Reveal className="lg:sticky lg:top-28 lg:self-start">
-          <Eyebrow>Questions</Eyebrow>
-          <h2 className="text-headline mt-3 font-semibold text-balance">
+        <div className="lg:sticky lg:top-28 lg:self-start">
+          <Reveal y={12}>
+            <Eyebrow>Questions</Eyebrow>
+          </Reveal>
+          <SplitReveal as="h2" className="text-headline mt-3 font-semibold text-balance">
             Questions people ask first.
-          </h2>
-          <p className="text-lead mt-4 text-muted">Something else on your mind? Talk to us.</p>
-          <ButtonLink to="/contact" variant="outline" className="mt-7">
-            Ask the team <ArrowRight aria-hidden className="size-4" />
-          </ButtonLink>
-        </Reveal>
+          </SplitReveal>
+          <Reveal delay={0.2}>
+            <p className="text-lead mt-4 text-muted">Something else on your mind? Talk to us.</p>
+            <ButtonLink to="/contact" variant="outline" className="mt-7">
+              Ask the team <ArrowRight aria-hidden className="size-4" />
+            </ButtonLink>
+          </Reveal>
+        </div>
         <Reveal>
           <Accordion items={FAQ} />
         </Reveal>

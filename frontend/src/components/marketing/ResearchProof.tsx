@@ -1,6 +1,7 @@
 import { ArrowUpRight, Info } from 'lucide-react';
 import { CountUp } from '@/components/motion/CountUp';
 import { SimilarityWave } from '@/components/motion/SimilarityWave';
+import { SplitReveal } from '@/components/motion/SplitReveal';
 import { Container, Eyebrow } from '@/components/ui/layout';
 import { Reveal, RevealGroup, RevealItem } from '@/components/ui/Reveal';
 import { RESEARCH_CHECKED, RESEARCH_FIGURES, RESEARCH_NOTE } from '@/content/research';
@@ -29,21 +30,26 @@ export function ResearchProof({ className }: { className?: string }) {
       </div>
 
       <Container className="pt-20 pb-48 lg:pt-32 lg:pb-56">
-        <Reveal className="grid grid-cols-1 gap-6 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
           <div>
-            <Eyebrow tone="dark">The problem in numbers</Eyebrow>
-            <h2
+            <Reveal y={12}>
+              <Eyebrow tone="dark">The problem in numbers</Eyebrow>
+            </Reveal>
+            <SplitReveal
+              as="h2"
               id="research-heading"
               className="text-statement serif-em mt-5 font-semibold text-balance text-cream"
             >
               What the <em>research</em> says about copycats.
-            </h2>
+            </SplitReveal>
           </div>
-          <p className="text-lead text-pretty text-cream/75">
-            Independent groups measure phishing sites, impersonated brands and domain disputes.
-            These are their latest published figures, each with the page that states it.
-          </p>
-        </Reveal>
+          <Reveal delay={0.25}>
+            <p className="text-lead text-pretty text-cream/75">
+              Independent groups measure phishing sites, impersonated brands and domain disputes.
+              These are their latest published figures, each with the page that states it.
+            </p>
+          </Reveal>
+        </div>
 
         <RevealGroup className="mt-14 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4 lg:gap-x-0 lg:gap-y-0">
           {RESEARCH_FIGURES.map((figure) => (
