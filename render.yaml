@@ -55,6 +55,7 @@ services:
     name: similo-redis
     region: singapore
     plan: free
+    ipAllowList: []
 
 # The BullMQ monitoring worker is intentionally not included: Render does not
 # offer a free background-worker plan. Domain scans will remain queued until a
