@@ -1,0 +1,61 @@
+# Similo staging services. No .env file or secret value belongs in this file.
+# The existing static site needs VITE_API_BASE_URL=https://similo-api.onrender.com
+# added to its Render build environment after the API is created.
+
+services:
+  - type: web
+    name: similo-api
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: npm ci && npm run build --workspace @similo/backend
+    startCommand: npm run start --workspace @similo/backend
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"
+      - key: APP_URL
+        value: https://similo.onrender.com
+      - key: CORS_ORIGINS
+        value: https://similo.onrender.com
+      - key: AI_SERVICE_URL
+        value: https://similo-ai.onrender.com
+      - key: DOMAIN_DISCOVERY_SOURCE
+        value: crtsh
+      - key: MONGODB_DB_NAME
+        value: similo
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: similo-redis
+          property: connectionString
+
+  - type: web
+    name: similo-ai
+    runtime: python
+    rootDir: ai
+    region: singapore
+    plan: free
+    buildCommand: pip install .
+    startCommand: python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: AI_ENVIRONMENT
+        value: production
+      - key: AI_LOG_LEVEL
+        value: INFO
+
+  - type: keyvalue
+    name: similo-redis
+    region: singapore
+    plan: free
+
+# The BullMQ monitoring worker is intentionally not included: Render does not
+# offer a free background-worker plan. Domain scans will remain queued until a
+# paid worker is approved and added.
