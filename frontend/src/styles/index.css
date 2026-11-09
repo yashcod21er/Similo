@@ -85,6 +85,20 @@
 }
 
 /* Type scale. Each step pairs size, line height and tracking. */
+/* The home hero's giant headline (bold and immersive). */
+@utility text-mega {
+  font-size: clamp(3rem, 1rem + 5.6vw, 6.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+}
+
+/* Full-width statements that light up word by word. */
+@utility text-statement-xl {
+  font-size: clamp(2rem, 1rem + 3.4vw, 4.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
 @utility text-display {
   font-size: clamp(2.375rem, 1.45rem + 3vw, 3.75rem);
   line-height: 1.04;

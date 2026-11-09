@@ -66,3 +66,20 @@ export function useInView(
   }, [ref, rootMargin, once]);
   return inView;
 }
+
+/** True on screens at least `minWidth` px wide. Updates live. */
+export function useMinWidth(minWidth: number): boolean {
+  const query = `(min-width: ${minWidth}px)`;
+  const [matches, setMatches] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia?.(query).matches === true,
+  );
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return;
+    const list = window.matchMedia(query);
+    const onChange = () => setMatches(list.matches);
+    onChange();
+    list.addEventListener('change', onChange);
+    return () => list.removeEventListener('change', onChange);
+  }, [query]);
+  return matches;
+}

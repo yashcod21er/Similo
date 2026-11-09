@@ -1,6 +1,7 @@
 import { Megaphone, Scale, ShieldAlert, type LucideIcon } from 'lucide-react';
 import { PhotoFrame } from '@/components/marketing/PhotoFrame';
 import { Section } from '@/components/marketing/sections';
+import { Parallax } from '@/components/motion/scroll';
 import { Eyebrow } from '@/components/ui/layout';
 import { Reveal } from '@/components/ui/Reveal';
 
@@ -28,12 +29,14 @@ export function TeamsSection() {
     <Section tone="white">
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal>
-          <PhotoFrame
-            src="/images/core/document-review"
-            alt="Three colleagues reading a document together"
-            width={1600}
-            height={1200}
-          />
+          <Parallax strength={36}>
+            <PhotoFrame
+              src="/images/core/document-review"
+              alt="Three colleagues reading a document together"
+              width={1600}
+              height={1200}
+            />
+          </Parallax>
         </Reveal>
         <Reveal delay={0.05}>
           <Eyebrow>Who it is for</Eyebrow>

@@ -1,4 +1,5 @@
 import { Outlet, ScrollRestoration } from 'react-router';
+import { SmoothScroll } from '@/components/motion/scroll';
 import { SiteFooter } from './SiteFooter';
 import { SiteHeader } from './SiteHeader';
 
@@ -11,6 +12,7 @@ export function SiteLayout() {
       >
         Skip to content
       </a>
+      <SmoothScroll />
       <SiteHeader />
       <main id="main" className="flex-1">
         <Outlet />
