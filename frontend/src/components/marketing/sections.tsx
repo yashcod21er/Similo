@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { SimilarityWave } from '@/components/motion/SimilarityWave';
 import { ButtonLink } from '@/components/ui/Button';
 import { Container, Eyebrow } from '@/components/ui/layout';
+import { LogoSymbol } from '@/components/ui/Logo';
 import { Reveal, RevealGroup, RevealItem } from '@/components/ui/Reveal';
 import { SpotlightCard } from '@/components/ui/SpotlightCard';
 import { cn } from '@/lib/cn';
@@ -269,15 +270,23 @@ export function FeatureCard({
   className?: string;
 }) {
   return (
-    <SpotlightCard className={cn('flex h-full flex-col p-6', className)}>
+    <SpotlightCard className={cn('flex h-full flex-col p-6 lg:p-7', className)}>
+      {/* Signature detail: the logo's ∼ in the corner, turning orange and sliding on hover. */}
+      <LogoSymbol className="pointer-events-none absolute top-7 right-6 h-3.5 w-auto text-line-strong transition-[color,transform] duration-500 ease-out group-hover/spot:translate-x-1 group-hover/spot:text-accent motion-reduce:transition-none" />
       {icon && (
-        <span className="mb-5 inline-flex size-10 self-start items-center justify-center rounded-xl bg-accent/[0.08] text-accent ring-1 ring-accent/15 [&>svg]:size-5">
+        <span className="relative mb-6 inline-flex size-11 self-start items-center justify-center rounded-xl bg-night text-accent-soft shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_6px_16px_-6px_rgb(18_17_15/0.45)] transition-[background-color,color,transform] duration-300 group-hover/spot:bg-accent group-hover/spot:text-white motion-safe:group-hover/spot:-rotate-6 [&>svg]:size-5">
           {icon}
         </span>
       )}
-      <h3 className="text-[1.0625rem] font-semibold tracking-[-0.015em]">{title}</h3>
-      <p className="mt-2 leading-relaxed text-muted">{description}</p>
-      {children && <div className="mt-5 flex-1">{children}</div>}
+      <h3 className="relative text-[1.125rem] font-semibold tracking-[-0.02em]">{title}</h3>
+      <p className="relative mt-2.5 leading-relaxed text-muted">{description}</p>
+      {children && (
+        <div className="relative mt-auto pt-6">
+          <div className="border-t border-dashed border-line-strong/80 pt-4 text-[13px] [&_p]:text-[13px]">
+            {children}
+          </div>
+        </div>
+      )}
     </SpotlightCard>
   );
 }
