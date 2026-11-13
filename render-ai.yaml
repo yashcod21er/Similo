@@ -2,6 +2,12 @@
 # The existing static site needs VITE_API_BASE_URL=https://similo-api.onrender.com
 # added to its Render build environment after the API is created.
 
+envVarGroups:
+  - name: similo-ai-auth
+    envVars:
+      - key: AI_SERVICE_TOKEN
+        generateValue: true
+
 services:
   - type: web
     name: similo-api
@@ -35,6 +41,7 @@ services:
           type: keyvalue
           name: similo-redis
           property: connectionString
+      - fromGroup: similo-ai-auth
 
   - type: web
     name: similo-ai
@@ -46,10 +53,13 @@ services:
     startCommand: python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.11
       - key: AI_ENVIRONMENT
         value: production
       - key: AI_LOG_LEVEL
         value: INFO
+      - fromGroup: similo-ai-auth
 
   - type: keyvalue
     name: similo-redis
@@ -58,5 +68,5 @@ services:
     ipAllowList: []
 
 # The BullMQ monitoring worker is intentionally not included: Render does not
-# offer a free background-worker plan. Domain scans will remain queued until a
-# paid worker is approved and added.
+# offer a free background-worker plan. Domain scans and AI analysis of findings
+# stay queued on Render until a paid worker is approved and added.
