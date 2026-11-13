@@ -14,7 +14,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "seed:demo": "tsx scripts/seed-demo.ts",
-    "auth:reset-password": "tsx scripts/reset-password.ts"
+    "auth:reset-password": "tsx scripts/reset-password.ts",
+    "analysis:run": "tsx scripts/analyse-finding.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.2",
@@ -30,6 +31,7 @@
     "multer": "2.5.0",
     "pino": "^10.4.0",
     "pino-http": "^11.0.0",
+    "playwright": "1.65.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {

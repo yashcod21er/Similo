@@ -1,4 +1,5 @@
 import { toId } from '../../db/transaction.js';
+import type { FindingAnalysis } from '../analysis/analysis.types.js';
 import {
   FindingModel,
   type FindingDocument,
@@ -28,6 +29,7 @@ export interface FindingRecord {
   status: FindingStatus;
   firstSeenAt: Date;
   lastSeenAt: Date;
+  analysis: FindingAnalysis | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -46,23 +48,78 @@ export interface NewFinding {
   seenAt: Date;
 }
 
-export interface FindingCursor {
-  lastSeenAt: Date;
-  id: string;
-}
+export const FINDING_SORTS = ['recent', 'risk'] as const;
+export type FindingSort = (typeof FINDING_SORTS)[number];
+
+/** Where the next page starts: after this finding in the chosen order. */
+export type FindingCursor =
+  | { sort: 'recent'; lastSeenAt: Date; id: string }
+  | { sort: 'risk'; score: number | null; id: string };
 
 export interface FindingRepository {
   upsert(organizationId: string, finding: NewFinding): Promise<FindingRecord>;
   findById(organizationId: string, id: string): Promise<FindingRecord | null>;
   list(
     organizationId: string,
-    options: { status?: FindingStatus; brandId?: string; before?: FindingCursor; limit: number },
+    options: {
+      status?: FindingStatus;
+      brandId?: string;
+      /** recent = last seen first; risk = analysis score first, unscored last. */
+      sort?: FindingSort;
+      before?: FindingCursor;
+      limit: number;
+    },
   ): Promise<FindingRecord[]>;
   updateStatus(
     organizationId: string,
     id: string,
     status: FindingStatus,
   ): Promise<FindingRecord | null>;
+  /** Replaces the finding's analysis; null when the finding is not in this organisation. */
+  setAnalysis(
+    organizationId: string,
+    id: string,
+    analysis: FindingAnalysis | null,
+  ): Promise<FindingRecord | null>;
+}
+
+function copyAnalysis(analysis: FindingAnalysis | null | undefined): FindingAnalysis | null {
+  if (!analysis) return null;
+  return {
+    status: analysis.status,
+    score: analysis.score ?? null,
+    level: analysis.level ?? null,
+    signals: (analysis.signals ?? []).map((signal) => ({
+      id: signal.id,
+      label: signal.label,
+      value: signal.value ?? null,
+      points: signal.points,
+      maxPoints: signal.maxPoints,
+      detail: signal.detail ?? '',
+    })),
+    reasons: [...(analysis.reasons ?? [])],
+    unavailable: [...(analysis.unavailable ?? [])],
+    capture: analysis.capture
+      ? {
+          status: analysis.capture.status,
+          finalUrl: analysis.capture.finalUrl ?? null,
+          title: analysis.capture.title ?? null,
+          hasScreenshot: Boolean(analysis.capture.hasScreenshot),
+          capturedAt: analysis.capture.capturedAt ?? null,
+        }
+      : null,
+    logoMatch: analysis.logoMatch
+      ? {
+          logoId: analysis.logoMatch.logoId,
+          source: analysis.logoMatch.source,
+          similarity: analysis.logoMatch.similarity,
+          method: analysis.logoMatch.method,
+        }
+      : null,
+    modelVersion: analysis.modelVersion ?? null,
+    analysedAt: analysis.analysedAt ?? null,
+    error: analysis.error ?? null,
+  };
 }
 
 function toRecord(doc: FindingDocument): FindingRecord {
@@ -86,6 +143,7 @@ function toRecord(doc: FindingDocument): FindingRecord {
     status: doc.status,
     firstSeenAt: doc.firstSeenAt,
     lastSeenAt: doc.lastSeenAt,
+    analysis: copyAnalysis(doc.analysis),
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
   };
@@ -125,18 +183,30 @@ export const mongoFindingRepository: FindingRepository = {
     return doc ? toRecord(doc) : null;
   },
 
-  async list(organizationId, { status, brandId, before, limit }) {
+  async list(organizationId, { status, brandId, sort = 'recent', before, limit }) {
     const filter: Record<string, unknown> = { organizationId };
     if (status) filter.status = status;
     if (brandId) filter.brandId = brandId;
-    if (before) {
+    if (before?.sort === 'recent') {
       filter.$or = [
         { lastSeenAt: { $lt: before.lastSeenAt } },
         { lastSeenAt: before.lastSeenAt, _id: { $lt: before.id } },
       ];
+    } else if (before?.sort === 'risk') {
+      // MongoDB sorts a missing/null score below every number, so "nulls last".
+      filter.$or =
+        before.score === null
+          ? [{ 'analysis.score': null, _id: { $lt: before.id } }]
+          : [
+              { 'analysis.score': { $lt: before.score } },
+              { 'analysis.score': before.score, _id: { $lt: before.id } },
+              { 'analysis.score': null },
+            ];
     }
+    const order: Record<string, 1 | -1> =
+      sort === 'risk' ? { 'analysis.score': -1, _id: -1 } : { lastSeenAt: -1, _id: -1 };
     const docs = await FindingModel.find(filter)
-      .sort({ lastSeenAt: -1, _id: -1 })
+      .sort(order)
       .limit(limit)
       .lean<FindingDocument[]>();
     return docs.map(toRecord);
@@ -146,6 +216,15 @@ export const mongoFindingRepository: FindingRepository = {
     const doc = await FindingModel.findOneAndUpdate(
       { organizationId, _id: id },
       { $set: { status } },
+      { returnDocument: 'after', runValidators: true },
+    ).lean<FindingDocument>();
+    return doc ? toRecord(doc) : null;
+  },
+
+  async setAnalysis(organizationId, id, analysis) {
+    const doc = await FindingModel.findOneAndUpdate(
+      { organizationId, _id: id },
+      { $set: { analysis } },
       { returnDocument: 'after', runValidators: true },
     ).lean<FindingDocument>();
     return doc ? toRecord(doc) : null;

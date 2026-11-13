@@ -1,56 +1,46 @@
-import { ArrowUpRight, Clock3, ExternalLink, Radar, ShieldAlert } from 'lucide-react';
-import { useState } from 'react';
-import { Link } from 'react-router';
+import { ArrowUpRight, Clock3, ExternalLink, Radar } from 'lucide-react';
+import { Link, useSearchParams } from 'react-router';
 import { Button } from '@/components/ui/Button';
 import { FormAlert, inputClass } from '@/components/ui/form';
 import { PageHeader } from '@/features/app-shell/AppLayout';
 import { useCan } from '@/features/auth/api';
 import { formatDateTime } from '@/lib/format';
 import { cn } from '@/lib/cn';
-import { useFindings, useUpdateFindingStatus, type Finding, type FindingStatus } from './api';
+import { STATUS_OPTIONS } from './analysis';
+import { useFindings, type Finding, type FindingSort, type FindingStatus } from './api';
+import { FindingStatusBadge, FindingStatusSelect, RiskBadge, SourceBadge } from './finding-ui';
 
 const STATUSES: { value: FindingStatus | 'all'; label: string }[] = [
   { value: 'all', label: 'All findings' },
-  { value: 'new', label: 'New' },
-  { value: 'reviewing', label: 'Reviewing' },
-  { value: 'confirmed', label: 'Confirmed' },
-  { value: 'dismissed', label: 'Dismissed' },
+  ...STATUS_OPTIONS,
 ];
 
-const STATUS_STYLE: Record<FindingStatus, string> = {
-  new: 'bg-accent/10 text-accent-ink',
-  reviewing: 'bg-amber-100 text-amber-900',
-  confirmed: 'bg-red-100 text-red-900',
-  dismissed: 'bg-cream text-muted',
-};
+const SORTS: { value: FindingSort; label: string }[] = [
+  { value: 'recent', label: 'Most recent' },
+  { value: 'risk', label: 'Highest risk' },
+];
+
+const isStatus = (value: string | null): value is FindingStatus =>
+  STATUS_OPTIONS.some((option) => option.value === value);
 
 function FindingCard({ finding, canUpdate }: { finding: Finding; canUpdate: boolean }) {
-  const update = useUpdateFindingStatus();
+  const detailPath = `/app/findings/${encodeURIComponent(finding.id)}`;
   return (
     <article className="rounded-3xl bg-white p-5 ring-1 ring-line sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 basis-64">
           <div className="flex flex-wrap items-center gap-2">
-            <h2 className="break-all font-mono text-[1.125rem] font-semibold tracking-[-0.025em]">
-              {finding.domain}
+            <h2 className="font-mono text-[1.125rem] font-semibold tracking-[-0.025em] break-all">
+              {/* Our own detail page, never the suspect site. */}
+              <Link
+                to={detailPath}
+                className="rounded-sm underline-offset-4 hover:text-accent-ink hover:underline"
+              >
+                {finding.domain}
+              </Link>
             </h2>
-            <span
-              className={cn(
-                'rounded-full px-2.5 py-1 text-[12px] font-medium capitalize',
-                STATUS_STYLE[finding.status],
-              )}
-            >
-              {finding.status}
-            </span>
-            {finding.source === 'fixture' ? (
-              <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[11.5px] font-medium text-amber-900 ring-1 ring-amber-200">
-                Development fixture
-              </span>
-            ) : (
-              <span className="rounded-full bg-cream px-2.5 py-1 text-[11.5px] font-medium text-muted ring-1 ring-line">
-                Certificate Transparency
-              </span>
-            )}
+            <FindingStatusBadge status={finding.status} />
+            <SourceBadge source={finding.source} />
           </div>
           <p className="mt-2 text-[14px] text-muted">
             Looks related to <span className="font-medium text-ink">{finding.brandName}</span>
@@ -58,11 +48,20 @@ function FindingCard({ finding, canUpdate }: { finding: Finding; canUpdate: bool
             <span className="font-mono">“{finding.matchedTerm}”</span>
           </p>
         </div>
-        <div className="flex shrink-0 items-center gap-2 rounded-2xl bg-cream px-3 py-2">
-          <ShieldAlert aria-hidden className="size-4 text-accent-ink" />
-          <span className="font-mono text-[15px] font-semibold">{finding.score}</span>
-          <span className="text-[12px] text-muted">match</span>
-        </div>
+        <dl className="flex shrink-0 flex-wrap items-center gap-x-5 gap-y-2">
+          <div className="flex items-center gap-2">
+            <dt className="text-[12px] text-muted">Name match</dt>
+            <dd className="rounded-full bg-cream px-2.5 py-1 font-mono text-[13px] font-semibold ring-1 ring-line">
+              {finding.score}
+            </dd>
+          </div>
+          <div className="flex items-center gap-2">
+            <dt className="text-[12px] text-muted">Risk</dt>
+            <dd>
+              <RiskBadge analysis={finding.analysis} />
+            </dd>
+          </div>
+        </dl>
       </div>
 
       <ul className="mt-5 grid gap-2 border-t border-line pt-4 text-[14px] text-ink/80 sm:grid-cols-2">
@@ -92,77 +91,92 @@ function FindingCard({ finding, canUpdate }: { finding: Finding; canUpdate: bool
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-4">
           <Link
-            to={`/app/brands/${encodeURIComponent(finding.brandId)}?tab=monitoring`}
-            className="inline-flex items-center gap-1.5 text-[13.5px] font-medium text-accent-ink hover:underline"
+            to={detailPath}
+            aria-label={`View details for ${finding.domain}`}
+            className="inline-flex items-center gap-1.5 rounded-sm text-[13.5px] font-semibold text-accent-ink hover:underline"
           >
-            Brand monitoring <ArrowUpRight aria-hidden className="size-4" />
+            View details <ArrowUpRight aria-hidden className="size-4" />
+          </Link>
+          <Link
+            to={`/app/brands/${encodeURIComponent(finding.brandId)}?tab=monitoring`}
+            className="inline-flex items-center gap-1.5 rounded-sm text-[13.5px] font-medium text-muted hover:text-ink hover:underline"
+          >
+            Brand monitoring
           </Link>
           {finding.source === 'certificate_transparency' && finding.sourceReferences[0] && (
             <a
               href={`https://crt.sh/?id=${encodeURIComponent(finding.sourceReferences[0])}`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-[13.5px] font-medium text-muted hover:text-ink hover:underline"
+              className="inline-flex items-center gap-1.5 rounded-sm text-[13.5px] font-medium text-muted hover:text-ink hover:underline"
             >
               CT record <ExternalLink aria-hidden className="size-3.5" />
             </a>
           )}
         </div>
-        {canUpdate && (
-          <label className="flex items-center gap-2 text-[13px] text-muted">
-            Update status
-            <select
-              aria-label={`Update status for ${finding.domain}`}
-              value={finding.status}
-              disabled={update.isPending}
-              onChange={(event) =>
-                update.mutate({
-                  findingId: finding.id,
-                  status: event.target.value as FindingStatus,
-                })
-              }
-              className="h-10 rounded-xl border border-line-strong bg-white px-3 text-[13.5px] text-ink outline-none focus:border-accent focus:ring-4 focus:ring-accent/15 disabled:opacity-60"
-            >
-              {STATUSES.filter((option) => option.value !== 'all').map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
+        {canUpdate && <FindingStatusSelect finding={finding} />}
       </div>
-      {update.isError && <FormAlert className="mt-4">{update.error.message}</FormAlert>}
     </article>
   );
 }
 
 export function FindingsPage() {
   const can = useCan();
-  const [status, setStatus] = useState<FindingStatus | 'all'>('all');
-  const findings = useFindings(status);
+  // The filter and the order live in the address, so going back from a finding keeps them.
+  const [params, setParams] = useSearchParams();
+  const requestedStatus = params.get('status');
+  const status: FindingStatus | 'all' = isStatus(requestedStatus) ? requestedStatus : 'all';
+  const sort: FindingSort = params.get('sort') === 'risk' ? 'risk' : 'recent';
+  const findings = useFindings(status, sort);
   const rows = findings.data?.pages.flatMap((page) => page.findings) ?? [];
+
+  const choose = (key: 'status' | 'sort', value: string, fallback: string) =>
+    setParams(
+      (current) => {
+        const next = new URLSearchParams(current);
+        if (value === fallback) next.delete(key);
+        else next.set(key, value);
+        return next;
+      },
+      { replace: true },
+    );
 
   return (
     <>
       <PageHeader
         title="Findings"
-        description="Possible lookalike domains from the configured discovery source. Certificate Transparency coverage is incomplete and delayed, so treat every match as a lead for human review."
+        description="Possible lookalike domains from the configured discovery source. Certificate Transparency coverage is incomplete and delayed, so treat every match as a lead for human review. Open a finding to see how Similo scored it."
         actions={
-          <label className="flex items-center gap-2 text-[13.5px] font-medium text-muted">
-            <span className="sr-only">Filter findings</span>
-            <select
-              value={status}
-              onChange={(event) => setStatus(event.target.value as FindingStatus | 'all')}
-              className={cn(inputClass, 'mt-0 h-11 min-w-40 py-2')}
-            >
-              {STATUSES.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <label className="flex items-center gap-2 text-[13.5px] font-medium text-muted">
+              <span className="sr-only">Filter findings</span>
+              <select
+                value={status}
+                onChange={(event) => choose('status', event.target.value, 'all')}
+                className={cn(inputClass, 'mt-0 h-11 min-w-40 py-2')}
+              >
+                {STATUSES.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="flex items-center gap-2 text-[13.5px] font-medium whitespace-nowrap text-muted">
+              Sort by
+              <select
+                value={sort}
+                onChange={(event) => choose('sort', event.target.value, 'recent')}
+                className={cn(inputClass, 'mt-0 h-11 min-w-36 py-2')}
+              >
+                {SORTS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
         }
       />
 
@@ -199,7 +213,7 @@ export function FindingsPage() {
               disabled={findings.isFetchingNextPage}
               onClick={() => void findings.fetchNextPage()}
             >
-              {findings.isFetchingNextPage ? 'Loading…' : 'Load older findings'}
+              {findings.isFetchingNextPage ? 'Loading…' : 'Load more findings'}
             </Button>
           </div>
         )}

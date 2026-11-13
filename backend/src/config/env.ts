@@ -16,6 +16,22 @@ const optionalString = z.preprocess(
   z.string().optional(),
 );
 
+/** `true/false`, `1/0`, `yes/no`, `on/off`; empty = the default. */
+const booleanFlag = (defaultValue: boolean) =>
+  z.preprocess(
+    (value) => {
+      if (value === undefined || (typeof value === 'string' && value.trim() === '')) {
+        return defaultValue;
+      }
+      if (typeof value !== 'string') return value;
+      const normalised = value.trim().toLowerCase();
+      if (['true', '1', 'yes', 'on'].includes(normalised)) return true;
+      if (['false', '0', 'no', 'off'].includes(normalised)) return false;
+      return value;
+    },
+    z.boolean({ message: 'must be true or false' }),
+  );
+
 const envSchema = z
   .object({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -52,6 +68,15 @@ const envSchema = z
     ),
     AI_SERVICE_URL: z.url().default('http://localhost:8000'),
     AI_SERVICE_TIMEOUT_MS: z.coerce.number().int().positive().default(3000),
+    // Phase 6: shared secret the API sends to the AI service's /internal routes.
+    AI_SERVICE_TOKEN: optionalString,
+    AI_ANALYSIS_TIMEOUT_MS: z.coerce.number().int().min(1000).max(600_000).default(90_000),
+    CAPTURE_ENABLED: booleanFlag(true),
+    CAPTURE_BROWSER_CHANNEL: optionalString.refine(
+      (value) => value === undefined || /^[a-z][a-z-]{1,30}$/.test(value),
+      'must be a browser channel name such as msedge or chrome',
+    ),
+    ANALYSIS_MAX_PER_SCAN: z.coerce.number().int().min(0).max(100).default(20),
     REDIS_URL: optionalString.refine((value) => {
       if (value === undefined) return true;
       try {
@@ -62,6 +87,8 @@ const envSchema = z
     }, 'must be a valid redis:// or rediss:// URL'),
     DOMAIN_DISCOVERY_SOURCE: z.enum(['fixtures', 'crtsh']).default('fixtures'),
     DOMAIN_SCAN_INTERVAL_HOURS: z.coerce.number().int().min(1).max(168).default(24),
+    // Keep Chromium memory use bounded on small Render worker instances.
+    MONITORING_WORKER_CONCURRENCY: z.coerce.number().int().min(1).max(4).default(1),
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV === 'production' && !env.MONGODB_URI) {
@@ -76,6 +103,13 @@ const envSchema = z
     }
     if (env.NODE_ENV === 'production' && !env.REDIS_URL) {
       ctx.addIssue({ code: 'custom', path: ['REDIS_URL'], message: 'is required in production' });
+    }
+    if (env.NODE_ENV === 'production' && (env.AI_SERVICE_TOKEN?.length ?? 0) < 32) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['AI_SERVICE_TOKEN'],
+        message: 'is required in production and must be at least 32 characters',
+      });
     }
     if (env.NODE_ENV === 'production' && env.DOMAIN_DISCOVERY_SOURCE !== 'crtsh') {
       ctx.addIssue({

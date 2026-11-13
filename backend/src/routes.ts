@@ -5,7 +5,10 @@ import { createAuthRouter } from './modules/auth/auth.routes.js';
 import type { AuthSystem } from './modules/auth/auth.system.js';
 import { createBrandRouter } from './modules/brands/brand.routes.js';
 import type { BrandService } from './modules/brands/brand.service.js';
-import { createFindingRouter } from './modules/findings/finding.routes.js';
+import {
+  createFindingRouter,
+  type FindingRouterOptions,
+} from './modules/findings/finding.routes.js';
 import type { FindingService } from './modules/findings/finding.service.js';
 import type { MonitoringQueue } from './modules/monitoring/monitoring.queue.js';
 import {
@@ -24,6 +27,7 @@ export interface ApiRouterDependencies {
   auth: AuthSystem;
   brandService: BrandService;
   findingService?: FindingService;
+  findingRouterOptions?: FindingRouterOptions;
   monitoringQueue?: MonitoringQueue | null;
   /** True when MongoDB is connected; identity routes answer 503 otherwise. */
   isDatabaseReady: () => boolean;
@@ -46,6 +50,7 @@ export function createApiRouter({
   auth,
   brandService,
   findingService,
+  findingRouterOptions,
   monitoringQueue,
   isDatabaseReady,
 }: ApiRouterDependencies): Router {
@@ -93,7 +98,7 @@ export function createApiRouter({
       needsDatabase,
       auth.requireAuth,
       noStore,
-      createFindingRouter(findingService),
+      createFindingRouter(findingService, findingRouterOptions),
     );
   }
 

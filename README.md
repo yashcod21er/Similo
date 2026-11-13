@@ -5,7 +5,7 @@ their protected brands. Similo then monitors domains, apps and trademark publica
 for look-alikes, explains why each one was flagged, and supports analysts through
 investigation, evidence collection and legal drafting. A person always makes the final decision.
 
-> **Status:** Phases 1–5 are implemented: foundation, accounts and roles, public website, brand management, and the first domain-monitoring pipeline. Phase 5 needs Redis to run scans; the development fixture source uses reserved `.example` domains.
+> **Status:** Phases 1-6 are implemented in the repository: foundation, accounts and roles, public website, brand management, domain monitoring, and AI finding analysis. Live domain scans still need the Render worker; live AI inference needs a model-capable AI instance. Development fixtures use reserved `.example` domains.
 > See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#roadmap) and [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md).
 
 ## Repository layout

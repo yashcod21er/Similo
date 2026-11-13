@@ -1,0 +1,1430 @@
+{
+  "note": "Fictional evaluation cases. 'lookalike' is the label set by the dataset author.",
+  "cases": [
+    {
+      "id": "pos-norvane-clone-login",
+      "brandId": "norvane",
+      "domain": "norvane-secure-login.example",
+      "pageDir": "pos-norvane-clone-login",
+      "domainScore": 82,
+      "registeredDaysAgo": 16,
+      "certificateDaysAgo": 1,
+      "label": {
+        "lookalike": true,
+        "category": "clone-login",
+        "difficulty": "easy",
+        "notes": "Official logo copied unchanged, brand name, sign-in form, form posts to another domain."
+      }
+    },
+    {
+      "id": "pos-norvane-recoloured-payment",
+      "brandId": "norvane",
+      "domain": "norvane-pay.test",
+      "pageDir": "pos-norvane-recoloured-payment",
+      "domainScore": 82,
+      "registeredDaysAgo": 738,
+      "certificateDaysAgo": 83,
+      "label": {
+        "lookalike": true,
+        "category": "recoloured-payment",
+        "difficulty": "medium",
+        "notes": "Logo recoloured and shrunk, brand name in text, payment form posting to another domain."
+      }
+    },
+    {
+      "id": "pos-norvane-altered-logo",
+      "brandId": "norvane",
+      "domain": "norvaane.example",
+      "pageDir": "pos-norvane-altered-logo",
+      "domainScore": 88,
+      "registeredDaysAgo": 29,
+      "certificateDaysAgo": 13,
+      "label": {
+        "lookalike": true,
+        "category": "altered-logo",
+        "difficulty": "medium",
+        "notes": "Logo altered (rotated 6 degrees), one-letter typo domain, sign-in form."
+      }
+    },
+    {
+      "id": "pos-norvane-ocr-only",
+      "brandId": "norvane",
+      "domain": "account-check-4821.example",
+      "pageDir": "pos-norvane-ocr-only",
+      "domainScore": 15,
+      "registeredDaysAgo": 5,
+      "certificateDaysAgo": 6,
+      "label": {
+        "lookalike": true,
+        "category": "ocr-only",
+        "difficulty": "hard",
+        "notes": "Brand name only appears inside a banner image; page text and title are generic; generic domain with no resemblance to the brand."
+      }
+    },
+    {
+      "id": "pos-norvane-confusable",
+      "brandId": "norvane",
+      "domain": "n0rvane-bank.test",
+      "pageDir": "pos-norvane-confusable",
+      "domainScore": 91,
+      "registeredDaysAgo": 12,
+      "certificateDaysAgo": 8,
+      "label": {
+        "lookalike": true,
+        "category": "confusable-spelling",
+        "difficulty": "hard",
+        "notes": "Brand name spelled with look-alike characters (N0rvane Bank), small icon-only logo, sign-in form."
+      }
+    },
+    {
+      "id": "pos-zephyrio-clone-login",
+      "brandId": "zephyrio",
+      "domain": "zephyrio-mail-signin.example",
+      "pageDir": "pos-zephyrio-clone-login",
+      "domainScore": 82,
+      "registeredDaysAgo": 12,
+      "certificateDaysAgo": 5,
+      "label": {
+        "lookalike": true,
+        "category": "clone-login",
+        "difficulty": "easy",
+        "notes": "Official logo copied unchanged, brand name, sign-in form."
+      }
+    },
+    {
+      "id": "pos-zephyrio-recoloured-landing",
+      "brandId": "zephyrio",
+      "domain": "zephyrio-premium.example.com",
+      "pageDir": "pos-zephyrio-recoloured-landing",
+      "domainScore": 82,
+      "registeredDaysAgo": 8,
+      "certificateDaysAgo": 8,
+      "label": {
+        "lookalike": true,
+        "category": "recoloured-landing",
+        "difficulty": "medium",
+        "notes": "Marketing-page clone with a recoloured, enlarged logo; no form at all."
+      }
+    },
+    {
+      "id": "pos-zephyrio-altered-logo",
+      "brandId": "zephyrio",
+      "domain": "zephyrlo.example",
+      "pageDir": "pos-zephyrio-altered-logo",
+      "domainScore": 88,
+      "registeredDaysAgo": 22,
+      "certificateDaysAgo": 12,
+      "label": {
+        "lookalike": true,
+        "category": "altered-logo",
+        "difficulty": "medium",
+        "notes": "Logo altered (cropped, blurred and re-compressed), one-letter typo domain, sign-in form."
+      }
+    },
+    {
+      "id": "pos-zephyrio-ocr-only",
+      "brandId": "zephyrio",
+      "domain": "verify-session-1093.test",
+      "pageDir": "pos-zephyrio-ocr-only",
+      "domainScore": 24,
+      "registeredDaysAgo": 10,
+      "certificateDaysAgo": 7,
+      "label": {
+        "lookalike": true,
+        "category": "ocr-only",
+        "difficulty": "hard",
+        "notes": "Brand name only appears inside a banner image; page text and title are generic; generic domain with no resemblance to the brand."
+      }
+    },
+    {
+      "id": "pos-zephyrio-confusable",
+      "brandId": "zephyrio",
+      "domain": "zephyr1o-mail.example",
+      "pageDir": "pos-zephyrio-confusable",
+      "domainScore": 92,
+      "registeredDaysAgo": 592,
+      "certificateDaysAgo": 64,
+      "label": {
+        "lookalike": true,
+        "category": "confusable-spelling",
+        "difficulty": "hard",
+        "notes": "Brand name spelled with look-alike characters (Zephyr1o Mail), small icon-only logo, sign-in form."
+      }
+    },
+    {
+      "id": "pos-kestrelfenn-clone-login",
+      "brandId": "kestrelfenn",
+      "domain": "kestrelfenn-claims-login.example",
+      "pageDir": "pos-kestrelfenn-clone-login",
+      "domainScore": 82,
+      "registeredDaysAgo": 8,
+      "certificateDaysAgo": 2,
+      "label": {
+        "lookalike": true,
+        "category": "clone-login",
+        "difficulty": "easy",
+        "notes": "Official logo copied unchanged, brand name, sign-in form, form posts to another domain."
+      }
+    },
+    {
+      "id": "pos-kestrelfenn-recoloured-payment",
+      "brandId": "kestrelfenn",
+      "domain": "kestrel-fenn-payments.test",
+      "pageDir": "pos-kestrelfenn-recoloured-payment",
+      "domainScore": 82,
+      "registeredDaysAgo": 24,
+      "certificateDaysAgo": 10,
+      "label": {
+        "lookalike": true,
+        "category": "recoloured-payment",
+        "difficulty": "medium",
+        "notes": "Logo recoloured and shrunk, brand name in text, payment form posting to another domain."
+      }
+    },
+    {
+      "id": "pos-kestrelfenn-altered-logo",
+      "brandId": "kestrelfenn",
+      "domain": "kestrelfen.example",
+      "pageDir": "pos-kestrelfenn-altered-logo",
+      "domainScore": 91,
+      "registeredDaysAgo": 12,
+      "certificateDaysAgo": 6,
+      "label": {
+        "lookalike": true,
+        "category": "altered-logo",
+        "difficulty": "medium",
+        "notes": "Logo altered (icon letter swapped), one-letter typo domain, sign-in form."
+      }
+    },
+    {
+      "id": "pos-kestrelfenn-ocr-only",
+      "brandId": "kestrelfenn",
+      "domain": "my-secure-portal.example",
+      "pageDir": "pos-kestrelfenn-ocr-only",
+      "domainScore": 21,
+      "registeredDaysAgo": 9,
+      "certificateDaysAgo": 7,
+      "label": {
+        "lookalike": true,
+        "category": "ocr-only",
+        "difficulty": "hard",
+        "notes": "Brand name only appears inside a banner image; page text and title are generic; generic domain with no resemblance to the brand."
+      }
+    },
+    {
+      "id": "pos-kestrelfenn-confusable",
+      "brandId": "kestrelfenn",
+      "domain": "kestre1fenn.test",
+      "pageDir": "pos-kestrelfenn-confusable",
+      "domainScore": 91,
+      "registeredDaysAgo": 19,
+      "certificateDaysAgo": 11,
+      "label": {
+        "lookalike": true,
+        "category": "confusable-spelling",
+        "difficulty": "hard",
+        "notes": "Brand name spelled with look-alike characters (Kestre1 & Fenn), small icon-only logo, sign-in form."
+      }
+    },
+    {
+      "id": "pos-plumbagopay-clone-login",
+      "brandId": "plumbagopay",
+      "domain": "plumbagopay-login.example",
+      "pageDir": "pos-plumbagopay-clone-login",
+      "domainScore": 82,
+      "registeredDaysAgo": 2,
+      "certificateDaysAgo": 2,
+      "label": {
+        "lookalike": true,
+        "category": "clone-login",
+        "difficulty": "easy",
+        "notes": "Official logo copied unchanged, brand name, sign-in form."
+      }
+    },
+    {
+      "id": "pos-plumbagopay-recoloured-landing",
+      "brandId": "plumbagopay",
+      "domain": "plumbago-wallet.example.com",
+      "pageDir": "pos-plumbagopay-recoloured-landing",
+      "domainScore": 95,
+      "registeredDaysAgo": 19,
+      "certificateDaysAgo": 3,
+      "label": {
+        "lookalike": true,
+        "category": "recoloured-landing",
+        "difficulty": "medium",
+        "notes": "Marketing-page clone with a recoloured, enlarged logo; no form at all."
+      }
+    },
+    {
+      "id": "pos-plumbagopay-altered-logo",
+      "brandId": "plumbagopay",
+      "domain": "plumbag0pay.test",
+      "pageDir": "pos-plumbagopay-altered-logo",
+      "domainScore": 91,
+      "registeredDaysAgo": 837,
+      "certificateDaysAgo": 74,
+      "label": {
+        "lookalike": true,
+        "category": "altered-logo",
+        "difficulty": "medium",
+        "notes": "Logo altered (rotated 6 degrees), one-letter typo domain, sign-in form."
+      }
+    },
+    {
+      "id": "pos-plumbagopay-ocr-only",
+      "brandId": "plumbagopay",
+      "domain": "id-confirm-5512.example.net",
+      "pageDir": "pos-plumbagopay-ocr-only",
+      "domainScore": 21,
+      "registeredDaysAgo": 9,
+      "certificateDaysAgo": 2,
+      "label": {
+        "lookalike": true,
+        "category": "ocr-only",
+        "difficulty": "hard",
+        "notes": "Brand name only appears inside a banner image; page text and title are generic; generic domain with no resemblance to the brand."
+      }
+    },
+    {
+      "id": "pos-plumbagopay-confusable",
+      "brandId": "plumbagopay",
+      "domain": "p1umbagopay.example",
+      "pageDir": "pos-plumbagopay-confusable",
+      "domainScore": 91,
+      "registeredDaysAgo": 23,
+      "certificateDaysAgo": 8,
+      "label": {
+        "lookalike": true,
+        "category": "confusable-spelling",
+        "difficulty": "hard",
+        "notes": "Brand name spelled with look-alike characters (P1umbago Pay), small icon-only logo, sign-in form."
+      }
+    },
+    {
+      "id": "pos-tallowmere-clone-login",
+      "brandId": "tallowmere",
+      "domain": "tallowmere-cloud-signin.example",
+      "pageDir": "pos-tallowmere-clone-login",
+      "domainScore": 82,
+      "registeredDaysAgo": 16,
+      "certificateDaysAgo": 6,
+      "label": {
+        "lookalike": true,
+        "category": "clone-login",
+        "difficulty": "easy",
+        "notes": "Official logo copied unchanged, brand name, sign-in form, form posts to another domain."
+      }
+    },
+    {
+      "id": "pos-tallowmere-recoloured-payment",
+      "brandId": "tallowmere",
+      "domain": "tallowmere-storage-upgrade.example.com",
+      "pageDir": "pos-tallowmere-recoloured-payment",
+      "domainScore": 82,
+      "registeredDaysAgo": 25,
+      "certificateDaysAgo": 7,
+      "label": {
+        "lookalike": true,
+        "category": "recoloured-payment",
+        "difficulty": "medium",
+        "notes": "Logo recoloured and shrunk, brand name in text, payment form posting to another domain."
+      }
+    },
+    {
+      "id": "pos-tallowmere-altered-logo",
+      "brandId": "tallowmere",
+      "domain": "tallowmerre.test",
+      "pageDir": "pos-tallowmere-altered-logo",
+      "domainScore": 91,
+      "registeredDaysAgo": 37,
+      "certificateDaysAgo": 12,
+      "label": {
+        "lookalike": true,
+        "category": "altered-logo",
+        "difficulty": "medium",
+        "notes": "Logo altered (cropped, blurred and re-compressed), one-letter typo domain, sign-in form."
+      }
+    },
+    {
+      "id": "pos-tallowmere-ocr-only",
+      "brandId": "tallowmere",
+      "domain": "customer-update-731.example",
+      "pageDir": "pos-tallowmere-ocr-only",
+      "domainScore": 24,
+      "registeredDaysAgo": 7,
+      "certificateDaysAgo": 4,
+      "label": {
+        "lookalike": true,
+        "category": "ocr-only",
+        "difficulty": "hard",
+        "notes": "Brand name only appears inside a banner image; page text and title are generic; generic domain with no resemblance to the brand."
+      }
+    },
+    {
+      "id": "pos-tallowmere-confusable",
+      "brandId": "tallowmere",
+      "domain": "ta1lowmere.example",
+      "pageDir": "pos-tallowmere-confusable",
+      "domainScore": 90,
+      "registeredDaysAgo": 16,
+      "certificateDaysAgo": 3,
+      "label": {
+        "lookalike": true,
+        "category": "confusable-spelling",
+        "difficulty": "hard",
+        "notes": "Brand name spelled with look-alike characters (Ta1lowmere Cloud), small icon-only logo, sign-in form."
+      }
+    },
+    {
+      "id": "pos-orbiqa-clone-login",
+      "brandId": "orbiqa",
+      "domain": "orbiqa-account-login.example",
+      "pageDir": "pos-orbiqa-clone-login",
+      "domainScore": 82,
+      "registeredDaysAgo": 11,
+      "certificateDaysAgo": 3,
+      "label": {
+        "lookalike": true,
+        "category": "clone-login",
+        "difficulty": "easy",
+        "notes": "Official logo copied unchanged, brand name, sign-in form."
+      }
+    },
+    {
+      "id": "pos-orbiqa-recoloured-landing",
+      "brandId": "orbiqa",
+      "domain": "orbiqa-checkout.test",
+      "pageDir": "pos-orbiqa-recoloured-landing",
+      "domainScore": 82,
+      "registeredDaysAgo": 8,
+      "certificateDaysAgo": 9,
+      "label": {
+        "lookalike": true,
+        "category": "recoloured-landing",
+        "difficulty": "medium",
+        "notes": "Marketing-page clone with a recoloured, enlarged logo; no form at all."
+      }
+    },
+    {
+      "id": "pos-orbiqa-altered-logo",
+      "brandId": "orbiqa",
+      "domain": "orbiqaa.example",
+      "pageDir": "pos-orbiqa-altered-logo",
+      "domainScore": 82,
+      "registeredDaysAgo": 26,
+      "certificateDaysAgo": 6,
+      "label": {
+        "lookalike": true,
+        "category": "altered-logo",
+        "difficulty": "medium",
+        "notes": "Logo altered (icon letter swapped), one-letter typo domain, sign-in form."
+      }
+    },
+    {
+      "id": "pos-orbiqa-ocr-only",
+      "brandId": "orbiqa",
+      "domain": "service-notice-2204.test",
+      "pageDir": "pos-orbiqa-ocr-only",
+      "domainScore": 12,
+      "registeredDaysAgo": 241,
+      "certificateDaysAgo": 66,
+      "label": {
+        "lookalike": true,
+        "category": "ocr-only",
+        "difficulty": "hard",
+        "notes": "Brand name only appears inside a banner image; page text and title are generic; generic domain with no resemblance to the brand."
+      }
+    },
+    {
+      "id": "pos-orbiqa-confusable",
+      "brandId": "orbiqa",
+      "domain": "0rbiqa-shop.example",
+      "pageDir": "pos-orbiqa-confusable",
+      "domainScore": 90,
+      "registeredDaysAgo": 11,
+      "certificateDaysAgo": 6,
+      "label": {
+        "lookalike": true,
+        "category": "confusable-spelling",
+        "difficulty": "hard",
+        "notes": "Brand name spelled with look-alike characters (0rbiqa Shop), small icon-only logo, sign-in form."
+      }
+    },
+    {
+      "id": "pos-lumenhaven-clone-login",
+      "brandId": "lumenhaven",
+      "domain": "lumenhaven-myaccount.example",
+      "pageDir": "pos-lumenhaven-clone-login",
+      "domainScore": 82,
+      "registeredDaysAgo": 661,
+      "certificateDaysAgo": 65,
+      "label": {
+        "lookalike": true,
+        "category": "clone-login",
+        "difficulty": "easy",
+        "notes": "Official logo copied unchanged, brand name, sign-in form, form posts to another domain."
+      }
+    },
+    {
+      "id": "pos-lumenhaven-recoloured-payment",
+      "brandId": "lumenhaven",
+      "domain": "lumenhaven-billing.example.com",
+      "pageDir": "pos-lumenhaven-recoloured-payment",
+      "domainScore": 82,
+      "registeredDaysAgo": 13,
+      "certificateDaysAgo": 7,
+      "label": {
+        "lookalike": true,
+        "category": "recoloured-payment",
+        "difficulty": "medium",
+        "notes": "Logo recoloured and shrunk, brand name in text, payment form posting to another domain."
+      }
+    },
+    {
+      "id": "pos-lumenhaven-altered-logo",
+      "brandId": "lumenhaven",
+      "domain": "lumenhavn.test",
+      "pageDir": "pos-lumenhaven-altered-logo",
+      "domainScore": 90,
+      "registeredDaysAgo": 38,
+      "certificateDaysAgo": 8,
+      "label": {
+        "lookalike": true,
+        "category": "altered-logo",
+        "difficulty": "medium",
+        "notes": "Logo altered (rotated 6 degrees), one-letter typo domain, sign-in form."
+      }
+    },
+    {
+      "id": "pos-lumenhaven-ocr-only",
+      "brandId": "lumenhaven",
+      "domain": "login-help-desk.example.org",
+      "pageDir": "pos-lumenhaven-ocr-only",
+      "domainScore": 31,
+      "registeredDaysAgo": 7,
+      "certificateDaysAgo": 4,
+      "label": {
+        "lookalike": true,
+        "category": "ocr-only",
+        "difficulty": "hard",
+        "notes": "Brand name only appears inside a banner image; page text and title are generic; generic domain with no resemblance to the brand."
+      }
+    },
+    {
+      "id": "pos-lumenhaven-confusable",
+      "brandId": "lumenhaven",
+      "domain": "iumenhaven.example",
+      "pageDir": "pos-lumenhaven-confusable",
+      "domainScore": 90,
+      "registeredDaysAgo": 24,
+      "certificateDaysAgo": 12,
+      "label": {
+        "lookalike": true,
+        "category": "confusable-spelling",
+        "difficulty": "hard",
+        "notes": "Brand name spelled with look-alike characters (Iumenhaven Energy), small icon-only logo, sign-in form."
+      }
+    },
+    {
+      "id": "pos-marlowind-clone-login",
+      "brandId": "marlowind",
+      "domain": "marlowind-trips-login.example",
+      "pageDir": "pos-marlowind-clone-login",
+      "domainScore": 82,
+      "registeredDaysAgo": 8,
+      "certificateDaysAgo": 5,
+      "label": {
+        "lookalike": true,
+        "category": "clone-login",
+        "difficulty": "easy",
+        "notes": "Official logo copied unchanged, brand name, sign-in form."
+      }
+    },
+    {
+      "id": "pos-marlowind-recoloured-landing",
+      "brandId": "marlowind",
+      "domain": "marlowind-booking.test",
+      "pageDir": "pos-marlowind-recoloured-landing",
+      "domainScore": 82,
+      "registeredDaysAgo": 21,
+      "certificateDaysAgo": 10,
+      "label": {
+        "lookalike": true,
+        "category": "recoloured-landing",
+        "difficulty": "medium",
+        "notes": "Marketing-page clone with a recoloured, enlarged logo; no form at all."
+      }
+    },
+    {
+      "id": "pos-marlowind-altered-logo",
+      "brandId": "marlowind",
+      "domain": "marlowwind.example",
+      "pageDir": "pos-marlowind-altered-logo",
+      "domainScore": 90,
+      "registeredDaysAgo": 21,
+      "certificateDaysAgo": 13,
+      "label": {
+        "lookalike": true,
+        "category": "altered-logo",
+        "difficulty": "medium",
+        "notes": "Logo altered (cropped, blurred and re-compressed), one-letter typo domain, sign-in form."
+      }
+    },
+    {
+      "id": "pos-marlowind-ocr-only",
+      "brandId": "marlowind",
+      "domain": "online-access-889.example",
+      "pageDir": "pos-marlowind-ocr-only",
+      "domainScore": 7,
+      "registeredDaysAgo": 6,
+      "certificateDaysAgo": 8,
+      "label": {
+        "lookalike": true,
+        "category": "ocr-only",
+        "difficulty": "hard",
+        "notes": "Brand name only appears inside a banner image; page text and title are generic; generic domain with no resemblance to the brand."
+      }
+    },
+    {
+      "id": "pos-marlowind-confusable",
+      "brandId": "marlowind",
+      "domain": "marlow1nd.example",
+      "pageDir": "pos-marlowind-confusable",
+      "domainScore": 89,
+      "registeredDaysAgo": 15,
+      "certificateDaysAgo": 11,
+      "label": {
+        "lookalike": true,
+        "category": "confusable-spelling",
+        "difficulty": "hard",
+        "notes": "Brand name spelled with look-alike characters (Marlow1nd Travel), small icon-only logo, sign-in form."
+      }
+    },
+    {
+      "id": "pos-norvane-picture-only",
+      "brandId": "norvane",
+      "domain": "norvane-support.example",
+      "pageDir": "pos-norvane-picture-only",
+      "domainScore": 82,
+      "registeredDaysAgo": 4,
+      "certificateDaysAgo": 5,
+      "label": {
+        "lookalike": true,
+        "category": "picture-only",
+        "difficulty": "hard",
+        "notes": "The page is a single image of a sign-in screen: no text, no real form. Only the picture shows the brand; the logo is near the top in the picture."
+      }
+    },
+    {
+      "id": "pos-tallowmere-picture-only",
+      "brandId": "tallowmere",
+      "domain": "tallowmere-support.example",
+      "pageDir": "pos-tallowmere-picture-only",
+      "domainScore": 82,
+      "registeredDaysAgo": 7,
+      "certificateDaysAgo": 6,
+      "label": {
+        "lookalike": true,
+        "category": "picture-only",
+        "difficulty": "hard",
+        "notes": "The page is a single image of a sign-in screen: no text, no real form. Only the picture shows the brand; the logo is lower down in the picture."
+      }
+    },
+    {
+      "id": "pos-marlowind-picture-only",
+      "brandId": "marlowind",
+      "domain": "marlowind-help.example",
+      "pageDir": "pos-marlowind-picture-only",
+      "domainScore": 82,
+      "registeredDaysAgo": 13,
+      "certificateDaysAgo": 9,
+      "label": {
+        "lookalike": true,
+        "category": "picture-only",
+        "difficulty": "hard",
+        "notes": "The page is a single image of a sign-in screen: no text, no real form. Only the picture shows the brand; the logo is lower down in the picture."
+      }
+    },
+    {
+      "id": "neg-business-hollis-bakery",
+      "brandId": "norvane",
+      "domain": "hollis-bakery.example",
+      "pageDir": "neg-business-hollis-bakery",
+      "domainScore": 30,
+      "registeredDaysAgo": 3733,
+      "certificateDaysAgo": 22,
+      "label": {
+        "lookalike": false,
+        "category": "unrelated-business",
+        "difficulty": "easy",
+        "notes": "Hollis Bakery: ordinary local business, no connection to the brand."
+      }
+    },
+    {
+      "id": "neg-business-pinecrest-dental",
+      "brandId": "zephyrio",
+      "domain": "pinecrest-dental.example",
+      "pageDir": "neg-business-pinecrest-dental",
+      "domainScore": 13,
+      "registeredDaysAgo": 2533,
+      "certificateDaysAgo": 56,
+      "label": {
+        "lookalike": false,
+        "category": "unrelated-business",
+        "difficulty": "easy",
+        "notes": "Pinecrest Dental: ordinary local business, no connection to the brand, has a contact form."
+      }
+    },
+    {
+      "id": "neg-business-ridgeway-bikes",
+      "brandId": "kestrelfenn",
+      "domain": "ridgewaybikes.test",
+      "pageDir": "neg-business-ridgeway-bikes",
+      "domainScore": 10,
+      "registeredDaysAgo": 1976,
+      "certificateDaysAgo": 51,
+      "label": {
+        "lookalike": false,
+        "category": "unrelated-business",
+        "difficulty": "easy",
+        "notes": "Ridgeway Bike Repair: ordinary local business, no connection to the brand."
+      }
+    },
+    {
+      "id": "neg-business-alder-oak",
+      "brandId": "plumbagopay",
+      "domain": "alderandoak.example",
+      "pageDir": "neg-business-alder-oak",
+      "domainScore": 27,
+      "registeredDaysAgo": 2906,
+      "certificateDaysAgo": 45,
+      "label": {
+        "lookalike": false,
+        "category": "unrelated-business",
+        "difficulty": "easy",
+        "notes": "Alder & Oak Furniture: ordinary local business, no connection to the brand."
+      }
+    },
+    {
+      "id": "neg-business-sablewood-law",
+      "brandId": "tallowmere",
+      "domain": "sablewoodlaw.example",
+      "pageDir": "neg-business-sablewood-law",
+      "domainScore": 27,
+      "registeredDaysAgo": 2802,
+      "certificateDaysAgo": 35,
+      "label": {
+        "lookalike": false,
+        "category": "unrelated-business",
+        "difficulty": "easy",
+        "notes": "Sablewood Law: ordinary local business, no connection to the brand, has a contact form."
+      }
+    },
+    {
+      "id": "neg-business-copperkettle",
+      "brandId": "orbiqa",
+      "domain": "copperkettle-cafe.example",
+      "pageDir": "neg-business-copperkettle",
+      "domainScore": 29,
+      "registeredDaysAgo": 17,
+      "certificateDaysAgo": 9,
+      "label": {
+        "lookalike": false,
+        "category": "unrelated-business",
+        "difficulty": "easy",
+        "notes": "Copperkettle Cafe: ordinary local business, no connection to the brand."
+      }
+    },
+    {
+      "id": "neg-business-tideline-fitness",
+      "brandId": "lumenhaven",
+      "domain": "tideline-fitness.test",
+      "pageDir": "neg-business-tideline-fitness",
+      "domainScore": 20,
+      "registeredDaysAgo": 16,
+      "certificateDaysAgo": 5,
+      "label": {
+        "lookalike": false,
+        "category": "unrelated-business",
+        "difficulty": "easy",
+        "notes": "Tideline Fitness: ordinary local business, no connection to the brand, has a contact form."
+      }
+    },
+    {
+      "id": "neg-business-quarryhill",
+      "brandId": "norvane",
+      "domain": "quarryhill-accounting.example",
+      "pageDir": "neg-business-quarryhill",
+      "domainScore": 25,
+      "registeredDaysAgo": 2981,
+      "certificateDaysAgo": 75,
+      "label": {
+        "lookalike": false,
+        "category": "unrelated-business",
+        "difficulty": "easy",
+        "notes": "Quarryhill Accounting: ordinary local business, no connection to the brand."
+      }
+    },
+    {
+      "id": "neg-business-fernbrook",
+      "brandId": "marlowind",
+      "domain": "fernbrook-florist.example.net",
+      "pageDir": "neg-business-fernbrook",
+      "domainScore": 25,
+      "registeredDaysAgo": 2044,
+      "certificateDaysAgo": 53,
+      "label": {
+        "lookalike": false,
+        "category": "unrelated-business",
+        "difficulty": "easy",
+        "notes": "Fernbrook Florist: ordinary local business, no connection to the brand."
+      }
+    },
+    {
+      "id": "neg-business-pawprint",
+      "brandId": "zephyrio",
+      "domain": "pawprint-grooming.example.org",
+      "pageDir": "neg-business-pawprint",
+      "domainScore": 25,
+      "registeredDaysAgo": 3502,
+      "certificateDaysAgo": 64,
+      "label": {
+        "lookalike": false,
+        "category": "unrelated-business",
+        "difficulty": "easy",
+        "notes": "Pawprint Grooming: ordinary local business, no connection to the brand, has a contact form."
+      }
+    },
+    {
+      "id": "neg-sameword-norvane-farm",
+      "brandId": "norvane",
+      "domain": "norvane-valley-farm.example",
+      "pageDir": "neg-sameword-norvane-farm",
+      "domainScore": 82,
+      "registeredDaysAgo": 25,
+      "certificateDaysAgo": 6,
+      "label": {
+        "lookalike": false,
+        "category": "shared-word",
+        "difficulty": "hard",
+        "notes": "Norvane Valley Farm Shop: a different business that uses the brand's word, so the domain and text look similar."
+      }
+    },
+    {
+      "id": "neg-sameword-zephyrio-pizza",
+      "brandId": "zephyrio",
+      "domain": "zephyrio-pizza.example",
+      "pageDir": "neg-sameword-zephyrio-pizza",
+      "domainScore": 82,
+      "registeredDaysAgo": 631,
+      "certificateDaysAgo": 44,
+      "label": {
+        "lookalike": false,
+        "category": "shared-word",
+        "difficulty": "hard",
+        "notes": "Zephyrio Pizzeria: a different business that uses the brand's word, so the domain and text look similar."
+      }
+    },
+    {
+      "id": "neg-sameword-kestrelfenn-hardware",
+      "brandId": "kestrelfenn",
+      "domain": "kestrelfenn-hardware.example",
+      "pageDir": "neg-sameword-kestrelfenn-hardware",
+      "domainScore": 82,
+      "registeredDaysAgo": 2793,
+      "certificateDaysAgo": 26,
+      "label": {
+        "lookalike": false,
+        "category": "shared-word",
+        "difficulty": "hard",
+        "notes": "Kestrel & Fenn Hardware: a different business that uses the brand's word, so the domain and text look similar."
+      }
+    },
+    {
+      "id": "neg-sameword-plumbago-garden",
+      "brandId": "plumbagopay",
+      "domain": "plumbago-garden.example",
+      "pageDir": "neg-sameword-plumbago-garden",
+      "domainScore": 82,
+      "registeredDaysAgo": 3368,
+      "certificateDaysAgo": 58,
+      "label": {
+        "lookalike": false,
+        "category": "shared-word",
+        "difficulty": "hard",
+        "notes": "Plumbago Garden Centre: a different business that uses the brand's word, so the domain and text look similar."
+      }
+    },
+    {
+      "id": "neg-sameword-tallowmere-sailing",
+      "brandId": "tallowmere",
+      "domain": "tallowmere-sailing.example",
+      "pageDir": "neg-sameword-tallowmere-sailing",
+      "domainScore": 82,
+      "registeredDaysAgo": 2389,
+      "certificateDaysAgo": 29,
+      "label": {
+        "lookalike": false,
+        "category": "shared-word",
+        "difficulty": "hard",
+        "notes": "Tallowmere Lake Sailing Club: a different business that uses the brand's word, so the domain and text look similar."
+      }
+    },
+    {
+      "id": "neg-sameword-orbiqa-knitting",
+      "brandId": "orbiqa",
+      "domain": "orbiqa-knitting.example",
+      "pageDir": "neg-sameword-orbiqa-knitting",
+      "domainScore": 82,
+      "registeredDaysAgo": 2340,
+      "certificateDaysAgo": 52,
+      "label": {
+        "lookalike": false,
+        "category": "shared-word",
+        "difficulty": "hard",
+        "notes": "Orbiqa Knitting Circle: a different business that uses the brand's word, so the domain and text look similar."
+      }
+    },
+    {
+      "id": "neg-sameword-lumenhaven-bnb",
+      "brandId": "lumenhaven",
+      "domain": "lumenhaven-bnb.test",
+      "pageDir": "neg-sameword-lumenhaven-bnb",
+      "domainScore": 82,
+      "registeredDaysAgo": 11,
+      "certificateDaysAgo": 4,
+      "label": {
+        "lookalike": false,
+        "category": "shared-word",
+        "difficulty": "hard",
+        "notes": "Lumenhaven Bed & Breakfast: a different business that uses the brand's word, so the domain and text look similar."
+      }
+    },
+    {
+      "id": "neg-sameword-marlowind-kitchen",
+      "brandId": "marlowind",
+      "domain": "marlowind-kitchen.example",
+      "pageDir": "neg-sameword-marlowind-kitchen",
+      "domainScore": 82,
+      "registeredDaysAgo": 23,
+      "certificateDaysAgo": 10,
+      "label": {
+        "lookalike": false,
+        "category": "shared-word",
+        "difficulty": "hard",
+        "notes": "Marlowind Kitchen: a different business that uses the brand's word, so the domain and text look similar."
+      }
+    },
+    {
+      "id": "neg-login-harbourline",
+      "brandId": "norvane",
+      "domain": "harbourline-cu.example",
+      "pageDir": "neg-login-harbourline",
+      "domainScore": 31,
+      "registeredDaysAgo": 1964,
+      "certificateDaysAgo": 49,
+      "label": {
+        "lookalike": false,
+        "category": "other-brand-login",
+        "difficulty": "hard",
+        "notes": "Harbourline Credit Union: a real-looking login page for a different (fictional) company in the same sector, with a logo in a similar colour palette."
+      }
+    },
+    {
+      "id": "neg-login-postwing",
+      "brandId": "zephyrio",
+      "domain": "postwing.test",
+      "pageDir": "neg-login-postwing",
+      "domainScore": 13,
+      "registeredDaysAgo": 1969,
+      "certificateDaysAgo": 45,
+      "label": {
+        "lookalike": false,
+        "category": "other-brand-login",
+        "difficulty": "hard",
+        "notes": "Postwing Mail: a real-looking login page for a different (fictional) company in the same sector, with a logo in a similar colour palette."
+      }
+    },
+    {
+      "id": "neg-login-greywell",
+      "brandId": "kestrelfenn",
+      "domain": "greywell-insurance.example",
+      "pageDir": "neg-login-greywell",
+      "domainScore": 60,
+      "registeredDaysAgo": 1099,
+      "certificateDaysAgo": 71,
+      "label": {
+        "lookalike": false,
+        "category": "other-brand-login",
+        "difficulty": "hard",
+        "notes": "Greywell Insurance: a real-looking login page for a different (fictional) company in the same sector, with a logo in a similar colour palette."
+      }
+    },
+    {
+      "id": "neg-login-paylark",
+      "brandId": "plumbagopay",
+      "domain": "paylark.example",
+      "pageDir": "neg-login-paylark",
+      "domainScore": 25,
+      "registeredDaysAgo": 2280,
+      "certificateDaysAgo": 77,
+      "label": {
+        "lookalike": false,
+        "category": "other-brand-login",
+        "difficulty": "hard",
+        "notes": "Paylark: a real-looking payment page for a different (fictional) company in the same sector, with a logo in a similar colour palette."
+      }
+    },
+    {
+      "id": "neg-login-cumulo",
+      "brandId": "tallowmere",
+      "domain": "cumulo-storage.example",
+      "pageDir": "neg-login-cumulo",
+      "domainScore": 31,
+      "registeredDaysAgo": 2287,
+      "certificateDaysAgo": 17,
+      "label": {
+        "lookalike": false,
+        "category": "other-brand-login",
+        "difficulty": "hard",
+        "notes": "Cumulo Storage: a real-looking login page for a different (fictional) company in the same sector, with a logo in a similar colour palette."
+      }
+    },
+    {
+      "id": "neg-login-bargainly",
+      "brandId": "orbiqa",
+      "domain": "bargainly.example",
+      "pageDir": "neg-login-bargainly",
+      "domainScore": 24,
+      "registeredDaysAgo": 20,
+      "certificateDaysAgo": 5,
+      "label": {
+        "lookalike": false,
+        "category": "other-brand-login",
+        "difficulty": "hard",
+        "notes": "Bargainly: a real-looking payment page for a different (fictional) company in the same sector, with a logo in a similar colour palette. It also uses a ring-and-dot icon like the protected brand's, in another colour."
+      }
+    },
+    {
+      "id": "neg-login-brightgrid",
+      "brandId": "lumenhaven",
+      "domain": "brightgrid-power.example",
+      "pageDir": "neg-login-brightgrid",
+      "domainScore": 13,
+      "registeredDaysAgo": 2608,
+      "certificateDaysAgo": 21,
+      "label": {
+        "lookalike": false,
+        "category": "other-brand-login",
+        "difficulty": "hard",
+        "notes": "Brightgrid Power: a real-looking login page for a different (fictional) company in the same sector, with a logo in a similar colour palette."
+      }
+    },
+    {
+      "id": "neg-login-wanderly",
+      "brandId": "marlowind",
+      "domain": "wanderly-tours.example",
+      "pageDir": "neg-login-wanderly",
+      "domainScore": 23,
+      "registeredDaysAgo": 2839,
+      "certificateDaysAgo": 61,
+      "label": {
+        "lookalike": false,
+        "category": "other-brand-login",
+        "difficulty": "hard",
+        "notes": "Wanderly Tours: a real-looking login page for a different (fictional) company in the same sector, with a logo in a similar colour palette."
+      }
+    },
+    {
+      "id": "parked-norvane-online",
+      "brandId": "norvane",
+      "domain": "norvane-online.example",
+      "pageDir": "parked-norvane-online",
+      "domainScore": 82,
+      "registeredDaysAgo": 741,
+      "certificateDaysAgo": 32,
+      "label": {
+        "lookalike": false,
+        "category": "parked-empty",
+        "difficulty": "medium",
+        "notes": "Empty page (coming-soon) on a domain that resembles the brand; nothing on the page imitates it."
+      }
+    },
+    {
+      "id": "parked-zephyrio-login",
+      "brandId": "zephyrio",
+      "domain": "zephyrio-mail-login.test",
+      "pageDir": "parked-zephyrio-login",
+      "domainScore": 82,
+      "registeredDaysAgo": 489,
+      "certificateDaysAgo": 43,
+      "label": {
+        "lookalike": false,
+        "category": "parked-empty",
+        "difficulty": "medium",
+        "notes": "Empty page (sale) on a domain that resembles the brand; nothing on the page imitates it."
+      }
+    },
+    {
+      "id": "parked-orbiqa-store",
+      "brandId": "orbiqa",
+      "domain": "orbiqa-store.example",
+      "pageDir": "parked-orbiqa-store",
+      "domainScore": 82,
+      "registeredDaysAgo": 1448,
+      "certificateDaysAgo": 75,
+      "label": {
+        "lookalike": false,
+        "category": "parked-empty",
+        "difficulty": "medium",
+        "notes": "Empty page (construction) on a domain that resembles the brand; nothing on the page imitates it."
+      }
+    },
+    {
+      "id": "parked-lumenhaven-power",
+      "brandId": "lumenhaven",
+      "domain": "lumenhaven-power.test",
+      "pageDir": "parked-lumenhaven-power",
+      "domainScore": 82,
+      "registeredDaysAgo": 2436,
+      "certificateDaysAgo": 50,
+      "label": {
+        "lookalike": false,
+        "category": "parked-empty",
+        "difficulty": "medium",
+        "notes": "Empty page (coming-soon) on a domain that resembles the brand; nothing on the page imitates it."
+      }
+    },
+    {
+      "id": "parked-default-server",
+      "brandId": "kestrelfenn",
+      "domain": "blue-meadow-hosting.example",
+      "pageDir": "parked-default-server",
+      "domainScore": 15,
+      "registeredDaysAgo": 1429,
+      "certificateDaysAgo": 40,
+      "label": {
+        "lookalike": false,
+        "category": "parked-empty",
+        "difficulty": "easy",
+        "notes": "Empty page (default-server)."
+      }
+    },
+    {
+      "id": "news-norvane-results",
+      "brandId": "norvane",
+      "domain": "dailyledger-news.example",
+      "pageDir": "news-norvane-results",
+      "domainScore": 15,
+      "registeredDaysAgo": 1429,
+      "certificateDaysAgo": 66,
+      "label": {
+        "lookalike": false,
+        "category": "news-mention",
+        "difficulty": "medium",
+        "notes": "News/blog article that names the brand several times; no form."
+      }
+    },
+    {
+      "id": "news-zephyrio-warning",
+      "brandId": "zephyrio",
+      "domain": "netwatch-bulletin.example",
+      "pageDir": "news-zephyrio-warning",
+      "domainScore": 19,
+      "registeredDaysAgo": 1060,
+      "certificateDaysAgo": 56,
+      "label": {
+        "lookalike": false,
+        "category": "news-mention",
+        "difficulty": "hard",
+        "notes": "News/blog article that names the brand several times and shows its real logo as an illustration; no form."
+      }
+    },
+    {
+      "id": "news-kestrelfenn-cover",
+      "brandId": "kestrelfenn",
+      "domain": "countyherald.example",
+      "pageDir": "news-kestrelfenn-cover",
+      "domainScore": 15,
+      "registeredDaysAgo": 3306,
+      "certificateDaysAgo": 59,
+      "label": {
+        "lookalike": false,
+        "category": "news-mention",
+        "difficulty": "medium",
+        "notes": "News/blog article that names the brand several times; no form."
+      }
+    },
+    {
+      "id": "news-plumbago-launch",
+      "brandId": "plumbagopay",
+      "domain": "techcrumble-blog.example",
+      "pageDir": "news-plumbago-launch",
+      "domainScore": 27,
+      "registeredDaysAgo": 781,
+      "certificateDaysAgo": 43,
+      "label": {
+        "lookalike": false,
+        "category": "news-mention",
+        "difficulty": "hard",
+        "notes": "News/blog article that names the brand several times and shows its real logo as an illustration; no form."
+      }
+    },
+    {
+      "id": "news-lumenhaven-tariff",
+      "brandId": "lumenhaven",
+      "domain": "moneywise-guides.example.com",
+      "pageDir": "news-lumenhaven-tariff",
+      "domainScore": 19,
+      "registeredDaysAgo": 1308,
+      "certificateDaysAgo": 33,
+      "label": {
+        "lookalike": false,
+        "category": "news-mention",
+        "difficulty": "medium",
+        "notes": "News/blog article that names the brand several times; no form."
+      }
+    },
+    {
+      "id": "news-orbiqa-outage",
+      "brandId": "orbiqa",
+      "domain": "bytebeat-news.example.net",
+      "pageDir": "news-orbiqa-outage",
+      "domainScore": 29,
+      "registeredDaysAgo": 1260,
+      "certificateDaysAgo": 68,
+      "label": {
+        "lookalike": false,
+        "category": "news-mention",
+        "difficulty": "medium",
+        "notes": "News/blog article that names the brand several times; no form."
+      }
+    },
+    {
+      "id": "review-tallowmere",
+      "brandId": "tallowmere",
+      "domain": "tallowmere-review.example",
+      "pageDir": "review-tallowmere",
+      "domainScore": 82,
+      "registeredDaysAgo": 1252,
+      "certificateDaysAgo": 64,
+      "label": {
+        "lookalike": false,
+        "category": "review-site",
+        "difficulty": "hard",
+        "notes": "Independent review site: brand name in the title and domain, but it is commentary, not an imitation."
+      }
+    },
+    {
+      "id": "review-marlowind",
+      "brandId": "marlowind",
+      "domain": "marlowind-reviews.example",
+      "pageDir": "review-marlowind",
+      "domainScore": 82,
+      "registeredDaysAgo": 2968,
+      "certificateDaysAgo": 70,
+      "label": {
+        "lookalike": false,
+        "category": "review-site",
+        "difficulty": "hard",
+        "notes": "Independent review site: brand name in the title and domain, but it is commentary, not an imitation."
+      }
+    },
+    {
+      "id": "review-norvane-compare",
+      "brandId": "norvane",
+      "domain": "norvane-bank-compare.example.net",
+      "pageDir": "review-norvane-compare",
+      "domainScore": 82,
+      "registeredDaysAgo": 1668,
+      "certificateDaysAgo": 54,
+      "label": {
+        "lookalike": false,
+        "category": "review-site",
+        "difficulty": "hard",
+        "notes": "Independent review site: brand name in the title and domain, but it is commentary, not an imitation."
+      }
+    },
+    {
+      "id": "dom-pos-1",
+      "brandId": "norvane",
+      "domain": "norvane-bnk.example",
+      "pageDir": null,
+      "domainScore": 91,
+      "registeredDaysAgo": 28,
+      "certificateDaysAgo": 10,
+      "label": {
+        "lookalike": true,
+        "category": "domain-only-lookalike",
+        "difficulty": "medium",
+        "notes": "Site could not be captured; the domain imitates the brand name."
+      }
+    },
+    {
+      "id": "dom-pos-2",
+      "brandId": "norvane",
+      "domain": "n0rvane.example",
+      "pageDir": null,
+      "domainScore": 86,
+      "registeredDaysAgo": 27,
+      "certificateDaysAgo": 6,
+      "label": {
+        "lookalike": true,
+        "category": "domain-only-lookalike",
+        "difficulty": "medium",
+        "notes": "Site could not be captured; the domain imitates the brand name."
+      }
+    },
+    {
+      "id": "dom-pos-3",
+      "brandId": "zephyrio",
+      "domain": "zephyrio-mail-support.test",
+      "pageDir": null,
+      "domainScore": 82,
+      "registeredDaysAgo": 3,
+      "certificateDaysAgo": 8,
+      "label": {
+        "lookalike": true,
+        "category": "domain-only-lookalike",
+        "difficulty": "medium",
+        "notes": "Site could not be captured; the domain imitates the brand name."
+      }
+    },
+    {
+      "id": "dom-pos-4",
+      "brandId": "kestrelfenn",
+      "domain": "kestrelfenn-insurance.example.com",
+      "pageDir": null,
+      "domainScore": 95,
+      "registeredDaysAgo": 4,
+      "certificateDaysAgo": 1,
+      "label": {
+        "lookalike": true,
+        "category": "domain-only-lookalike",
+        "difficulty": "medium",
+        "notes": "Site could not be captured; the domain imitates the brand name."
+      }
+    },
+    {
+      "id": "dom-pos-5",
+      "brandId": "plumbagopay",
+      "domain": "plumbago-pay.example",
+      "pageDir": null,
+      "domainScore": 95,
+      "registeredDaysAgo": 22,
+      "certificateDaysAgo": 6,
+      "label": {
+        "lookalike": true,
+        "category": "domain-only-lookalike",
+        "difficulty": "medium",
+        "notes": "Site could not be captured; the domain imitates the brand name."
+      }
+    },
+    {
+      "id": "dom-pos-6",
+      "brandId": "tallowmere",
+      "domain": "tallowmere-cloud-login.example",
+      "pageDir": null,
+      "domainScore": 82,
+      "registeredDaysAgo": 30,
+      "certificateDaysAgo": 8,
+      "label": {
+        "lookalike": true,
+        "category": "domain-only-lookalike",
+        "difficulty": "medium",
+        "notes": "Site could not be captured; the domain imitates the brand name."
+      }
+    },
+    {
+      "id": "dom-neg-1",
+      "brandId": "norvane",
+      "domain": "northvale-hardware.example",
+      "pageDir": null,
+      "domainScore": 41,
+      "registeredDaysAgo": 3520,
+      "certificateDaysAgo": 57,
+      "label": {
+        "lookalike": false,
+        "category": "domain-only-unrelated",
+        "difficulty": "medium",
+        "notes": "Site could not be captured; the domain belongs to an unrelated business."
+      }
+    },
+    {
+      "id": "dom-neg-2",
+      "brandId": "zephyrio",
+      "domain": "zephyr-wind-surf.example",
+      "pageDir": null,
+      "domainScore": 50,
+      "registeredDaysAgo": 2919,
+      "certificateDaysAgo": 54,
+      "label": {
+        "lookalike": false,
+        "category": "domain-only-unrelated",
+        "difficulty": "medium",
+        "notes": "Site could not be captured; the domain belongs to an unrelated business."
+      }
+    },
+    {
+      "id": "dom-neg-3",
+      "brandId": "kestrelfenn",
+      "domain": "kestrelfenn-bakery.example",
+      "pageDir": null,
+      "domainScore": 82,
+      "registeredDaysAgo": 1411,
+      "certificateDaysAgo": 37,
+      "label": {
+        "lookalike": false,
+        "category": "domain-only-unrelated",
+        "difficulty": "hard",
+        "notes": "Site could not be captured; the domain belongs to an unrelated business that happens to use the brand's word."
+      }
+    },
+    {
+      "id": "dom-neg-4",
+      "brandId": "orbiqa",
+      "domain": "orbiqa-yoga.test",
+      "pageDir": null,
+      "domainScore": 82,
+      "registeredDaysAgo": 536,
+      "certificateDaysAgo": 25,
+      "label": {
+        "lookalike": false,
+        "category": "domain-only-unrelated",
+        "difficulty": "hard",
+        "notes": "Site could not be captured; the domain belongs to an unrelated business that happens to use the brand's word."
+      }
+    },
+    {
+      "id": "dom-neg-5",
+      "brandId": "marlowind",
+      "domain": "marlow-books.example",
+      "pageDir": null,
+      "domainScore": 55,
+      "registeredDaysAgo": 1488,
+      "certificateDaysAgo": 23,
+      "label": {
+        "lookalike": false,
+        "category": "domain-only-unrelated",
+        "difficulty": "medium",
+        "notes": "Site could not be captured; the domain belongs to an unrelated business."
+      }
+    },
+    {
+      "id": "dom-neg-6",
+      "brandId": "lumenhaven",
+      "domain": "lumen-hotel-group.example",
+      "pageDir": null,
+      "domainScore": 47,
+      "registeredDaysAgo": 708,
+      "certificateDaysAgo": 57,
+      "label": {
+        "lookalike": false,
+        "category": "domain-only-unrelated",
+        "difficulty": "medium",
+        "notes": "Site could not be captured; the domain belongs to an unrelated business."
+      }
+    }
+  ]
+}

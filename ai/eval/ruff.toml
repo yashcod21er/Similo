@@ -1,0 +1,8 @@
+# Ruff settings for the evaluation code: the service's settings plus two exceptions.
+extend = "../pyproject.toml"
+
+[lint.per-file-ignores]
+# `assert` is the normal way to write pytest tests.
+"tests/**" = ["S101"]
+# Page templates and the fictional content are long lines of HTML and prose, not code.
+"tools/**" = ["E501", "S311"]  # S311: seeded random only makes the fake data repeatable

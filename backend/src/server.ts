@@ -27,6 +27,7 @@ import {
   createMonitoringQueueCheck,
 } from './modules/health/health.checks.js';
 import { createHealthService } from './modules/health/health.service.js';
+import { mongoFindingCaptureRepository } from './modules/capture/finding-capture.repository.js';
 import { mongoFindingRepository } from './modules/findings/finding.repository.js';
 import { createFindingService } from './modules/findings/finding.service.js';
 import { createMonitoringQueue } from './modules/monitoring/monitoring.queue.js';
@@ -68,6 +69,8 @@ async function main(): Promise<void> {
   const aiServiceClient = createAiServiceClient({
     baseUrl: env.AI_SERVICE_URL,
     timeoutMs: env.AI_SERVICE_TIMEOUT_MS,
+    token: env.AI_SERVICE_TOKEN,
+    analysisTimeoutMs: env.AI_ANALYSIS_TIMEOUT_MS,
   });
   const monitoringQueue = env.REDIS_URL ? createMonitoringQueue(env.REDIS_URL, logger) : null;
   if (!monitoringQueue)
@@ -114,6 +117,7 @@ async function main(): Promise<void> {
   const brandService = createBrandService({
     brands: mongoBrandRepository,
     logos: mongoBrandLogoRepository,
+    captures: mongoFindingCaptureRepository,
     audit: auth.auditService,
     runInTransaction: runInMongoTransaction,
     now: () => new Date(),
@@ -121,6 +125,8 @@ async function main(): Promise<void> {
   const findingService = createFindingService({
     findings: mongoFindingRepository,
     audit: auth.auditService,
+    captures: mongoFindingCaptureRepository,
+    analysisQueue: monitoringQueue,
   });
 
   const app = createApp({

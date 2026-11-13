@@ -1,0 +1,205 @@
+{
+  "note": "Every brand, company, logo and domain in this evaluation set is fictional and was invented for testing. Domains use only reserved names (.example, .test, example.com/net/org).",
+  "brands": [
+    {
+      "id": "norvane",
+      "name": "Norvane Bank",
+      "sector": "banking",
+      "description": "Norvane Bank is a regional retail bank for savings, mortgages and online banking.",
+      "keywords": [
+        "norvane",
+        "norvane online banking"
+      ],
+      "officialDomains": [
+        "norvane.example"
+      ],
+      "logos": [
+        {
+          "id": "norvane-logo-1",
+          "file": "brands/norvane/logo-1.png",
+          "note": "wordmark"
+        },
+        {
+          "id": "norvane-logo-2",
+          "file": "brands/norvane/logo-2.png",
+          "note": "icon"
+        }
+      ]
+    },
+    {
+      "id": "zephyrio",
+      "name": "Zephyrio Mail",
+      "sector": "email",
+      "description": "Zephyrio Mail is a private email and calendar service.",
+      "keywords": [
+        "zephyrio",
+        "zephyrio mailbox"
+      ],
+      "officialDomains": [
+        "zephyrio.example"
+      ],
+      "logos": [
+        {
+          "id": "zephyrio-logo-1",
+          "file": "brands/zephyrio/logo-1.png",
+          "note": "wordmark"
+        },
+        {
+          "id": "zephyrio-logo-2",
+          "file": "brands/zephyrio/logo-2.png",
+          "note": "icon"
+        }
+      ]
+    },
+    {
+      "id": "kestrelfenn",
+      "name": "Kestrel & Fenn",
+      "sector": "insurance",
+      "description": "Kestrel & Fenn is an insurance company for homes, cars and travel.",
+      "keywords": [
+        "kestrel fenn",
+        "kestrel & fenn insurance"
+      ],
+      "officialDomains": [
+        "kestrelfenn.example"
+      ],
+      "logos": [
+        {
+          "id": "kestrelfenn-logo-1",
+          "file": "brands/kestrelfenn/logo-1.png",
+          "note": "wordmark"
+        },
+        {
+          "id": "kestrelfenn-logo-2",
+          "file": "brands/kestrelfenn/logo-2.png",
+          "note": "icon"
+        }
+      ]
+    },
+    {
+      "id": "plumbagopay",
+      "name": "Plumbago Pay",
+      "sector": "payments",
+      "description": "Plumbago Pay is a mobile wallet for sending and receiving money.",
+      "keywords": [
+        "plumbago",
+        "plumbago wallet"
+      ],
+      "officialDomains": [
+        "plumbagopay.example"
+      ],
+      "logos": [
+        {
+          "id": "plumbagopay-logo-1",
+          "file": "brands/plumbagopay/logo-1.png",
+          "note": "wordmark"
+        },
+        {
+          "id": "plumbagopay-logo-2",
+          "file": "brands/plumbagopay/logo-2.png",
+          "note": "icon"
+        }
+      ]
+    },
+    {
+      "id": "tallowmere",
+      "name": "Tallowmere Cloud",
+      "sector": "cloud storage",
+      "description": "Tallowmere Cloud is online file storage and sharing.",
+      "keywords": [
+        "tallowmere",
+        "tallowmere drive"
+      ],
+      "officialDomains": [
+        "tallowmere.example"
+      ],
+      "logos": [
+        {
+          "id": "tallowmere-logo-1",
+          "file": "brands/tallowmere/logo-1.png",
+          "note": "wordmark"
+        },
+        {
+          "id": "tallowmere-logo-2",
+          "file": "brands/tallowmere/logo-2.png",
+          "note": "icon"
+        }
+      ]
+    },
+    {
+      "id": "orbiqa",
+      "name": "Orbiqa Shop",
+      "sector": "online shopping",
+      "description": "Orbiqa Shop is an online marketplace for everyday products.",
+      "keywords": [
+        "orbiqa",
+        "orbiqa marketplace"
+      ],
+      "officialDomains": [
+        "orbiqa.example"
+      ],
+      "logos": [
+        {
+          "id": "orbiqa-logo-1",
+          "file": "brands/orbiqa/logo-1.png",
+          "note": "wordmark"
+        },
+        {
+          "id": "orbiqa-logo-2",
+          "file": "brands/orbiqa/logo-2.png",
+          "note": "icon"
+        }
+      ]
+    },
+    {
+      "id": "lumenhaven",
+      "name": "Lumenhaven Energy",
+      "sector": "energy",
+      "description": "Lumenhaven Energy supplies renewable electricity and gas to homes.",
+      "keywords": [
+        "lumenhaven",
+        "lumenhaven energy account"
+      ],
+      "officialDomains": [
+        "lumenhaven.example"
+      ],
+      "logos": [
+        {
+          "id": "lumenhaven-logo-1",
+          "file": "brands/lumenhaven/logo-1.png",
+          "note": "wordmark"
+        },
+        {
+          "id": "lumenhaven-logo-2",
+          "file": "brands/lumenhaven/logo-2.png",
+          "note": "icon"
+        }
+      ]
+    },
+    {
+      "id": "marlowind",
+      "name": "Marlowind Travel",
+      "sector": "travel",
+      "description": "Marlowind Travel is a travel booking site for flights and hotels.",
+      "keywords": [
+        "marlowind",
+        "marlowind trips"
+      ],
+      "officialDomains": [
+        "marlowind.example"
+      ],
+      "logos": [
+        {
+          "id": "marlowind-logo-1",
+          "file": "brands/marlowind/logo-1.png",
+          "note": "wordmark"
+        },
+        {
+          "id": "marlowind-logo-2",
+          "file": "brands/marlowind/logo-2.png",
+          "note": "icon"
+        }
+      ]
+    }
+  ]
+}

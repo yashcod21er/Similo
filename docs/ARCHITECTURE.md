@@ -196,8 +196,8 @@ The platform must not claim coverage it doesn't have. Each source is an adapter 
 | 2     | Authentication, organisations, roles, protected routes                                     | ✅ Done                                  |
 | 3     | Public website: 11 pages, brand checker hero, resources, demo-request form + API endpoint  | ✅ Done (redesigned to v2 "Clarity")     |
 | 4     | Brand management (brands, logos, domains, trademarks, monitoring config)                   | ✅ Done                                  |
-| 5     | First end-to-end domain monitoring (discovery adapter, similarity, RDAP, BullMQ, findings) | Implemented; Redis required to run scans |
-| 6     | AI intelligence (text/image similarity, OCR, explainable risk scoring, evaluation set)     | —                                        |
+| 5     | First end-to-end domain monitoring (discovery adapter, similarity, RDAP, BullMQ, findings) | Implemented; deployed worker still required to process scans |
+| 6     | AI intelligence (text/image similarity, OCR, explainable risk scoring, evaluation set)     | Implemented in repository; hosted inference needs a model-capable AI instance |
 | 7     | Investigations and evidence (provenance, SHA-256, timeline, reports)                       | —                                        |
 | 8     | RAG assistant (ingestion, embeddings, vector search, cited answers, drafts)                | —                                        |
 | 9     | App and trademark monitoring                                                               | —                                        |

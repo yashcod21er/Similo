@@ -8,14 +8,22 @@ readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "fastapi>=0.162.2",
+    "fastembed>=0.9.1",
+    "imagehash>=4.3.2",
+    "numpy>=2.5.4",
+    "onnxruntime>=1.31.1",
+    "pillow>=13.0.0",
     "pydantic-settings>=2.16.2",
+    "rapidocr>=3.10.0",
     "uvicorn[standard]>=0.54.0",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-addopts = "-ra"
+# Slow tests (real models) are skipped by default; run them with:  uv run pytest -m slow
+addopts = "-ra -m 'not slow'"
+markers = ["slow: loads the real AI models (about 10 seconds); run with -m slow"]
 
 [tool.ruff]
 line-length = 100
@@ -26,8 +34,8 @@ target-version = "py312"
 select = ["E", "F", "I", "B", "UP", "S"]
 
 [tool.ruff.lint.per-file-ignores]
-# `assert` is the normal way to write pytest tests.
-"tests/**" = ["S101"]
+# `assert` is the normal way to write pytest tests; fake tokens in tests are not secrets.
+"tests/**" = ["S101", "S105", "S106"]
 
 [dependency-groups]
 dev = [

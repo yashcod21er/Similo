@@ -4,6 +4,7 @@ import { AppError, ErrorCode } from '../../lib/errors.js';
 import type { AuditAction } from '../audit/audit.repository.js';
 import type { AuditService } from '../audit/audit.service.js';
 import type { AuthContext } from '../auth/auth.types.js';
+import type { FindingCaptureRepository } from '../capture/finding-capture.repository.js';
 import type { BrandStatus, Sensitivity, TrademarkOffice, TrademarkStatus } from './brand.model.js';
 import type {
   BrandChanges,
@@ -108,6 +109,8 @@ export interface BrandService {
 interface Dependencies {
   brands: BrandRepository;
   logos: BrandLogoRepository;
+  /** Removes stored Phase 6 screenshots when their owning brand is deleted. */
+  captures?: Pick<FindingCaptureRepository, 'deleteByBrand'>;
   audit: AuditService;
   runInTransaction: RunInTransaction;
   now: () => Date;
@@ -335,6 +338,7 @@ export function createBrandService(deps: Dependencies): BrandService {
       await runInTransaction(async (tx) => {
         if (!(await brands.delete(auth.organizationId, brand.id, tx))) throw brandNotFound();
         await logos.deleteByBrand(auth.organizationId, brand.id, tx);
+        await deps.captures?.deleteByBrand(auth.organizationId, brand.id, tx);
       });
       await record(auth, 'brand.deleted', brand, {
         domains: brand.domains.length,

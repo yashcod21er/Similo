@@ -25,7 +25,8 @@ export type AuditAction =
   | 'brand.logo_uploaded'
   | 'brand.logo_removed'
   | 'brand.monitoring_updated'
-  | 'finding.status_updated';
+  | 'finding.status_updated'
+  | 'finding.analysis_requested';
 
 export interface AuditActor {
   userId: string;

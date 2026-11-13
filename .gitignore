@@ -30,3 +30,6 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Downloaded AI model weights (Phase 6), re-downloaded on demand
+ai/.models/

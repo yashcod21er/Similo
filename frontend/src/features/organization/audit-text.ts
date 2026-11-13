@@ -117,6 +117,8 @@ export function describeAuditEvent(event: AuditEvent): string {
       return `Changed the monitoring settings of ${brand}`;
     case 'finding.status_updated':
       return `Updated ${named('domain', target)} for ${brand} to ${String(meta.to ?? 'a new status')}`;
+    case 'finding.analysis_requested':
+      return `Asked for a new AI check of ${named('domain', target)} for ${brand}`;
     default:
       return event.action;
   }
