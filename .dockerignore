@@ -1,0 +1,15 @@
+# Keeps secrets, dependencies and local caches out of every Docker image.
+.git
+**/node_modules
+**/dist
+**/coverage
+**/.env
+**/.env.*
+!**/.env.example
+**/.venv
+**/.models
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+ai/eval
+docs

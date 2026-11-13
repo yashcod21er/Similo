@@ -1,0 +1,116 @@
+# Similo on one server (written for an Oracle Cloud Always Free VM).
+# Run from this folder:  docker compose up -d --build
+# Settings come from the `.env` file next to this file (see .env.example).
+# Only the `web` container is reachable from the internet (ports 80 and 443).
+
+name: similo
+
+x-backend-env: &backend-env
+  NODE_ENV: production
+  LOG_LEVEL: info
+  MONGODB_URI: ${MONGODB_URI:?set MONGODB_URI in .env}
+  MONGODB_DB_NAME: ${MONGODB_DB_NAME:-similo}
+  JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+  AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:?set AI_SERVICE_TOKEN in .env}
+  AI_SERVICE_URL: http://ai:8000
+  REDIS_URL: redis://redis:6379
+  APP_URL: https://${SITE_DOMAIN:?set SITE_DOMAIN in .env}
+  CORS_ORIGINS: https://${SITE_DOMAIN}
+  DOMAIN_DISCOVERY_SOURCE: crtsh
+  DOMAIN_SCAN_INTERVAL_HOURS: ${DOMAIN_SCAN_INTERVAL_HOURS:-24}
+
+services:
+  redis:
+    image: redis:7-alpine
+    # BullMQ needs "noeviction"; the append-only file keeps queued jobs across restarts.
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  ai:
+    build:
+      context: ../../ai
+    environment:
+      AI_ENVIRONMENT: production
+      AI_LOG_LEVEL: INFO
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN}
+    restart: unless-stopped
+    mem_limit: 3g
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  api:
+    build:
+      context: ../..
+      dockerfile: backend/Dockerfile
+      target: api
+    environment:
+      <<: *backend-env
+      PORT: "4000"
+      # One proxy (Caddy) sits in front of the API.
+      TRUST_PROXY: "1"
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4000/api/v1/health').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  worker:
+    build:
+      context: ../..
+      dockerfile: backend/Dockerfile
+      target: worker
+    environment:
+      <<: *backend-env
+      CAPTURE_ENABLED: "true"
+      MONITORING_WORKER_CONCURRENCY: "1"
+      ANALYSIS_MAX_PER_SCAN: ${ANALYSIS_MAX_PER_SCAN:-20}
+    depends_on:
+      redis:
+        condition: service_healthy
+      ai:
+        condition: service_healthy
+    restart: unless-stopped
+    init: true
+    shm_size: 1gb
+    mem_limit: 3g
+    # Lets Chromium use its own sandbox as a normal user (Playwright's profile).
+    security_opt:
+      - seccomp=seccomp-chromium.json
+
+  web:
+    build:
+      context: ../..
+      dockerfile: deploy/oracle/web.Dockerfile
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  redis-data:
+  caddy-data:
+  caddy-config:

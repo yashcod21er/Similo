@@ -1,0 +1,21 @@
+# Caddy gets and renews the HTTPS certificate for SITE_DOMAIN automatically.
+{$SITE_DOMAIN} {
+	encode zstd gzip
+
+	handle /api/* {
+		reverse_proxy api:4000
+	}
+
+	handle {
+		root * /srv
+		# React handles its own page addresses, so unknown paths get index.html.
+		try_files {path} /index.html
+		file_server
+	}
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+}
